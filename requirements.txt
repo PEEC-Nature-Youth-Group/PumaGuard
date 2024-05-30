@@ -1,0 +1,5 @@
+ipykernel
+keras
+livelossplot
+matplotlib
+tensorflow
