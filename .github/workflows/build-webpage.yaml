@@ -3,6 +3,7 @@ name: Build and Test Webpage
 on:
   push:
   pull_request:
+  workflow_dispatch:
 
 jobs:
   build:
