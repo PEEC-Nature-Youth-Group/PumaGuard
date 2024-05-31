@@ -1,8 +1,11 @@
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Contents
+
+   notebooks
 
 .. include:: README.rst
+
 
 Indices and tables
 ==================
