@@ -9,8 +9,12 @@
 			"USER_GID": "1000"
 		}
 	},
-	"extensions": [
-		"ms-python.python",
-		"ms-toolsai.jupyter"
-	]
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-python.python",
+				"ms-toolsai.jupyter"
+			]
+		}
+	}
 }
