@@ -1,5 +1,5 @@
-Mountain Lion Classification Challenge
-======================================
+PumaGuard
+=========
 
 .. raw:: html
 
@@ -11,8 +11,10 @@ Mountain Lion Classification Challenge
 
 This repository contains a machine learning project aimed at classifying images
 into two categories: containing a mountain lion or not. The core of this project
-is a Jupyter notebook that outlines the process of training a model for this
-binary classification task.
+is a Jupyter notebook, `Mountain_Lions.ipynb
+<https://github.com/nicolasbock/extreme-lion-challenge/blob/main/notebooks/Mountain_Lions.ipynb>`__,
+that outlines the process of training a model for this binary classification
+task.
 
 Project Overview
 ----------------
@@ -25,8 +27,9 @@ validated using a separate set of images.
 Getting Started
 ---------------
 
-To run the project in `Google Colab <https://colab.research.google.com/>`__,
-click:
+The easiest place to start is to run the project in `Google Colab
+<https://colab.research.google.com/>`__. This approach does not require any
+local resources.
 
 Alternately, to run the project locally, follow these steps:
 
@@ -39,8 +42,9 @@ Alternately, to run the project locally, follow these steps:
 
    pip install -r requirements.txt
 
-4. Open the ``notebooks/classifiying_lions.ipynb`` notebook and follow the
-   instructions within.
+4. Open the `Mountain_Lions.ipynb
+   <https://github.com/nicolasbock/extreme-lion-challenge/blob/main/notebooks/Mountain_Lions.ipynb>`__
+   notebook and follow the instructions therein.
 
 Model Training
 --------------
@@ -67,5 +71,6 @@ based on the validation dataset. The models are ranked by validation accuracy.
 References
 ----------
 
-[1] The images are located in Hari’s `Google Drive
-<https://drive.google.com/drive/folders/1g8MZmL-rDcTXpUrVBf-UEgudM2NHgKQJ>`__.
+[1] The images are located in the `data folder
+<https://github.com/nicolasbock/extreme-lion-challenge/tree/main/data>`__ in the
+repository.
