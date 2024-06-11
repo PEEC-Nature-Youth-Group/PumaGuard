@@ -6,7 +6,7 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'extreme-lion-challenge'
+project = 'PumaGuard'
 copyright = '2024, Pajarito Environmental Education Center Youth Group'
 author = 'Pajarito Environmental Education Center Youth Group'
 release = '2024'
