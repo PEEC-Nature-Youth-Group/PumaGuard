@@ -1,7 +1,7 @@
 PumaGuard
 =========
 
-.. image:: _static/MLProj.png
+.. image:: docs/source/_static/MLProj.png
    :width: 80%
    :align: center
 
@@ -49,7 +49,7 @@ Alternately, to run the project locally, follow these steps:
 
       git clone https://github.com/nicolasbock/extreme-lion-challenge.git
 
-2. Ensure you have Jupyter Notebook installed. On Ubuntu Jupyter can be
+2. Ensure you have Jupyter Notebook installed. On Ubuntu, Jupyter can be
    installed with
 
    .. code:: bash
