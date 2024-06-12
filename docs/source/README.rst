@@ -21,13 +21,14 @@ and conservation efforts. The model is trained on a labeled dataset and
 validated using a separate set of images.
 
 .. figure:: _static/figure01.png
+   :name: figure-workflow
    :alt: Targeted mitigation approach workflow
    :align: center
    :width: 60%
 
-   Figure 1: Proposed targeted mitigation approach workflow.
+   Proposed targeted mitigation approach workflow.
 
-The proposed targeted mitigation workflow is shown in Figure 1.
+The proposed targeted mitigation workflow is shown in :numref:`figure-workflow`.
 
 Getting Started
 ---------------
