@@ -1,6 +1,8 @@
 PumaGuard
 =========
 
+.. image:: _static/MLProj.png
+
 This repository contains a machine learning project aimed at classifying images
 into two categories: containing a mountain lion or not. The core of this project
 is a Jupyter notebook, `Mountain_Lions.ipynb

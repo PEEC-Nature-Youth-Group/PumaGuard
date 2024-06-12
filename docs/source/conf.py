@@ -26,4 +26,4 @@ exclude_patterns = []
 
 # html_theme = 'alabaster'
 html_theme = 'cloud'
-# html_static_path = ['_static']
+html_static_path = ['_static']
