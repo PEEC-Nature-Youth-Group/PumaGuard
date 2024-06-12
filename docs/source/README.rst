@@ -48,6 +48,12 @@ validation steps. It utilizes a pre-defined neural network architecture
 optimized for image classification tasks. The training process includes data
 augmentation techniques to improve model generalization.
 
+All data used here can be found in the `data folder
+<https://github.com/nicolasbock/extreme-lion-challenge/tree/main/data>`__.
+
+All models (weights) are published in the `models folder
+<https://github.com/nicolasbock/extreme-lion-challenge/tree/main/models>`__.
+
 Leaderboard
 -----------
 
@@ -69,10 +75,3 @@ based on the validation dataset. The models are ranked by validation accuracy.
 +--------+----------------------------+--------------------+---------------------+-----------------------------------------------------+
 |PEECYG  | 20%                        | 123                | 91%                 | Increased # of images, increased res to 512x512     |
 +--------+----------------------------+--------------------+---------------------+-----------------------------------------------------+
-
-References
-----------
-
-[1] The images are located in the `data folder
-<https://github.com/nicolasbock/extreme-lion-challenge/tree/main/data>`__ in the
-repository.
