@@ -22,7 +22,7 @@ Getting Started
 The easiest place to start is to run the project in
 
 .. image:: https://colab.research.google.com/assets/colab-badge.svg
-   :target: https://colab.research.google.com/github/nicolasbock/extreme-lion-challenge/blob/main/Mountain_Lions.ipynb
+   :target: https://colab.research.google.com/github/nicolasbock/extreme-lion-challenge/blob/main/notebooks/Mountain_Lions.ipynb
 
 This approach does not require any local resources.
 
