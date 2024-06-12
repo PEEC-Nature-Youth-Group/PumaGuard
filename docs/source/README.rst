@@ -1,7 +1,7 @@
 PumaGuard
 =========
 
-.. image:: docs/source/_static/MLProj.png
+.. image:: _static/MLProj.png
    :width: 80%
    :align: center
 
