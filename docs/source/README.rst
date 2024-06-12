@@ -2,6 +2,8 @@ PumaGuard
 =========
 
 .. image:: _static/MLProj.png
+   :width: 80%
+   :align: center
 
 This repository contains a machine learning project aimed at classifying images
 into two categories: containing a mountain lion or not. The core of this project
@@ -17,6 +19,15 @@ The goal of this project is to accurately classify images based on the presence
 of mountain lions. This can have applications in wildlife monitoring, research,
 and conservation efforts. The model is trained on a labeled dataset and
 validated using a separate set of images.
+
+.. figure:: _static/figure01.png
+   :alt: Targeted mitigation approach workflow
+   :align: center
+   :width: 60%
+
+   Figure 1: Proposed targeted mitigation approach workflow.
+
+The proposed targeted mitigation workflow is shown in Figure 1.
 
 Getting Started
 ---------------
