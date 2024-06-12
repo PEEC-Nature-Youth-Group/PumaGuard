@@ -33,7 +33,8 @@ The proposed targeted mitigation workflow is shown in :numref:`figure-workflow`.
 Getting Started
 ---------------
 
-The easiest place to start is to run the project in
+The easiest place to start is to run the project in `Google Colab
+<https://colab.research.google.com>`__.
 
 .. image:: https://colab.research.google.com/assets/colab-badge.svg
    :target: https://colab.research.google.com/github/nicolasbock/extreme-lion-challenge/blob/main/notebooks/Mountain_Lions.ipynb
@@ -43,12 +44,23 @@ This approach does not require any local resources.
 Alternately, to run the project locally, follow these steps:
 
 1. Clone this repository to your local machine.
-2. Ensure you have Jupyter Notebook installed.
+
+   .. code:: bash
+
+      git clone https://github.com/nicolasbock/extreme-lion-challenge.git
+
+2. Ensure you have Jupyter Notebook installed. On Ubuntu Jupyter can be
+   installed with
+
+   .. code:: bash
+
+      sudo apt install --no-install-recommends jupyter
+
 3. Install required Python packages:
 
-.. code:: bash
+   .. code:: bash
 
-   pip install -r requirements.txt
+      pip install -r requirements.txt
 
 4. Open the `Mountain_Lions.ipynb
    <https://github.com/nicolasbock/extreme-lion-challenge/blob/main/notebooks/Mountain_Lions.ipynb>`__
