@@ -27,15 +27,17 @@ validated using a separate set of images.
 Getting Started
 ---------------
 
-The easiest place to start is to run the project in `Google Colab
-<https://colab.research.google.com/>`__. This approach does not require any
-local resources.
+The easiest place to start is to run the project in
+
+.. image:: https://colab.research.google.com/assets/colab-badge.svg
+   :target: https://colab.research.google.com/github/nicolasbock/extreme-lion-challenge/blob/main/Mountain_Lions.ipynb
+
+This approach does not require any local resources.
 
 Alternately, to run the project locally, follow these steps:
 
 1. Clone this repository to your local machine.
-2. Ensure you have Jupyter Notebook installed, or use `Google Colab
-   <https://colab.research.google.com/>`__ for an online environment.
+2. Ensure you have Jupyter Notebook installed.
 3. Install required Python packages:
 
 .. code:: bash
