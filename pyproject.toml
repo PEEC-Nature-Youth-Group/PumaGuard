@@ -10,7 +10,7 @@ python = "^3.10"
 tensorflow = "^2.16.1"
 
 [tool.poetry.group.dev.dependencies]
-pynblint = "^0.1.5"
+pytest = "^8.2.2"
 
 [tool.poetry.scripts]
 puma-guard = 'puma_guard.main:main'

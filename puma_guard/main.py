@@ -1,2 +1,10 @@
+import argparse
+
+
+def parse_commandline():
+    parser = argparse.ArgumentParser()
+    return parser.parse_args()
+
+
 def main():
-    pass
+    options = parse_commandline()
