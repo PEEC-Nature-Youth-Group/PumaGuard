@@ -8,16 +8,32 @@ on:
   workflow_dispatch:
 
 jobs:
+
+  lint-python:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Install dependencies
+        run: pip install --requirement requirements.txt --requirement test-requirements.txt
+      - name: Lint source
+        run: pynblint notebooks
+
   build-python:
 
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python 3.8
-        uses: actions/setup-python@v2
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
         with:
-          python-version: 3.8
+          python-version: '3.10'
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -35,15 +51,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      - name: Install Snapcraft
-        run: |
-          sudo snap install snapcraft --classic
-      - name: Build Snap package
-        run: |
-          snapcraft
-      - name: Save Snap package
-        uses: actions/upload-artifact@v2
+      - uses: actions/checkout@v4
+      - uses: snapcore/action-build@v1
+        id: snap
+      - uses: actions/upload-artifact@v4
         with:
-          name: snap-package
-          path: ./*.snap
+          name: snap
+          path: ${{ steps.snap.outputs.snap }}
