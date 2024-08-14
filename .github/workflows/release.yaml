@@ -18,6 +18,7 @@ jobs:
 
           set -e -u -x
 
+          cat <<< ${{ toJson(github) }}
           curl -L \
             -X POST \
             -H "Accept: application/vnd.github+json" \
