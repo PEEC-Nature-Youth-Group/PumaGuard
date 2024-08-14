@@ -13,12 +13,14 @@ jobs:
 
     steps:
 
-      - run: |
+      - env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: |
           #!/bin/bash
 
           set -e -u -x
 
-          cat <<< ${{ toJson(github) }}
+          echo ${GITHUB_CONTEXT}
           curl -L \
             -X POST \
             -H "Accept: application/vnd.github+json" \
