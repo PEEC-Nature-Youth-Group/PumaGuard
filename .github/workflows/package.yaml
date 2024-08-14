@@ -2,20 +2,18 @@ name: Build package
 
 on:
   push:
-    branches: [ main ]
-    tags: [ 'v*' ]
+    branches: [main]
+    tags: ["v*"]
   pull_request:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
   workflow_call:
 
 env:
-  PYTHON_VERSION: '3.10'
+  PYTHON_VERSION: "3.10"
 
 jobs:
-
-  lint-python:
-
+  lint-python-notebooks:
     runs-on: ubuntu-latest
 
     steps:
@@ -26,13 +24,26 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: Install dependencies
         run: pip install --requirement requirements.txt --requirement test-requirements.txt
-      - name: Lint source
+      - name: Lint Python Notebooks
         run: pynblint notebooks
 
-  build-python:
-
+  lint-python-sources:
     runs-on: ubuntu-latest
-    needs: lint-python
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Install dependencies
+        run: pip install poetry
+      - name: Lint Python Sources
+        run: poetry run pytest
+
+  build-python:
+    runs-on: ubuntu-latest
+    needs: lint-python-notebooks
 
     steps:
       - uses: actions/checkout@v4
@@ -57,9 +68,8 @@ jobs:
           path: dist/*
 
   build-snap:
-
     runs-on: ubuntu-latest
-    needs: lint-python
+    needs: lint-python-notebooks
 
     steps:
       - name: Check container free disk space
@@ -107,12 +117,10 @@ jobs:
           path: ${{ steps.snapcraft.outputs.snap }}
 
   release:
-
     runs-on: ubuntu-latest
-    needs: [ build-python, build-snap ]
+    needs: [build-python, build-snap]
 
     steps:
-        
       - env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: |
