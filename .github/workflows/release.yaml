@@ -18,7 +18,7 @@ jobs:
 
           set -e -u -x
 
-          echo "${{ toJson(github) }}"
+          cat <<< "${{ toJson(github) }}"
           curl -L \
             -X POST \
             -H "Accept: application/vnd.github+json" \
@@ -27,7 +27,7 @@ jobs:
             https://api.github.com/repos/nicolasbock/extreme-lion-challenge/releases \
             -d '{ \
                   "tag_name": "${{ github.action_ref_name }}", \
-                  "target_commitish": "${{ github.ref_name }}", \
+                  "target_commitish": "main", \
                   "name": "${{ github.action_ref_name }}", \
                   "body": "Release ${{ github.action_ref_name }}", \
                   "draft": false, \
