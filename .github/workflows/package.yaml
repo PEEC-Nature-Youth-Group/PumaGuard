@@ -115,7 +115,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: snap
-          path: ${{ steps.snapcraft.outputs.snap }}
+          path: ${{ steps.snap.outputs.snap }}
 
   release:
     runs-on: ubuntu-latest
