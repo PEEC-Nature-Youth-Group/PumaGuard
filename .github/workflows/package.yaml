@@ -132,7 +132,6 @@ jobs:
       - run: |
           #!/bin/bash
           set -e -u -x
-          ls -lh
           RELEASE_ID=$(curl -L \
             -X POST \
             -H "Accept: application/vnd.github+json" \
