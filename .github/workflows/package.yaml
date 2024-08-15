@@ -127,8 +127,8 @@ jobs:
         run: |
           #!/bin/bash
           set -e -u -x
-          sudo snap install yq
-          echo "${GITHUB_CONTEXT}" | yq .
+          sudo apt-get install --no-install-recommends --yes jq
+          echo "${GITHUB_CONTEXT}" | jq .
           curl -L \
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer <YOUR-TOKEN>" \
