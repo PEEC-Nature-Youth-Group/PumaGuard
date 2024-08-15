@@ -11,8 +11,10 @@ tensorflow = "^2.16.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.2.2"
+pylint = "^3.2.6"
 
 [tool.poetry.scripts]
+pick-files = 'scripts.pick_files:main'
 puma-guard = 'puma_guard.main:main'
 
 [build-system]

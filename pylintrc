@@ -1,0 +1,8 @@
+[MAIN]
+suggestion-mode = yes
+
+[FORMAT]
+max-line-length = 79
+
+[REPORTS]
+score = yes
