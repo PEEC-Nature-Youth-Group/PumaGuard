@@ -141,12 +141,14 @@ jobs:
             https://api.github.com/repos/${{ github.repository }}/releases \
             -d '{ "tag_name": "${{ github.ref_name }}", "name": "Release ${{ github.ref_name }}", "generate_release_notes": true }' \
             | jq --raw-output '.id')
-          curl -L \
-            -X POST \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_CONTEXT }}" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            -H "Content-Type: application/octet-stream" \
-            "https://uploads.github.com/repos/${{ github.repository }}/releases/${RELEASE_ID}/assets?name=snap" \
-            --data-binary "@*snap"
+          for snap in *.snap; do
+            curl -L \
+              -X POST \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer ${{ secrets.GITHUB_CONTEXT }}" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              -H "Content-Type: application/octet-stream" \
+              "https://uploads.github.com/repos/${{ github.repository }}/releases/${RELEASE_ID}/assets?name=${snap}" \
+              --data-binary "@${snap}"
+          done
         if: ${{ github.ref_type == 'tag' }}
