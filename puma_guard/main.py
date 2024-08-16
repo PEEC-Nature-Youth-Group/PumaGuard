@@ -18,5 +18,5 @@ def main():
     """
     Entry point.
     """
-    options = parse_commandline()
-    print(options)
+    _ = parse_commandline()
+    print('Hello World!')
