@@ -7,6 +7,6 @@
 Indices and tables
 ==================
 
-* RCF-01
+* :ref:`RCF-01`
 * :ref:`genindex`
 * :ref:`search`
