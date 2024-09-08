@@ -11,8 +11,9 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends --yes
 RUN DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends --yes \
     curl \
     git \
-    pip \
-    pipx \
+    locales \
+    make \
+    python3-poetry \
     sudo
 
 RUN groupadd --gid ${USER_GID} ${USERNAME}
@@ -20,6 +21,8 @@ RUN useradd --uid ${USER_UID} --gid ${USER_GID} --groups sudo --create-home ${US
 RUN echo ${USERNAME} ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/${USERNAME}
 RUN chmod 0440 /etc/sudoers.d/${USERNAME}
 
-RUN pip install ipykernel tensorflow
+RUN sed --in-place --expression 's/^#.*\(en_US.UTF.*\)/\1/' /etc/locale.gen
+RUN dpkg-reconfigure --frontend=noninteractive locales
+RUN update-locale LANG=en_US.UTF-8
 
 USER ${USERNAME}
