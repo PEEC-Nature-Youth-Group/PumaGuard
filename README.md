@@ -10,3 +10,20 @@ package](https://github.com/nicolasbock/extreme-lion-challenge/actions/workflows
 
 Please visit <https://extreme-lion-challenge.readthedocs.io/> for more
 information.
+
+## Local Development Environment
+
+A local development environment can be created by using the `poetry` tool, which
+can be installed with
+
+```console
+sudo apt install python3-poetry
+```
+
+Run
+
+```console
+poetry install
+```
+
+To install all of the necessary Python modules.
