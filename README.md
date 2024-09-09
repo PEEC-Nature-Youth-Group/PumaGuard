@@ -11,6 +11,10 @@ package](https://github.com/nicolasbock/extreme-lion-challenge/actions/workflows
 Please visit <https://extreme-lion-challenge.readthedocs.io/> for more
 information.
 
+## Hackroberfest 2024
+
+This repository is participating in [Hacktoberfest 2024](https://hacktoberfest.com/).
+
 ## Local Development Environment
 
 A local development environment can be created by using the `poetry` tool, which
