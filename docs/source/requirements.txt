@@ -1,2 +1,3 @@
 cloud-sptheme
 sphinx_new_tab_link
+sphinxcontrib-mermaid

@@ -20,7 +20,10 @@ numfig = True
 
 extensions = [
     'sphinx_new_tab_link',
+    'sphinxcontrib.mermaid',
 ]
+
+mermaid_version = "11.2.1"
 
 templates_path = ['_templates']
 exclude_patterns = []
