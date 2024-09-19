@@ -1,4 +1,4 @@
-# Puma Guard
+# PumaGuard
 
 [![Build and Test
 Webpage](https://github.com/nicolasbock/extreme-lion-challenge/actions/workflows/build-webpage.yaml/badge.svg)](https://github.com/nicolasbock/extreme-lion-challenge/actions/workflows/build-webpage.yaml)
