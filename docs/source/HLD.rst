@@ -29,6 +29,8 @@ Below a schematic of the setup. Note that there can be multiple Trailcam and
 Output units.
 
 .. mermaid::
+   :zoom:
+   :caption: Some caption
 
    architecture-beta
        group central(cloud)[Central Unit]
