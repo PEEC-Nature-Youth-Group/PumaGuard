@@ -1,7 +1,10 @@
-name: Add bugs to bugs project
+name: Add Issues and Pull Requests to Project
 
 on:
   issues:
+    types:
+      - opened
+  pull_request:
     types:
       - opened
 
