@@ -14,7 +14,7 @@ PumaGuard
 This repository contains a machine learning project aimed at classifying images
 into two categories: containing a mountain lion or not. The core of this project
 is a Jupyter notebook, `Mountain_Lions.ipynb
-<https://github.com/nicolasbock/extreme-lion-challenge/blob/main/notebooks/Mountain_Lions.ipynb>`__,
+<https://github.com/PEEC-Nature-Youth-Group/PumaGuard/blob/main/notebooks/Mountain_Lions.ipynb>`__,
 that outlines the process of training a model for this binary classification
 task.
 
@@ -43,7 +43,7 @@ The easiest place to start is to run the project in `Google Colab
 <https://colab.research.google.com>`__.
 
 .. image:: https://colab.research.google.com/assets/colab-badge.svg
-   :target: https://colab.research.google.com/github/nicolasbock/extreme-lion-challenge/blob/main/notebooks/Mountain_Lions.ipynb
+   :target: https://colab.research.google.com/github/PEEC-Nature-Youth-Group/PumaGuard/blob/main/notebooks/Mountain_Lions.ipynb
 
 This approach does not require any local resources.
 
@@ -53,7 +53,7 @@ Alternately, to run the project locally, follow these steps:
 
    .. code:: bash
 
-      git clone https://github.com/nicolasbock/extreme-lion-challenge.git
+      git clone https://github.com/PEEC-Nature-Youth-Group/PumaGuard.git
 
 2. Ensure you have Jupyter Notebook installed. On Ubuntu, Jupyter can be
    installed with
@@ -69,7 +69,7 @@ Alternately, to run the project locally, follow these steps:
       pip install -r requirements.txt
 
 4. Open the `Mountain_Lions.ipynb
-   <https://github.com/nicolasbock/extreme-lion-challenge/blob/main/notebooks/Mountain_Lions.ipynb>`__
+   <https://github.com/PEEC-Nature-Youth-Group/PumaGuard/blob/main/notebooks/Mountain_Lions.ipynb>`__
    notebook and follow the instructions therein.
 
 Model Training
@@ -81,10 +81,10 @@ optimized for image classification tasks. The training process includes data
 augmentation techniques to improve model generalization.
 
 All data used here can be found in the `data folder
-<https://github.com/nicolasbock/extreme-lion-challenge/tree/main/data>`__.
+<https://github.com/PEEC-Nature-Youth-Group/PumaGuard/tree/main/data>`__.
 
 All models (weights) are published in the `models folder
-<https://github.com/nicolasbock/extreme-lion-challenge/tree/main/models>`__.
+<https://github.com/PEEC-Nature-Youth-Group/PumaGuard/tree/main/models>`__.
 
 Leaderboard
 -----------
@@ -109,7 +109,7 @@ based on the validation dataset. The models are ranked by validation accuracy.
 +--------+-------+---------------+-------------------+---------------------+---------------+-----------------+------------+
 
 The models used (see the `Mountain_Lions.ipynb
-<https://github.com/nicolasbock/extreme-lion-challenge/blob/main/notebooks/Mountain_Lions.ipynb>`__
+<https://github.com/PEEC-Nature-Youth-Group/PumaGuard/blob/main/notebooks/Mountain_Lions.ipynb>`__
 notebook for details) are
 
 1. light
