@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "puma-guard"
+name = "pumaguard"
 version = "0.1.0"
 description = ""
 authors = ["Your Name <you@example.com>"]
@@ -15,7 +15,7 @@ pylint = "^3.2.6"
 
 [tool.poetry.scripts]
 pick-files = 'scripts.pick_files:main'
-puma-guard = 'puma_guard.main:main'
+pumaguard = 'pumaguard.main:main'
 
 [build-system]
 requires = ["poetry-core"]

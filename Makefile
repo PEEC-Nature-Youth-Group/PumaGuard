@@ -7,3 +7,7 @@ venv:
 docs: venv
 	. venv/bin/activate && pip install --requirement docs/source/requirements.txt
 	. venv/bin/activate && make -C docs html
+
+.PHONY: tests
+tests:
+	poetry run pytest

@@ -6,7 +6,7 @@ import unittest
 from unittest.mock import patch
 import sys
 
-from puma_guard import main
+from pumaguard import main
 
 
 class TestMain(unittest.TestCase):
