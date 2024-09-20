@@ -32,3 +32,4 @@ functional: prepare-trailcam prepare-output
 prepare-%:
 	scripts/launch-pi-zero.sh --name $*
 	multipass transfer pumaguard_$(git describe --tags)*.snap $*:/tmp
+	poetry run bashate -v scripts/*sh
