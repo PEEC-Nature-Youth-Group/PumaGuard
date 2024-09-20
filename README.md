@@ -1,10 +1,8 @@
 # PumaGuard
 
-[![Build and Test
-Webpage](https://github.com/nicolasbock/extreme-lion-challenge/actions/workflows/build-webpage.yaml/badge.svg)](https://github.com/nicolasbock/extreme-lion-challenge/actions/workflows/build-webpage.yaml)
+[![Build and Test Webpage](https://github.com/PEEC-Nature-Youth-Group/PumaGuard/actions/workflows/build-webpage.yaml/badge.svg)](https://github.com/PEEC-Nature-Youth-Group/PumaGuard/actions/workflows/build-webpage.yaml)
 
-[![Build
-package](https://github.com/nicolasbock/extreme-lion-challenge/actions/workflows/package.yaml/badge.svg)](https://github.com/nicolasbock/extreme-lion-challenge/actions/workflows/package.yaml)
+[![Test and package code](https://github.com/PEEC-Nature-Youth-Group/PumaGuard/actions/workflows/test-and-package.yaml/badge.svg)](https://github.com/PEEC-Nature-Youth-Group/PumaGuard/actions/workflows/test-and-package.yaml)
 
 ## Introduction
 
