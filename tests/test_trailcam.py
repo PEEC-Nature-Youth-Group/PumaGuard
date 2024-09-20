@@ -1,17 +1,17 @@
 """
-Test main.
+Test trailcam
 """
 
 import unittest
 from unittest.mock import patch
 import sys
 
-from pumaguard import main
+from pumaguard.cmd import trailcam
 
 
-class TestMain(unittest.TestCase):
+class TestServer(unittest.TestCase):
     """
-    Test Main.
+    Test pumaguard-server.
     """
 
     def test_parse_commandline(self):
@@ -20,5 +20,5 @@ class TestMain(unittest.TestCase):
         """
         with patch.object(sys, 'argv', ['command', '--help']):
             with patch('sys.exit') as mock_exit:
-                _ = main.parse_commandline()
+                _ = trailcam.parse_commandline()
                 mock_exit.assert_called()

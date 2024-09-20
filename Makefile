@@ -11,3 +11,11 @@ docs: venv
 .PHONY: tests
 tests:
 	poetry run pytest
+
+.PHONY: install
+install:
+	poetry install
+
+.PHONY: lint
+lint: install
+	poetry run pylint --verbose --rcfile=pylintrc pumaguard tests scripts
