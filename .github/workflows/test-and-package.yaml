@@ -1,4 +1,4 @@
-name: Test Python notebooks and sources
+name: Test and package code
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
   workflow_call:
 
 env:
-  PYTHON_VERSION: "3.10"
+  PYTHON_VERSION: "3.10" # Needs to work with tensorflow
 
 jobs:
   lint-python-notebooks:
@@ -151,3 +151,18 @@ jobs:
               --data-binary "@${artifact}"
           done
         if: ${{ github.ref_type == 'tag' }}
+
+  functional:
+    runs-on: ubuntu-latest
+    needs: [build-snap]
+
+    steps:
+      - run: sudo snap install multipass
+      - run: sudo chmod 666 /var/snap/multipass/common/multipass_socket
+      - run: multipass info
+      - uses: actions/download-artifact@v4
+        with:
+          name: snap
+      - uses: actions/checkout@v4
+      - run: scripts/launch-pi-zero.sh --name trailcam
+      - run: scripts/launch-pi-zero.sh --name output
