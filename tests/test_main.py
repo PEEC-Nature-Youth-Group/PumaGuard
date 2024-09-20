@@ -1,5 +1,5 @@
 """
-Test main.
+Test server
 """
 
 import unittest
@@ -9,9 +9,9 @@ import sys
 from pumaguard import main
 
 
-class TestMain(unittest.TestCase):
+class TestServer(unittest.TestCase):
     """
-    Test Main.
+    Test pumaguard-server.
     """
 
     def test_parse_commandline(self):

@@ -15,7 +15,7 @@ pylint = "^3.2.6"
 
 [tool.poetry.scripts]
 pick-files = 'scripts.pick_files:main'
-pumaguard = 'pumaguard.main:main'
+pumaguard-server = 'pumaguard.cmd.server:main'
 
 [build-system]
 requires = ["poetry-core"]
