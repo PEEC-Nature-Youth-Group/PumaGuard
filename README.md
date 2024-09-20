@@ -13,7 +13,8 @@ information.
 
 ## Hackroberfest 2024
 
-This repository is participating in [Hacktoberfest 2024](https://hacktoberfest.com/).
+This repository is participating in [Hacktoberfest 2024](https://hacktoberfest.com/). If you are
+interested in participating, remember to sign up first!
 
 ## Local Development Environment
 
