@@ -29,7 +29,8 @@ functional: prepare-trailcam prepare-output
 	multipass info
 
 .PHONY: prepare-trailcam prepare-output
-prepare-%:
+prepare-trailcam prepare-output: prepare-%:
 	scripts/launch-pi-zero.sh --name $*
-	multipass transfer pumaguard_$(git describe --tags)*.snap $*:/tmp
+	multipass transfer pumaguard_$(shell git describe --tags)*.snap $*:/tmp
+	multipass exec $* -- id
 	poetry run bashate -v scripts/*sh
