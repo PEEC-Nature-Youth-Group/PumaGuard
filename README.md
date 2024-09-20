@@ -11,7 +11,7 @@ package](https://github.com/nicolasbock/extreme-lion-challenge/actions/workflows
 Please visit <https://extreme-lion-challenge.readthedocs.io/> for more
 information.
 
-## Hackroberfest 2024
+## Hacktoberfest 2024
 
 This repository is participating in [Hacktoberfest 2024](https://hacktoberfest.com/). If you are
 interested in participating, remember to sign up first!
