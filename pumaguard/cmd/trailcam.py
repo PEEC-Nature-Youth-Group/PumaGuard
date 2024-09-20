@@ -1,5 +1,8 @@
 """
-PumaGuard
+PumaGuard Trailcam Unit
+
+This script will monitor the trailcam attached to it and send images to the
+server unit.
 """
 
 import argparse
