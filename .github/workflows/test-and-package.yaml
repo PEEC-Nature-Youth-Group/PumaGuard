@@ -110,6 +110,9 @@ jobs:
       - name: Get installed snaps
         run: snap list
       - uses: actions/checkout@v4
+        with:
+          fetch-tags: true
+          fetch-depth: 0
       - uses: snapcore/action-build@v1
         id: snap
       - uses: actions/upload-artifact@v4
@@ -164,5 +167,4 @@ jobs:
         with:
           name: snap
       - uses: actions/checkout@v4
-      - run: scripts/launch-pi-zero.sh --name trailcam
-      - run: scripts/launch-pi-zero.sh --name output
+      - run: make functional

@@ -13,13 +13,14 @@ information.
 
 ## Hacktoberfest 2024
 
-This repository is participating in [Hacktoberfest 2024](https://hacktoberfest.com/). If you are
-interested in participating, remember to sign up first!
+This repository is participating in [Hacktoberfest
+2024](https://hacktoberfest.com/). If you are interested in participating,
+remember to sign up first!
 
 ## Local Development Environment
 
-A local development environment can be created by using the `poetry` tool, which
-can be installed with
+A local development environment can be created by using the `poetry` tool,
+which can be installed with
 
 ```console
 sudo apt install python3-poetry
