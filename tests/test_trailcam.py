@@ -6,7 +6,7 @@ import unittest
 from unittest.mock import patch
 import sys
 
-import pumaguard.cmd.trailcam as trailcam
+from pumaguard.cmd import trailcam
 
 
 class TestServer(unittest.TestCase):

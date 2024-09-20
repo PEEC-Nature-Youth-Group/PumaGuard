@@ -15,3 +15,7 @@ tests:
 .PHONY: install
 install:
 	poetry install
+
+.PHONY: lint
+lint: install
+	poetry run pylint --verbose --rcfile=pylintrc pumaguard tests scripts
