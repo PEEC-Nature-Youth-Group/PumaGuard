@@ -1,12 +1,12 @@
 """
-Test server
+Test output
 """
 
 import unittest
 from unittest.mock import patch
 import sys
 
-from pumaguard import main
+import pumaguard.cmd.output as output
 
 
 class TestServer(unittest.TestCase):
@@ -20,5 +20,5 @@ class TestServer(unittest.TestCase):
         """
         with patch.object(sys, 'argv', ['command', '--help']):
             with patch('sys.exit') as mock_exit:
-                _ = main.parse_commandline()
+                _ = output.parse_commandline()
                 mock_exit.assert_called()

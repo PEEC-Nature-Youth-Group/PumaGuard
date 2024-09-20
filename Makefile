@@ -11,3 +11,7 @@ docs: venv
 .PHONY: tests
 tests:
 	poetry run pytest
+
+.PHONY: install
+install:
+	poetry install
