@@ -19,6 +19,7 @@ install:
 .PHONY: lint
 lint: install
 	poetry run pylint --verbose --rcfile=pylintrc pumaguard tests scripts
+	poetry run bashate -v scripts/*sh
 
 .PHONY: snap
 snap:
@@ -32,4 +33,4 @@ functional: prepare-trailcam prepare-output
 prepare-trailcam prepare-output: prepare-%:
 	scripts/launch-pi-zero.sh --name $*
 	multipass transfer pumaguard_$(shell git describe --tags)*.snap $*:/home/ubuntu
-	poetry run bashate -v scripts/*sh
+	multipass exec $* -- sudo snap install --dangerous --devmode $(shell ls pumaguard*snap)
