@@ -163,8 +163,9 @@ jobs:
       - run: sudo snap install multipass
       - run: sudo chmod 666 /var/snap/multipass/common/multipass_socket
       - run: multipass info
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
           name: snap
-      - uses: actions/checkout@v4
+      - run: ls -lh
       - run: make functional
