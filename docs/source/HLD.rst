@@ -13,11 +13,30 @@ The PumaGuard system consists of three main components:
    from the Trailcam Units. If a Puma was identified, the central unit
    activates lights and sound through one of the Output units.
 
+   .. mermaid::
+      :zoom:
+      :caption: Flowchart of Central Unit
+
+      flowchart TB
+        A("New files from Trailcam Unit?") -- No --> A
+        A -- Yes --> B("Run ML model")
+        B --> C("Was a Puma detected?")
+        C -- No --> A
+        C -- Yes --> D("Request lights and sound from Output Unit")
+
 2. Trailcam Unit
 
    This unit contains a trailcam and a small processing unit. The processing
    unit monitors the camera for new photos and sends new photos to the Central
    unit for processing.
+
+   .. mermaid::
+      :zoom:
+      :caption: Flowchart of Trailcam Unit
+
+      flowchart TB
+      A("New files on SD Card?") -- No --> A
+      A -- Yes --> B("Send new files to Central Unit")
 
 3. Output Unit
 
@@ -25,12 +44,20 @@ The PumaGuard system consists of three main components:
    speaks and lights are controlled by a small processing unit which gets
    instructions from the Central unit.
 
+   .. mermaid::
+      :zoom:
+      :caption: Flowchart of Output Unit
+
+      flowchart TB
+      A("Turn on speakers and lights?") -- No --> A
+      A -- Yes --> B("Turn on speakers and light")
+
 Below a schematic of the setup. Note that there can be multiple Trailcam and
 Output units.
 
 .. mermaid::
    :zoom:
-   :caption: Some caption
+   :caption: High-Level-Design of units
 
    architecture-beta
        group central(cloud)[Central Unit]
