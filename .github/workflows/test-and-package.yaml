@@ -10,7 +10,7 @@ on:
   workflow_call:
 
 env:
-  PYTHON_VERSION: "3.10" # Needs to work with tensorflow
+  PYTHON_VERSION: "3.12" # Needs to work with Tensorflow
 
 jobs:
   lint-python-notebooks:
