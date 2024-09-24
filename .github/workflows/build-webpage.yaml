@@ -30,7 +30,4 @@ jobs:
           pip install -r docs/source/requirements.txt
 
       - name: Build webpage
-        run: make -C docs html
-
-      - name: Test webpage
-        run: sphinx-build -b linkcheck ./docs/source ./docs/build
+        run: make docs

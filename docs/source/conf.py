@@ -11,8 +11,6 @@ import os
 
 sys.path.insert(0, os.path.abspath('../..'))
 
-print(sys.path)
-
 project = 'PumaGuard'
 copyright = '2024, Pajarito Environmental Education Center Youth Group'
 author = 'Pajarito Environmental Education Center Youth Group'
@@ -26,10 +24,11 @@ numfig = True
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [
-    'sphinx_new_tab_link',
     'sphinxcontrib.mermaid',
-    'sphinx.ext.napoleon',
     'sphinx.ext.autodoc',
+    'sphinx.ext.napoleon',
+    'sphinx.ext.viewcode',
+    'sphinx_new_tab_link',
 ]
 
 mermaid_version = "11.2.1"
