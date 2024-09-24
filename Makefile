@@ -33,8 +33,8 @@ lint-notebooks: install
 snap:
 	snapcraft
 
-.PHONY: functional
-functional: prepare-trailcam prepare-output
+.PHONY: integration
+integration: prepare-trailcam prepare-output
 	multipass info
 
 .PHONY: prepare-trailcam prepare-output

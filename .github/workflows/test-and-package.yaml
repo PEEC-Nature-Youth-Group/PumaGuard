@@ -47,7 +47,7 @@ jobs:
       - name: Lint Python Sources
         run: make lint
 
-  build-python:
+  test:
     runs-on: ubuntu-latest
     needs: [lint-python-notebooks, lint-python-sources]
 
@@ -64,6 +64,22 @@ jobs:
           poetry install
       - name: Run tests
         run: make test
+
+  build-python:
+    runs-on: ubuntu-latest
+    needs: [test]
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install poetry
+          poetry install
       - name: Build package
         run: make build
       - uses: actions/upload-artifact@v4
@@ -73,7 +89,7 @@ jobs:
 
   build-snap:
     runs-on: ubuntu-22.04
-    needs: [lint-python-notebooks, lint-python-sources]
+    needs: [test]
 
     steps:
       - name: Check container free disk space
@@ -158,7 +174,7 @@ jobs:
           done
         if: ${{ github.ref_type == 'tag' }}
 
-  functional:
+  integration:
     runs-on: ubuntu-latest
     needs: [build-snap]
 
@@ -171,4 +187,4 @@ jobs:
         with:
           name: snap
       - run: ls -lh
-      - run: make functional
+      - run: make integration
