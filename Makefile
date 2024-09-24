@@ -34,3 +34,7 @@ prepare-trailcam prepare-output: prepare-%:
 	scripts/launch-pi-zero.sh --name $*
 	multipass transfer pumaguard_$(shell git describe --tags)*.snap $*:/home/ubuntu
 	multipass exec $* -- sudo snap install --dangerous --devmode $(shell ls pumaguard*snap)
+
+.PHONY: release
+release:
+	NEW_RELEASE=$(shell git tag | sort | tail -n1 | awk -F v '{print $$2 + 1}') $(shell git tag -a -m "Release v$${NEW_RELEASE}" v$${NEW_RELEASE})
