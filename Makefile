@@ -31,6 +31,7 @@ build:
 .PHONY: lint
 lint: install
 	poetry run pylint --verbose --recursive=true --rcfile=pylintrc pumaguard tests scripts
+	poetry run mypy pumaguard
 	poetry run bashate -v scripts/*sh
 
 .PHONY: lint-notebooks

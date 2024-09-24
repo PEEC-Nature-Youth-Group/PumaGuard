@@ -8,6 +8,7 @@ speakers and lights.
 """
 
 import argparse
+from typing import Tuple
 from flask import (
     Flask,
     jsonify,
@@ -41,7 +42,7 @@ class Server:
             methods=['POST'],
         )
 
-    def classify_image(self) -> Response:
+    def classify_image(self) -> Tuple[Response, int]:
         """
         Endpoint to classify an image.
 
@@ -50,11 +51,14 @@ class Server:
             error message.
         """
         data = request.json
-        image = data.get('image')
+        if data is not None:
+            image = data.get('image')
+        else:
+            return jsonify({'error': 'No image provided'}), 400
         if not image:
             return jsonify({'error': 'No image provided'}), 400
         result = {'classification': 'puma', 'confidence': 0.95}
-        return jsonify(result)
+        return jsonify(result), 200
 
 
 def parse_commandline() -> argparse.Namespace:
