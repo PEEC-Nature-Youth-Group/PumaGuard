@@ -44,8 +44,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install poetry
           poetry install
-      - name: Lint Python Sources
-        run: make lint
+      - name: Lint Python Sources (pylint)
+        run: make pylint
+      - name: Lint Python Sources (mypy)
+        run: make mypy
+      - name: Lint Bash Sources (bashate)
+        run: make bashate
 
   test-python:
     runs-on: ubuntu-latest
