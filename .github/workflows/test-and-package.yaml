@@ -45,7 +45,7 @@ jobs:
           pip install poetry
           poetry install
       - name: Lint Python Sources
-        run: poetry run pylint --verbose --rcfile=pylintrc pumaguard tests scripts
+        run: make lint
 
   build-python:
     runs-on: ubuntu-latest

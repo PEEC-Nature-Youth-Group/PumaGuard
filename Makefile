@@ -8,8 +8,8 @@ docs: venv
 	. venv/bin/activate && pip install --requirement docs/source/requirements.txt
 	. venv/bin/activate && make -C docs html
 
-.PHONY: tests
-tests:
+.PHONY: test
+test:
 	poetry run pytest
 
 .PHONY: install
@@ -18,7 +18,7 @@ install:
 
 .PHONY: lint
 lint: install
-	poetry run pylint --verbose --rcfile=pylintrc pumaguard tests scripts
+	poetry run pylint --verbose --recursive=true --rcfile=pylintrc pumaguard tests scripts
 	poetry run bashate -v scripts/*sh
 
 .PHONY: snap
