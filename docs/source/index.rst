@@ -1,9 +1,3 @@
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents
-
-   HLD
-
 PumaGuard
 =========
 
@@ -116,8 +110,16 @@ notebook for details) are
 2. light augmented
 3. pre-trained
 
+Further Reading
+---------------
+
+.. toctree::
+   :maxdepth: 2
+
+   HLD
+
 Indices and Tables
-==================
+------------------
 
 * :ref:`genindex`
 * :ref:`search`
