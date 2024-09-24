@@ -1,41 +1,53 @@
 """
 PumaGuard Server
 
-This script will run the machine learning model and receive images from the
-trailcams for classification. It will contact the speakers and/or lights if a
-puma was identified.
+This script receive images from the Trailcam Units for classification by
+running the machine learning model. If it is reasonably confident that a Puma
+was detected  it will contact the relevant output units to activate the
+speakers and lights.
 """
 
 import argparse
 from flask import (
     Flask,
-    request,
     jsonify,
+    request,
+    Response,
 )
 
 
 class Server:
     """
-    The Pumaguard-server.
+    The Pumaguard Server class.
+
+    This class contains all of the routes to the server.
     """
 
     def __init__(self) -> None:
         """
-        Create the app.
+        Create the app and register routes.
         """
         self.app = Flask("PumaGuard")
         self.register_routes()
 
-    def register_routes(self):
+    def register_routes(self) -> None:
         """
         Register all routes.
         """
-        self.app.add_url_rule('/classify', 'classify_image',
-                              self.classify_image, methods=['POST'])
+        self.app.add_url_rule(
+            '/classify',
+            'classify_image',
+            self.classify_image,
+            methods=['POST'],
+        )
 
-    def classify_image(self):
+    def classify_image(self) -> Response:
         """
         Endpoint to classify an image.
+
+        Returns:
+            Response: JSON response containing the classification result or an
+            error message.
         """
         data = request.json
         image = data.get('image')
@@ -61,7 +73,7 @@ def parse_commandline() -> argparse.Namespace:
 
 def main() -> None:
     """
-    Entry point.
+    Entry point for the server.
     """
     options = parse_commandline()
     server = Server()
