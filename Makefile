@@ -2,11 +2,19 @@
 venv:
 	python3 -m venv venv
 	./venv/bin/pip install --upgrade pip
+	@echo "venv is initialized"
 
 .PHONY: docs
 docs: venv
+	@echo "building documentation webpage"
 	. venv/bin/activate && pip install --requirement docs/source/requirements.txt
+	. venv/bin/activate && cd docs && sphinx-apidoc -o source ../pumaguard
+	git ls-files --exclude-standard --others
+	git ls-files --exclude-standard --others | wc -l | grep "^0" --quiet
+	git diff
+	git diff --shortstat | wc -l | grep "^0" --quiet
 	. venv/bin/activate && make -C docs html
+	. venv/bin/activate && make -C docs linkcheck
 
 .PHONY: test
 test:
