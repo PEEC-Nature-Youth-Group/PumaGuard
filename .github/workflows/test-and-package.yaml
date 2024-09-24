@@ -28,7 +28,7 @@ jobs:
           pip install poetry
           poetry install
       - name: Lint Python Notebooks
-        run: poetry run pynblint notebooks
+        run: make lint-notebooks
 
   lint-python-sources:
     runs-on: ubuntu-latest
@@ -63,9 +63,9 @@ jobs:
           pip install poetry
           poetry install
       - name: Run tests
-        run: poetry run pytest
+        run: make test
       - name: Build package
-        run: poetry build
+        run: make build
       - uses: actions/upload-artifact@v4
         with:
           name: python-package

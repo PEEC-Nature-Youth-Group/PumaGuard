@@ -16,10 +16,18 @@ test:
 install:
 	poetry install
 
+.PHONY: build
+build:
+	poetry build
+
 .PHONY: lint
 lint: install
 	poetry run pylint --verbose --recursive=true --rcfile=pylintrc pumaguard tests scripts
 	poetry run bashate -v scripts/*sh
+
+.PHONY: lint-notebooks
+lint-notebooks: install
+	poetry run pynblint notebooks
 
 .PHONY: snap
 snap:
