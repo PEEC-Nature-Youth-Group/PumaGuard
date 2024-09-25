@@ -18,7 +18,7 @@ The PumaGuard system consists of three main components:
       :caption: Flowchart of Central Unit
 
       flowchart TB
-        A("New files from Trailcam Unit?") -- No --> A
+        A("New files from Trailcam Unit?") -- No --> E("Wait") --> A
         A -- Yes --> B("Run ML model")
         B --> C("Was a Puma detected?")
         C -- No --> A
@@ -35,7 +35,7 @@ The PumaGuard system consists of three main components:
       :caption: Flowchart of Trailcam Unit
 
       flowchart TB
-      A("New files on SD Card?") -- No --> A
+      A("New files on SD Card?") -- No --> C("Wait") --> A
       A -- Yes --> B("Send new files to Central Unit")
 
 3. Output Unit
@@ -49,7 +49,7 @@ The PumaGuard system consists of three main components:
       :caption: Flowchart of Output Unit
 
       flowchart TB
-      A("Turn on speakers and lights?") -- No --> A
+      A("Turn on speakers and lights?") -- No --> C("Wait") --> A
       A -- Yes --> B("Turn on speakers and light")
 
 Below a schematic of the setup. Note that there can be multiple Trailcam and
