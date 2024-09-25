@@ -104,6 +104,14 @@ class Server:
 def parse_commandline() -> argparse.Namespace:
     """
     Parse command line arguments.
+
+    usage: pumaguard-server [-h] [--host HOST] [--port PORT] [--debug]
+
+    options:
+      -h, --help   show this help message and exit
+      --host HOST  Host to listen on
+      --port PORT  Port to listen on
+      --debug      Enable debug mode
     """
 
     parser = argparse.ArgumentParser()
