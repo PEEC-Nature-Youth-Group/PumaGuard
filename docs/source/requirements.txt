@@ -1,4 +1,5 @@
 cloud-sptheme
 flask
-sphinx_new_tab_link
+pillow
 sphinxcontrib-mermaid
+sphinx_new_tab_link
