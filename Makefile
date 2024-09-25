@@ -63,4 +63,5 @@ prepare-central prepare-trailcam prepare-output: prepare-%:
 
 .PHONY: release
 release:
-	NEW_RELEASE=$(shell git tag | sort | tail -n1 | awk -F v '{print $$2 + 1}') $(shell git tag -a -m "Release v$${NEW_RELEASE}" v$${NEW_RELEASE})
+	export NEW_RELEASE=$(shell git tag | sort | tail -n1 | awk -F v '{print $$2 + 1}') && \
+	  git tag -a -m "Release v$${NEW_RELEASE}" v$${NEW_RELEASE}
