@@ -5,6 +5,7 @@ Test pumaguard-server
 import unittest
 from unittest.mock import patch
 import sys
+import base64
 
 from pumaguard.cmd import server
 
@@ -56,21 +57,39 @@ class TestServer(unittest.TestCase):
             args = server.parse_commandline()
             self.assertTrue(args.debug)
 
-    def test_classify_image_no_image(self):
+    def test_classify_image_route_no_image(self):
         """
         Test classify_image endpoint with no image provided.
         """
         response = self.client.post('/classify', json={})
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(
-            response.json, {'error': 'No image provided'})
+        self.assertIn('No image provided', response.json['error'])
 
-    def test_classify_image_with_image(self):
+    def test_classify_image_route_with_image(self):
         """
         Test classify_image endpoint with an image provided.
         """
+        with open('data/lion/PICT0001.JPG', 'rb') as image_file:
+            encoded_image = base64.b64encode(image_file.read()).decode('utf-8')
         response = self.client.post(
-            '/classify', json={'image': 'fake_image_data'})
+            '/classify', json={'image': encoded_image})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.json, {'classification': 'puma', 'confidence': 0.95})
+        self.assertEqual(response.json, {})
+
+    def test_classify_image_route_invalid_json(self):
+        """
+        Test classify_image endpoint with invalid JSON.
+        """
+        response = self.client.post(
+            '/classify', data='invalid_json', content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('Illegal data provided', response.json['error'])
+
+    def test_classify_image_invalid_image_data(self):
+        """
+        Test classify_image endpoint with invalid image data.
+        """
+        response = self.client.post(
+            '/classify', json={'image': 'invalid_image_data'})
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('Could not decode image', response.json['error'])

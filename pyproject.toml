@@ -9,6 +9,7 @@ readme = "README.md"
 python = "^3.10"
 tensorflow = "^2.16.1"
 flask = "^3.0.3"
+pillow = "^10.4.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.2.2"
