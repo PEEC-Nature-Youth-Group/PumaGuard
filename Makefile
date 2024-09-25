@@ -18,7 +18,7 @@ docs: venv
 
 .PHONY: test
 test:
-	poetry run pytest
+	poetry run pytest --verbose
 
 .PHONY: install
 install:
