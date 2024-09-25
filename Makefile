@@ -37,7 +37,7 @@ pylint:
 
 .PHONY: mypy
 mypy:
-	poetry run mypy pumaguard
+	poetry run mypy --install-types --non-interactive pumaguard
 
 .PHONY: bashate
 bashate:
@@ -52,12 +52,12 @@ snap:
 	snapcraft
 
 .PHONY: integration
-integration: prepare-trailcam prepare-output
+integration: prepare-central prepare-trailcam prepare-output
 	multipass info
 
-.PHONY: prepare-trailcam prepare-output
-prepare-trailcam prepare-output: prepare-%:
-	scripts/launch-pi-zero.sh --name $*
+.PHONY: prepare-trailcam prepare-output prepare-central
+prepare-central prepare-trailcam prepare-output: prepare-%:
+	scripts/launch-pi-zero.sh --name $* --force
 	multipass transfer pumaguard_$(shell git describe --tags)*.snap $*:/home/ubuntu
 	multipass exec $* -- sudo snap install --dangerous --devmode $(shell ls pumaguard*snap)
 
