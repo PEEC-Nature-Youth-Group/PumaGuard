@@ -54,10 +54,14 @@ class Server:
         """
         Endpoint to classify an image.
 
+        The incoming request has the following fields:
+
+        image: The base64 encoded image
+        id: The trailcam ID (used to pair with proper Output Unit)
+
         Returns:
-            Response: JSON response.
+            Response: a JSON formatted response and a response code
         """
-        print('starting')
         try:
             data = request.json
             if data is None:
@@ -75,10 +79,11 @@ class Server:
                 raise BadRequest(f'Could not decode image: {e}') from e
         except BadRequest as e:
             return jsonify({'error': f'Illegal data provided: {e}'}), 400
+        # TODO The image should be placed in a queue for performance
         _ = self.classify_image(image)
         return jsonify({}), 200
 
-    def classify_image(self, image) -> float:
+    def classify_image(self, image: Image.Image) -> float:
         """
         Classify the image.
 
@@ -90,6 +95,8 @@ class Server:
             value of 0 corresponds to 100% Puma, while a value of 1 corresponds
             to 100% no Puma.
         """
+        # TODO Call the machine learning model
+        # TODO If Puma was detected, contact the Output Unit
         print(f'received {type(image)}')
         return 0.8
 

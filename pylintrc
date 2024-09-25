@@ -1,6 +1,9 @@
 [MAIN]
 suggestion-mode = yes
 
+disable =
+    W0511,
+
 [FORMAT]
 max-line-length = 79
 
