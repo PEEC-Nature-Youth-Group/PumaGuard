@@ -116,6 +116,7 @@ Further Reading
 .. toctree::
    :maxdepth: 2
 
+   About
    HLD
    Parts
    modules
