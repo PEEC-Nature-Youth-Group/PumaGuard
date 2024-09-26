@@ -117,6 +117,7 @@ Further Reading
    :maxdepth: 2
 
    HLD
+   Parts
    modules
 
 Indices and Tables
