@@ -11,6 +11,7 @@ import argparse
 import base64
 import binascii
 import io
+import logging
 from typing import Tuple
 from flask import (
     Flask,
@@ -23,6 +24,10 @@ from PIL import (
     Image,
     UnidentifiedImageError,
 )
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 class Server:
@@ -78,7 +83,8 @@ class Server:
             except UnidentifiedImageError as e:
                 raise BadRequest(f'Could not decode image: {e}') from e
         except BadRequest as e:
-            return jsonify({'error': f'Illegal data provided: {e}'}), 400
+            logger.error('Illegal data provided: %s', e)
+            return jsonify({'error': 'Illegal data provided'}), 400
         # TODO The image should be placed in a queue for performance
         _ = self.classify_image(image)
         return jsonify({}), 200
