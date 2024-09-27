@@ -2,8 +2,10 @@
 name = "pumaguard"
 version = "0.1.0"
 description = ""
-authors = ["Your Name <you@example.com>"]
+authors = ["Nicolas Bock <nicolasbock@gmail.com>"]
 readme = "README.md"
+homepage = "http://pumaguard.rtfd.io/"
+repository = "https://github.com/PEEC-Nature-Youth-Group/PumaGuard"
 
 [tool.poetry.dependencies]
 python = "^3.10"
