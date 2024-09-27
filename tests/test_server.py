@@ -61,9 +61,17 @@ class TestServer(unittest.TestCase):
         """
         Test classify_image endpoint with no image provided.
         """
-        response = self.client.post('/classify', json={})
-        self.assertEqual(response.status_code, 400)
-        self.assertIn('No image provided', response.json['error'])
+        with patch('pumaguard.cmd.server.logger') as mock_logger:
+            response = self.client.post('/classify', json={})
+            self.assertEqual(response.status_code, 400)
+            self.assertIn('Illegal data provided', response.json['error'])
+            mock_logger.error.assert_called_once()
+            call_args = mock_logger.error.call_args
+            print(call_args)
+            print(call_args[0])
+            self.assertIn('Illegal data provided', call_args[0][0])
+            self.assertIn('No image provided',
+                          call_args[0][1].get_description())
 
     def test_classify_image_route_with_image(self):
         """
@@ -80,16 +88,30 @@ class TestServer(unittest.TestCase):
         """
         Test classify_image endpoint with invalid JSON.
         """
-        response = self.client.post(
-            '/classify', data='invalid_json', content_type='application/json')
-        self.assertEqual(response.status_code, 400)
-        self.assertIn('Illegal data provided', response.json['error'])
+        with patch('pumaguard.cmd.server.logger') as mock_logger:
+            response = self.client.post(
+                '/classify', data='invalid_json',
+                content_type='application/json')
+            self.assertEqual(response.status_code, 400)
+            self.assertIn('Illegal data provided', response.json['error'])
+            mock_logger.error.assert_called_once()
+            call_args = mock_logger.error.call_args
+            self.assertIn('Illegal data provided', call_args[0][0])
+            self.assertIn('The browser (or proxy) sent a request that '
+                          'this server could not understand.',
+                          call_args[0][1].get_description())
 
     def test_classify_image_invalid_image_data(self):
         """
         Test classify_image endpoint with invalid image data.
         """
-        response = self.client.post(
-            '/classify', json={'image': 'invalid_image_data'})
-        self.assertEqual(response.status_code, 400)
-        self.assertIn('Could not decode image', response.json['error'])
+        with patch('pumaguard.cmd.server.logger') as mock_logger:
+            response = self.client.post(
+                '/classify', json={'image': 'invalid_image_data'})
+            self.assertEqual(response.status_code, 400)
+            self.assertIn('Illegal data provided', response.json['error'])
+            mock_logger.error.assert_called_once()
+            call_args = mock_logger.error.call_args
+            self.assertIn('Illegal data provided', call_args[0][0])
+            self.assertIn('Could not decode image',
+                          call_args[0][1].get_description())
