@@ -6,7 +6,10 @@ confinement: devmode
 
 summary: PumaGuard is a machine-learning based Puma mitigation solution
 description: |
-  More to come...
+  The goal of this project is to accurately classify images based on the
+  presence of mountain lions. This can have applications in wildlife
+  monitoring, research, and conservation efforts. The model is trained on a
+  labeled dataset and validated using a separate set of images.
 
 apps:
   pumaguard-server:
