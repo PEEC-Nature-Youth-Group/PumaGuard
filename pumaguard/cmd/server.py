@@ -23,6 +23,7 @@ from PIL import (
     Image,
     UnidentifiedImageError,
 )
+from .. import __VERSION__
 
 
 class Server:
@@ -141,6 +142,7 @@ def main() -> None:
     """
     Entry point for the server.
     """
+    print(f'Starting pumaguard-server v{__VERSION__}')
     options = parse_commandline()
     server = Server()
     server.app.run(host=options.host, port=options.port, debug=options.debug)
