@@ -8,13 +8,21 @@
 
 import sys
 import os
+import subprocess
 
 sys.path.insert(0, os.path.abspath('../..'))
+
+
+def get_git_version():
+    git = subprocess.Popen(
+        ['git', 'describe', '--tags'], stdout=subprocess.PIPE)
+    return str(git.stdout.readlines()[0])
+
 
 project = 'PumaGuard'
 copyright = '2024, Pajarito Environmental Education Center Youth Group'
 author = 'Pajarito Environmental Education Center Youth Group'
-version = '0.1.1'
+version = get_git_version()
 release = '2024'
 
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-numfig
