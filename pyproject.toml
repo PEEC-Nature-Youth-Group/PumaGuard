@@ -19,6 +19,7 @@ pylint = "^3.2.6"
 bashate = "^2.1.1"
 pynblint = "^0.1.6"
 mypy = "^1.11.2"
+matplotlib = "^3.9.2"
 ipykernel = "^6.29.5"
 
 [tool.poetry.scripts]
