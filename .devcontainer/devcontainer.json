@@ -1,5 +1,5 @@
 {
-	"name": "Extreme Lion Challenge Container",
+	"name": "PumaGuard Container",
 	"build": {
 		"dockerfile": "Dockerfile",
 		"args": {

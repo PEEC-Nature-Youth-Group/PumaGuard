@@ -7,7 +7,8 @@ ARG USER_GID=1000
 WORKDIR /app
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update
-RUN DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends --yes apt-utils
+RUN DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends --yes \
+    apt-utils
 RUN DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends --yes \
     curl \
     git \
