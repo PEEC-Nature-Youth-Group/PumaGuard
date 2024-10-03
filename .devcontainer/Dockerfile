@@ -10,6 +10,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update
 RUN DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends --yes \
     apt-utils
 RUN DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends --yes \
+    bash-completion \
     curl \
     git \
     locales \
