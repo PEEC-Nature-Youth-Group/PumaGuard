@@ -3,20 +3,30 @@ FROM ubuntu:jammy
 ARG USERNAME=vscode
 ARG USER_UID=1000
 ARG USER_GID=1000
-
-WORKDIR /app
+ARG http_proxy=""
+ARG https_proxy=""
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update
 RUN DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends --yes \
-    apt-utils
+    apt-utils \
+    ca-certificates
+
+RUN echo 'Acquire::http::Proxy "'"${http_proxy}"'";' | tee --append /etc/apt/apt.conf.d/00proxy
+RUN echo 'Acquire::https::Proxy "'"${https_proxy}"'";' | tee --append /etc/apt/apt.conf.d/00proxy
+
 RUN DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends --yes \
     bash-completion \
+    command-not-found \
     curl \
+    gh \
     git \
     locales \
     make \
+    openssh-client \
     python3-poetry \
     sudo
+
+RUN DEBIAN_FRONTEND=noninteractive apt-get update
 
 RUN groupadd --gid ${USER_GID} ${USERNAME}
 RUN useradd --uid ${USER_UID} --gid ${USER_GID} --groups sudo --create-home ${USERNAME} --shell /usr/bin/bash
@@ -28,3 +38,5 @@ RUN dpkg-reconfigure --frontend=noninteractive locales
 RUN update-locale LANG=en_US.UTF-8
 
 USER ${USERNAME}
+
+RUN echo "source <(gh completion --shell bash)" | tee --append ~/.bashrc

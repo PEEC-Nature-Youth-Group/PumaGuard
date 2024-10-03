@@ -4,7 +4,9 @@
 		"dockerfile": "Dockerfile",
 		"args": {
 			"USER_UID": "1000",
-			"USER_GID": "1000"
+			"USER_GID": "1000",
+			"http_proxy": "${localEnv:http_proxy}",
+			"https_proxy": "${localEnv:https_proxy}"
 		}
 	},
 	"customizations": {
