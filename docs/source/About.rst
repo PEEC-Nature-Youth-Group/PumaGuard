@@ -4,4 +4,6 @@
 
 About PEEC Nature Youth group
 =============================
+
 Phoebe Reid
+Zoe Bent
