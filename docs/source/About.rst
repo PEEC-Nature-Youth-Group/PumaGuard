@@ -4,4 +4,8 @@
 
 About PEEC Nature Youth group
 =============================
+
+Aditya
+Phoebe Reid
 Seb Koglin
+Zoe Bent
