@@ -2,9 +2,10 @@
    :maxdepth: 2
    :caption: Contents
 
-About PEEC Nature Youth group
+About PEEC Nature Youth Group
 =============================
 
+Adis Bock
 Aditya
 Ian
 Phoebe Reid
