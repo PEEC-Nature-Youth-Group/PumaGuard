@@ -31,3 +31,7 @@ poetry install
 ```
 
 To install all of the necessary Python modules.
+
+## Using GitHub Codespaces
+
+An alternative for developing is to use GitHub Codespaces.
