@@ -6,8 +6,7 @@
 
 ## Introduction
 
-Please visit <https://extreme-lion-challenge.readthedocs.io/> for more
-information.
+Please visit <http://pumaguard.rtfd.io/> for more information.
 
 ## Hacktoberfest 2024
 
