@@ -12,9 +12,12 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"ms-azuretools.vscode-docker",
+				"DavidAnson.vscode-markdownlint",
+				"GitHub.copilot-chat",
+				"ms-python.pylint",
 				"ms-python.python",
-				"ms-toolsai.jupyter"
+				"ms-toolsai.jupyter",
+				"yzhang.markdown-all-in-one"
 			]
 		}
 	}
