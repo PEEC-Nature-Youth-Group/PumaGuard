@@ -20,5 +20,6 @@
 				"yzhang.markdown-all-in-one"
 			]
 		}
-	}
+	},
+	"updateContentCommand": "cp pyproject.toml poetry.lock /tmp"
 }
