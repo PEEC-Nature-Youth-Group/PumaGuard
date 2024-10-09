@@ -3,7 +3,6 @@
     "git.autofetch": true,
     "git.pruneOnFetch": true,
     "git.alwaysSignOff": true,
-    "git.enableCommitSigning": true,
     "git.inputValidation": true,
     "git.mergeEditor": true,
     "git.allowForcePush": true
