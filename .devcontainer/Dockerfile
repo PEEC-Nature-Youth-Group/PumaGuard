@@ -25,11 +25,13 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends --yes
     locales \
     make \
     openssh-client \
-    python3-poetry \
+    python3-pip \
     sudo \
     vim
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update
+
+RUN pip install poetry
 
 RUN groupadd --gid ${USER_GID} ${USERNAME}
 RUN useradd --uid ${USER_UID} --gid ${USER_GID} --groups sudo \
