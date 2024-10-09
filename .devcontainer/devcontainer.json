@@ -20,5 +20,6 @@
 				"yzhang.markdown-all-in-one"
 			]
 		}
-	}
+	},
+	"updateContentCommand": "poetry install"
 }
