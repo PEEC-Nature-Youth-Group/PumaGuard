@@ -32,3 +32,108 @@ except ValueError:
         print('WARNING: Not connected to TPU or GPU runtime; '
               'Will use CPU context')
         distribution_strategy = tf.distribute.get_strategy()
+
+# Settings for the different rows in the table
+
+# Set the notebook number to run.
+NOTEBOOK_NUMBER = 4
+
+# Load an existing model and its weights from disk (True) or create a fresh new
+# model (False).
+LOAD_MODEL_FROM_FILE = True
+
+# Load previous training history from file (True).
+LOAD_HISTORY_FROM_FILE = True
+
+# How many epochs to train for.
+EPOCHS = 300
+
+# No changes below this line.
+if NOTEBOOK_NUMBER == 1:
+    EPOCHS = 2_100
+    image_dimensions = (128, 128) # height, width
+    WITH_AUGMENTATION = False
+    BATCH_SIZE = 16
+    MODEL_VERSION = "light"
+    ALPHA = 1e-5
+    lion_directories = [
+        # f'{base_data_directory}/lion_1',
+        f'{base_data_directory}/lion',
+    ]
+    no_lion_directories = [
+        # f'{base_data_directory}/no_lion_1',
+        f'{base_data_directory}/no_lion',
+    ]
+elif NOTEBOOK_NUMBER == 2:
+    EPOCHS = 1_200
+    image_dimensions = (256, 256) # height, width
+    WITH_AUGMENTATION = False
+    BATCH_SIZE = 32
+    MODEL_VERSION = "light"
+    lion_directories = [
+        # f'{base_data_directory}/lion_1',
+        f'{base_data_directory}/lion',
+    ]
+    no_lion_directories = [
+        # f'{base_data_directory}/no_lion_1',
+        f'{base_data_directory}/no_lion',
+    ]
+elif NOTEBOOK_NUMBER == 3:
+    EPOCHS = 900
+    image_dimensions = (256, 256) # height, width
+    WITH_AUGMENTATION = True
+    BATCH_SIZE = 32
+    MODEL_VERSION = "light"
+    lion_directories = [
+        f'{base_data_directory}/lion',
+    ]
+    no_lion_directories = [
+        f'{base_data_directory}/no_lion',
+    ]
+elif NOTEBOOK_NUMBER == 4:
+    image_dimensions = (128, 128) # height, width
+    WITH_AUGMENTATION = False
+    BATCH_SIZE = 16
+    MODEL_VERSION = "pre-trained"
+    lion_directories = [
+        f'{base_data_directory}/lion_1',
+    ]
+    no_lion_directories = [
+        f'{base_data_directory}/no_lion_1',
+    ]
+elif NOTEBOOK_NUMBER == 5:
+    image_dimensions = (128, 128) # height, width
+    WITH_AUGMENTATION = False
+    BATCH_SIZE = 16
+    MODEL_VERSION = "pre-trained"
+    lion_directories = [
+        f'{base_data_directory}/lion',
+    ]
+    no_lion_directories = [
+        f'{base_data_directory}/no_lion',
+    ]
+elif NOTEBOOK_NUMBER == 6:
+    image_dimensions = (512, 512) # height, width
+    WITH_AUGMENTATION = False
+    BATCH_SIZE = 16
+    MODEL_VERSION = "pre-trained"
+    lion_directories = [
+        f'{base_data_directory}/lion',
+        f'{base_data_directory}/cougar',
+    ]
+    no_lion_directories = [
+        f'{base_data_directory}/no_lion',
+        f'{base_data_directory}/nocougar',
+    ]
+else:
+    raise ValueError(f'Unknown notebook {NOTEBOOK_NUMBER}')
+
+MODEL_FILE = f'{base_output_directory}/' \
+    f'model_weights_{NOTEBOOK_NUMBER}_{MODEL_VERSION}' \
+    f'_{image_dimensions[0]}_{image_dimensions[1]}.keras'
+HISTORY_FILE = f'{base_output_directory}/' \
+    f'model_history_{NOTEBOOK_NUMBER}_{MODEL_VERSION}' \
+    f'_{image_dimensions[0]}_{image_dimensions[1]}.pickle' 
+
+print(f'Model file   {MODEL_FILE}')
+print(f'History file {HISTORY_FILE}')
