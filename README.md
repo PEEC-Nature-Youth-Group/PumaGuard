@@ -34,3 +34,14 @@ To install all of the necessary Python modules.
 ## Using GitHub Codespaces
 
 An alternative for developing is to use GitHub Codespaces.
+
+## Running the scripts on colab.research.google.com
+
+Colab offers runtimes with GPUs and TPUs, which make training a model much
+faster. In order to run the [training script](scripts/train.py) on colab, do
+the follwing:
+
+```console
+git clone https://github.com/PEEC-Nature-Youth-Group/PumaGuard.git
+python3 scripts/train.py
+```
