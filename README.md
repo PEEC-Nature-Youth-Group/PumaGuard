@@ -39,7 +39,7 @@ An alternative for developing is to use GitHub Codespaces.
 
 Colab offers runtimes with GPUs and TPUs, which make training a model much
 faster. In order to run the [training script](scripts/train.py) on colab, do
-the follwing:
+the following from the terminal:
 
 ```console
 git clone https://github.com/PEEC-Nature-Youth-Group/PumaGuard.git
