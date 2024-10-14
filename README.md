@@ -35,6 +35,8 @@ To install all of the necessary Python modules.
 
 An alternative for developing is to use GitHub Codespaces.
 
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/PEEC-Nature-Youth-Group/PumaGuard)
+
 ## Running the scripts on colab.research.google.com
 
 Colab offers runtimes with GPUs and TPUs, which make training a model much
