@@ -5,6 +5,7 @@ ARG USER_UID=1000
 ARG USER_GID=1000
 ARG http_proxy=""
 ARG https_proxy=""
+ARG no_proxy=""
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update
 RUN DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends --yes \
