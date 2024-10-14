@@ -2,7 +2,10 @@
 Train a model.
 """
 
+import glob
 import os
+import shutil
+import tempfile
 import tensorflow as tf
 
 # Use data from local directory
@@ -137,3 +140,32 @@ HISTORY_FILE = f'{base_output_directory}/' \
 
 print(f'Model file   {MODEL_FILE}')
 print(f'History file {HISTORY_FILE}')
+
+# Copy images to working directory on runtime
+
+
+# Find image names in Google Drive
+lion_images = []
+for lion in lion_directories:
+    lion_images += glob.glob(os.path.join(lion, '*JPG'))
+no_lion_images = []
+for no_lion in no_lion_directories:
+    no_lion_images += glob.glob(os.path.join(no_lion, '*JPG'))
+
+print(f'Found {len(lion_images)} images tagged as `lion`')
+print(f'Found {len(no_lion_images)} images tagges as `no-lion`')
+print(f'In total {len(lion_images) + len(no_lion_images)} images')
+
+work_directory = tempfile.mkdtemp(prefix='pumaguard-work-')
+
+shutil.rmtree(work_directory, ignore_errors=True)
+os.makedirs(f'{work_directory}/lion')
+os.makedirs(f'{work_directory}/no_lion')
+
+print(f'Copying images to working directory ' \
+      f'{os.path.realpath(work_directory)}')
+for image in lion_images:
+    shutil.copy(image, f'{work_directory}/lion')
+for image in no_lion_images:
+    shutil.copy(image, f'{work_directory}/no_lion')
+print('Copied all images')
