@@ -39,14 +39,14 @@ To install all of the necessary Python modules.
 
 An alternative for developing is to use GitHub Codespaces.
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/PEEC-Nature-Youth-Group/PumaGuard)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/PEEC-Nature-Youth-Group/PumaGuard/)
 
 ## Running the scripts on colab.research.google.com
 
 [Google Colab](https://colab.research.google.com/) offers runtimes with GPUs
 and TPUs, which make training a model much faster. In order to run the
-[training script](scripts/train.py) in Google Colab, do the following from the
-terminal:
+[training script](scripts/train.py) in [Google
+Colab](https://colab.research.google.com/), do the following from the terminal:
 
 ```console
 git clone https://github.com/PEEC-Nature-Youth-Group/PumaGuard.git
