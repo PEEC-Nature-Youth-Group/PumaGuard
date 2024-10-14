@@ -6,6 +6,8 @@
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/PEEC-Nature-Youth-Group/PumaGuard)
 
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com)
+
 ## Introduction
 
 Please visit <http://pumaguard.rtfd.io/> for more information.
@@ -41,9 +43,10 @@ An alternative for developing is to use GitHub Codespaces.
 
 ## Running the scripts on colab.research.google.com
 
-Colab offers runtimes with GPUs and TPUs, which make training a model much
-faster. In order to run the [training script](scripts/train.py) on colab, do
-the following from the terminal:
+[Google Colab](https://colab.research.google.com/) offers runtimes with GPUs
+and TPUs, which make training a model much faster. In order to run the
+[training script](scripts/train.py) in Google Colab, do the following from the
+terminal:
 
 ```console
 git clone https://github.com/PEEC-Nature-Youth-Group/PumaGuard.git
