@@ -1,5 +1,5 @@
 name: pumaguard
-base: core24
+base: core22
 adopt-info: pumaguard
 grade: devel
 confinement: devmode
