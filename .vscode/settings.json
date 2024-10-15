@@ -1,10 +1,13 @@
 {
+    "autoDocstring.startOnNewLine": true,
     "editor.wordWrap": "off",
-    "git.autofetch": true,
-    "git.pruneOnFetch": true,
+    "files.insertFinalNewline": true,
+    "files.trimFinalNewlines": true,
+    "git.allowForcePush": true,
     "git.alwaysSignOff": true,
+    "git.autofetch": true,
+    "git.branchRandomName.enable": true,
     "git.inputValidation": true,
     "git.mergeEditor": true,
-    "git.allowForcePush": true,
-    "git.branchRandomName.enable": true
+    "git.pruneOnFetch": true,
 }
