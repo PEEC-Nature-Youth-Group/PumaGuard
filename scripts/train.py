@@ -54,7 +54,7 @@ EPOCHS = 300
 # No changes below this line.
 if NOTEBOOK_NUMBER == 1:
     EPOCHS = 2_100
-    image_dimensions = (128, 128) # height, width
+    image_dimensions = (128, 128)  # height, width
     WITH_AUGMENTATION = False
     BATCH_SIZE = 16
     MODEL_VERSION = "light"
@@ -69,7 +69,7 @@ if NOTEBOOK_NUMBER == 1:
     ]
 elif NOTEBOOK_NUMBER == 2:
     EPOCHS = 1_200
-    image_dimensions = (256, 256) # height, width
+    image_dimensions = (256, 256)  # height, width
     WITH_AUGMENTATION = False
     BATCH_SIZE = 32
     MODEL_VERSION = "light"
@@ -83,7 +83,7 @@ elif NOTEBOOK_NUMBER == 2:
     ]
 elif NOTEBOOK_NUMBER == 3:
     EPOCHS = 900
-    image_dimensions = (256, 256) # height, width
+    image_dimensions = (256, 256)  # height, width
     WITH_AUGMENTATION = True
     BATCH_SIZE = 32
     MODEL_VERSION = "light"
@@ -94,7 +94,7 @@ elif NOTEBOOK_NUMBER == 3:
         f'{base_data_directory}/no_lion',
     ]
 elif NOTEBOOK_NUMBER == 4:
-    image_dimensions = (128, 128) # height, width
+    image_dimensions = (128, 128)  # height, width
     WITH_AUGMENTATION = False
     BATCH_SIZE = 16
     MODEL_VERSION = "pre-trained"
@@ -105,7 +105,7 @@ elif NOTEBOOK_NUMBER == 4:
         f'{base_data_directory}/no_lion_1',
     ]
 elif NOTEBOOK_NUMBER == 5:
-    image_dimensions = (128, 128) # height, width
+    image_dimensions = (128, 128)  # height, width
     WITH_AUGMENTATION = False
     BATCH_SIZE = 16
     MODEL_VERSION = "pre-trained"
@@ -116,7 +116,7 @@ elif NOTEBOOK_NUMBER == 5:
         f'{base_data_directory}/no_lion',
     ]
 elif NOTEBOOK_NUMBER == 6:
-    image_dimensions = (512, 512) # height, width
+    image_dimensions = (512, 512)  # height, width
     WITH_AUGMENTATION = False
     BATCH_SIZE = 16
     MODEL_VERSION = "pre-trained"
@@ -136,7 +136,7 @@ MODEL_FILE = f'{base_output_directory}/' \
     f'_{image_dimensions[0]}_{image_dimensions[1]}.keras'
 HISTORY_FILE = f'{base_output_directory}/' \
     f'model_history_{NOTEBOOK_NUMBER}_{MODEL_VERSION}' \
-    f'_{image_dimensions[0]}_{image_dimensions[1]}.pickle' 
+    f'_{image_dimensions[0]}_{image_dimensions[1]}.pickle'
 
 print(f'Model file   {MODEL_FILE}')
 print(f'History file {HISTORY_FILE}')
@@ -162,7 +162,7 @@ shutil.rmtree(work_directory, ignore_errors=True)
 os.makedirs(f'{work_directory}/lion')
 os.makedirs(f'{work_directory}/no_lion')
 
-print(f'Copying images to working directory ' \
+print(f'Copying images to working directory '
       f'{os.path.realpath(work_directory)}')
 for image in lion_images:
     shutil.copy(image, f'{work_directory}/lion')
