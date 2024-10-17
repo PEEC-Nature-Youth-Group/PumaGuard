@@ -7,6 +7,7 @@ import os
 import shutil
 import tempfile
 import tensorflow as tf
+import keras
 
 # Use data from local directory
 base_data_directory = os.path.realpath('../data')
@@ -162,10 +163,71 @@ shutil.rmtree(work_directory, ignore_errors=True)
 os.makedirs(f'{work_directory}/lion')
 os.makedirs(f'{work_directory}/no_lion')
 
-print(f'Copying images to working directory '
-      f'{os.path.realpath(work_directory)}')
-for image in lion_images:
-    shutil.copy(image, f'{work_directory}/lion')
-for image in no_lion_images:
-    shutil.copy(image, f'{work_directory}/no_lion')
-print('Copied all images')
+
+def copy_images():
+    """
+    Copy images to work directory.
+    """
+    print(f'Copying images to working directory '
+          f'{os.path.realpath(work_directory)}')
+    for image in lion_images:
+        shutil.copy(image, f'{work_directory}/lion')
+    for image in no_lion_images:
+        shutil.copy(image, f'{work_directory}/no_lion')
+    print('Copied all images')
+
+
+if MODEL_VERSION == 'pre-trained':
+    COLOR_MODE = 'rgb'
+else:
+    COLOR_MODE = 'grayscale'
+print(f'Using color_mode \'{COLOR_MODE}\'')
+
+# Define augmentation layers which are used in some of the runs
+augmentation_layers = [
+    keras.layers.RandomFlip('horizontal'),
+    keras.layers.RandomRotation(0.01),
+    keras.layers.RandomZoom(0.05),
+    keras.layers.RandomBrightness((-0.1, 0.1)),
+    keras.layers.RandomContrast(0.1),
+    # tf.keras.layers.RandomCrop(200, 200),
+    # tf.keras.layers.Rescaling(1./255),
+]
+
+
+def image_augmentation(image):
+    """
+    Use augmentation if `with_augmentation` is set to True
+    """
+    if WITH_AUGMENTATION:
+        for layer in augmentation_layers:
+            image = layer(image)
+    return image
+
+
+copy_images()
+
+# Create datasets(training, validation)
+training_dataset, validation_dataset = \
+    keras.preprocessing.image_dataset_from_directory(
+        work_directory,
+        batch_size=BATCH_SIZE,
+        validation_split=0.2,
+        subset='both',
+        # Seed is always the same in order to ensure that we can reproduce the
+        # same training session
+        seed=123,
+        shuffle=True,
+        image_size=image_dimensions,
+        color_mode=COLOR_MODE,
+    )
+
+training_dataset = training_dataset.map(
+    lambda img, label: (image_augmentation(img), label),
+    num_parallel_calls=tf.data.AUTOTUNE,
+)
+
+training_dataset = training_dataset.prefetch(tf.data.AUTOTUNE)
+validation_dataset = validation_dataset.prefetch(tf.data.AUTOTUNE)
+
+print(f'image dimensions {image_dimensions}')
