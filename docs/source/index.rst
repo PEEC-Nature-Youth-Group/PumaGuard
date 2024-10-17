@@ -119,6 +119,12 @@ Further Reading
    About
    HLD
    Parts
+   lights
+   Camera_parts
+   Cameralocation
+   camerapowerconsumption
+   solarpanelresearch.rst
+   WeatherProofing.rst
    modules
 
 Indices and Tables
