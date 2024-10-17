@@ -72,9 +72,9 @@ Model Training
 
 The notebook walks you through the :index:`data preparation`, :index:`model
 training`, and :index:`model validation` steps. It utilizes a pre-defined
-neural network architecture optimized for image classification tasks. The
-training process includes data augmentation techniques to improve model
-generalization.
+:index:`Convolutional Neural Network` (CNN) architecture optimized for image
+classification tasks. The training process includes data augmentation
+techniques to improve model generalization.
 
 All data used here can be found in the `data folder
 <https://github.com/PEEC-Nature-Youth-Group/PumaGuard/tree/main/data>`__.
