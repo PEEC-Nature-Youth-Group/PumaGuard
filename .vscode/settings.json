@@ -1,6 +1,6 @@
 {
     "autoDocstring.startOnNewLine": true,
-    "editor.wordWrap": "off",
+    "editor.wordWrap": "wordWrapColumn",
     "files.insertFinalNewline": true,
     "files.trimFinalNewlines": true,
     "git.allowForcePush": true,
