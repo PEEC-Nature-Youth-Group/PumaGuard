@@ -1,4 +1,4 @@
-Camera Power consumption
+Camera Power Consumption
 ========================
 
 Researched the power consumption of trailcam and found out that on the website
