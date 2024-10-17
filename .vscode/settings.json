@@ -6,8 +6,11 @@
     "git.allowForcePush": true,
     "git.alwaysSignOff": true,
     "git.autofetch": true,
+    "git.autoStash": true,
     "git.branchRandomName.enable": true,
+    "git.fetchOnPull": true,
     "git.inputValidation": true,
     "git.mergeEditor": true,
     "git.pruneOnFetch": true,
+    "git.rebaseWhenSync": true
 }
