@@ -10,8 +10,8 @@ import tensorflow as tf
 import keras
 
 # Use data from local directory
-base_data_directory = os.path.realpath('../data')
-base_output_directory = os.path.realpath('../models')
+base_data_directory = os.path.join(os.path.dirname(__file__), '../data')
+base_output_directory = os.path.join(os.path.dirname(__file__), '../models')
 
 # Initialize Tensorflow
 
@@ -40,7 +40,7 @@ except ValueError:
 # Settings for the different rows in the table
 
 # Set the notebook number to run.
-NOTEBOOK_NUMBER = 4
+NOTEBOOK_NUMBER = 6
 
 # Load an existing model and its weights from disk (True) or create a fresh new
 # model (False).
