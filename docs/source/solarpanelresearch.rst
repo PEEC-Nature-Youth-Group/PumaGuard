@@ -1,4 +1,4 @@
-Solar panels
+Solar Panels
 ============
 
 Solar panel modules provide 1,000 watts (1 Kw) of sunlight for every square
