@@ -6,7 +6,7 @@ About PEEC Nature Youth Group
 =============================
 
 Adis Bock
-Aditya
+Aditya Viswanathan
 Ian
 Phoebe Reid
 Seb Koglin
