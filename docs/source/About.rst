@@ -1,5 +1,5 @@
-About PEEC Nature Youth Group
-=============================
+PEEC Nature Youth Group
+=======================
 
 * Adis Bock
 * Aditya Viswanathan
