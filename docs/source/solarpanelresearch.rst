@@ -17,5 +17,5 @@ high-quality 5V 5A USB-C power supply. We need to figure out if this is within
 the amount of energy that would be required to run our Rasberry Pi, radio, and
 flash.
 
-Info found @ <https://www.raspberrypi.com/products/raspberry-pi-5/>
+Info found @ https://www.raspberrypi.com/products/raspberry-pi-5/
  
