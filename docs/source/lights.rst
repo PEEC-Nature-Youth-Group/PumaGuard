@@ -1,4 +1,4 @@
-Light Options and Power consumption 
+Light Options and Power Consumption 
 ===================================
 
 Seems like our best bet is to find just a regual lightbulbs with acsessable
