@@ -27,6 +27,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends --yes
     make \
     openssh-client \
     python3-pip \
+    python3-venv \
     sudo \
     vim
 
