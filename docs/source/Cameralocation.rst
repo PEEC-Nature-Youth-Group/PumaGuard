@@ -5,6 +5,7 @@ The stables are shown in the following satellite image.
 
 .. image:: _static/stables-map.png
     :width: 80%
+    :align: center
 
 Puma Sightings
 --------------

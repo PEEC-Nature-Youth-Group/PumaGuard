@@ -62,6 +62,7 @@ exclude_patterns = []
 # html_theme = 'alabaster'
 html_theme = 'cloud'
 html_static_path = ['_static']
+html_css_files = ['_static/custom.css']
 
 # -- Options for todo extension ----------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/extensions/todo.html#configuration
