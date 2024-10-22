@@ -3,7 +3,7 @@ PEEC Nature Youth Group
 
 * Adis Bock
 * Aditya Viswanathan
-* Ian
+* Ian McLean
 * Phoebe Reid
 * Seb Koglin
 * Suchir Jha
