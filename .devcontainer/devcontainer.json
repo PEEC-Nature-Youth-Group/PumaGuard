@@ -15,9 +15,11 @@
 			"extensions": [
 				"DavidAnson.vscode-markdownlint",
 				"GitHub.copilot-chat",
+				"ms-python.autopep8",
 				"ms-python.pylint",
 				"ms-python.python",
 				"ms-toolsai.jupyter",
+				"stkb.rewrap",
 				"yzhang.markdown-all-in-one"
 			]
 		}

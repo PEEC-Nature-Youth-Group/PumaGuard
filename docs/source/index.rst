@@ -5,9 +5,9 @@ PumaGuard
    :width: 80%
    :align: center
 
-This repository contains a machine learning project aimed at classifying images
-into two categories: containing a mountain lion or not. The core of this project
-is a Jupyter notebook, `Mountain_Lions.ipynb
+This repository contains a :index:`machine learning` project aimed at
+classifying images into two categories: containing a :index:`mountain lion` or
+not. The core of this project is a Jupyter notebook, `Mountain_Lions.ipynb
 <https://github.com/PEEC-Nature-Youth-Group/PumaGuard/blob/main/notebooks/Mountain_Lions.ipynb>`__,
 that outlines the process of training a model for this binary classification
 task.
@@ -16,9 +16,9 @@ Project Overview
 ----------------
 
 The goal of this project is to accurately classify images based on the presence
-of mountain lions. This can have applications in wildlife monitoring, research,
-and conservation efforts. The model is trained on a labeled dataset and
-validated using a separate set of images.
+of :index:`mountain lions`. This can have applications in wildlife monitoring,
+research, and conservation efforts. The model is trained on a labeled dataset
+and validated using a separate set of images.
 
 .. figure:: _static/figure01.png
    :name: figure-workflow
@@ -28,7 +28,8 @@ validated using a separate set of images.
 
    Proposed targeted mitigation approach workflow.
 
-The proposed targeted mitigation workflow is shown in :numref:`figure-workflow`.
+The proposed targeted mitigation workflow is shown in
+:numref:`figure-workflow`.
 
 Getting Started
 ---------------
@@ -69,15 +70,16 @@ Alternately, to run the project locally, follow these steps:
 Model Training
 --------------
 
-The notebook walks you through the data preparation, model training, and
-validation steps. It utilizes a pre-defined neural network architecture
-optimized for image classification tasks. The training process includes data
-augmentation techniques to improve model generalization.
+The notebook walks you through the :index:`data preparation`, :index:`model
+training`, and :index:`model validation` steps. It utilizes a pre-defined
+:index:`Convolutional Neural Network` (CNN) architecture optimized for image
+classification tasks. The training process includes data augmentation
+techniques to improve model generalization.
 
 All data used here can be found in the `data folder
 <https://github.com/PEEC-Nature-Youth-Group/PumaGuard/tree/main/data>`__.
 
-All models (weights) are published in the `models folder
+All models (:index:`weights`) are published in the `models folder
 <https://github.com/PEEC-Nature-Youth-Group/PumaGuard/tree/main/models>`__.
 
 Leaderboard
@@ -119,6 +121,12 @@ Further Reading
    About
    HLD
    Parts
+   lights
+   Camera_parts
+   Cameralocation
+   camerapowerconsumption
+   solarpanelresearch.rst
+   WeatherProofing.rst
    modules
 
 Indices and Tables

@@ -18,6 +18,13 @@ This repository is participating in [Hacktoberfest
 2024](https://hacktoberfest.com/). If you are interested in participating,
 remember to sign up first!
 
+## GitHub Codespaces
+
+If you do not want to install any new software on your computer you can use
+GitHub Codespaces, which provide a development environment in your browser.
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/PEEC-Nature-Youth-Group/PumaGuard/)
+
 ## Local Development Environment
 
 A local development environment can be created by using the `poetry` tool,
@@ -34,12 +41,6 @@ poetry install
 ```
 
 To install all of the necessary Python modules.
-
-## Using GitHub Codespaces
-
-An alternative for developing is to use GitHub Codespaces.
-
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/PEEC-Nature-Youth-Group/PumaGuard/)
 
 ## Running the scripts on colab.research.google.com
 
