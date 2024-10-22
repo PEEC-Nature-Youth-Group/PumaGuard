@@ -13,7 +13,8 @@ Camera Locations
         :width: 80%
 
 * On 10/22/24 another cougar sighting at around 6:20 a.m. Our model is not
-  able to correctly classify this image.
+  able to correctly classify this image. Our hypothesis is that since the lion is at the edge of the frame 
+  it may be too dark. We will try histogram transformations to see if this fixes the problem.
 
     .. image:: _static/20241022-puma01.png
         :width: 80%
