@@ -32,11 +32,15 @@ numfig = True
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [
-    'sphinxcontrib.mermaid',
-    'sphinx.ext.autodoc',
-    'sphinx.ext.napoleon',
-    'sphinx.ext.viewcode',
     'sphinx_new_tab_link',
+    'sphinx.ext.autodoc',
+    'sphinx.ext.coverage',
+    'sphinx.ext.doctest',
+    'sphinx.ext.mathjax',
+    'sphinx.ext.napoleon',
+    'sphinx.ext.todo',
+    'sphinx.ext.viewcode',
+    'sphinxcontrib.mermaid',
 ]
 
 mermaid_version = "11.2.1"
@@ -54,3 +58,8 @@ exclude_patterns = []
 # html_theme = 'alabaster'
 html_theme = 'cloud'
 html_static_path = ['_static']
+
+# -- Options for todo extension ----------------------------------------------
+# https://www.sphinx-doc.org/en/master/usage/extensions/todo.html#configuration
+
+todo_include_todos = True
