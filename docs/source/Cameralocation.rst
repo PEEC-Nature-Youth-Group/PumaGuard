@@ -1,6 +1,14 @@
 Camera Locations
 ================
 
+The stables are shown in the following satellite image.
+
+.. image:: _static/stables-map.png
+    :width: 80%
+
+Puma Sightings
+--------------
+
 * Went to the stables on 10/4/24. Moved trail cam to right by a goat pen.
   Scouted out other goat presence and found a lot of them to the east. The
   first place we moved the camera didn't get many animals so we moved it closer
