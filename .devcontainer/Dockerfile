@@ -25,6 +25,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends --yes
     less \
     locales \
     make \
+    npm \
     openssh-client \
     python3-pip \
     python3-venv \
