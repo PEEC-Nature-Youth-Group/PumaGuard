@@ -16,7 +16,11 @@ sys.path.insert(0, os.path.abspath('../..'))
 def get_git_version():
     git = subprocess.Popen(
         ['git', 'describe', '--tags'], stdout=subprocess.PIPE)
-    return str(git.stdout.readlines()[0])
+    result = git.stdout.readlines()
+    if len(result) > 0:
+        return str(result[0])
+    else:
+        return 'undefined'
 
 
 project = 'PumaGuard'
