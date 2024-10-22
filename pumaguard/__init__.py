@@ -4,4 +4,7 @@ PumaGuard
 
 import importlib.metadata
 
-__VERSION__ = importlib.metadata.version('pumaguard')
+try:
+    __VERSION__ = importlib.metadata.version('pumaguard')
+except importlib.metadata.PackageNotFoundError:
+    __VERSION__ = 'undefined'

@@ -13,8 +13,8 @@ docs: venv
 	git ls-files --exclude-standard --others | wc -l | grep "^0" --quiet
 	git diff
 	git diff --shortstat | wc -l | grep "^0" --quiet
-	. venv/bin/activate && make -C docs html
-	. venv/bin/activate && make -C docs linkcheck
+	. venv/bin/activate && sphinx-build --builder html --fail-on-warning docs/source docs/build
+	. venv/bin/activate && sphinx-build --builder linkcheck --fail-on-warning docs/source docs/build
 
 .PHONY: test
 test:
