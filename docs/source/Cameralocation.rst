@@ -9,5 +9,8 @@ visited at our new location at 3 am. We haven't heard of conflict between the
 stable animals but don't know for sure. Below is the image of the lion which was
 properly classified by our algorithm. 
 
-.. image:: _static/102124_puma01.png
+.. image:: _static/20241021_puma01.png
+    :width: 80%
+
+.. image:: _static/20241022_puma01.png
     :width: 80%
