@@ -8,7 +8,7 @@ venv:
 docs: venv
 	@echo "building documentation webpage"
 	. venv/bin/activate && pip install --requirement docs/source/requirements.txt
-	. venv/bin/activate && cd docs && sphinx-apidoc -o source ../pumaguard
+	. venv/bin/activate && cd docs && sphinx-apidoc --output-dir source --force ../pumaguard
 	git ls-files --exclude-standard --others
 	git ls-files --exclude-standard --others | wc -l | grep "^0" --quiet
 	git diff
