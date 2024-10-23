@@ -2,7 +2,6 @@
 This script classifies images.
 """
 
-import argparse
 import os
 import pickle
 import numpy as np
@@ -12,9 +11,9 @@ import keras
 
 # Use data from local directory
 base_data_directory = os.path.realpath(os.path.join(
-    os.path.dirname(__file__), '../../data'))
+    os.path.dirname(__file__), '../data'))
 base_output_directory = os.path.realpath(os.path.join(
-    os.path.dirname(__file__), '../../models'))
+    os.path.dirname(__file__), '../models'))
 
 # Initialize Tensorflow
 
@@ -434,24 +433,10 @@ def classify_images():
                 f'Actual: {"lion" if labels[i] == 0 else "no lion"}')
 
 
-def parse_commandline() -> argparse.Namespace:
-    """
-    Parse commandline and return parsed options.
-    """
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        'IMAGE',
-        help='Classify IMAGE',
-        nargs='+',
-    )
-    return parser.parse_args()
-
-
 def main():
     """
     Main entry point
     """
-    _ = parse_commandline()
     classify_images()
 
 
