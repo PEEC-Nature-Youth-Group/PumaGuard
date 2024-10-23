@@ -66,4 +66,8 @@ if (( force == 1 )); then
     multipass delete --purge "${vm_name}"
 fi
 echo "Starting Pi-${model} VM ${vm_name}"
-multipass launch core24 --memory ${memory} --disk ${disk} --cpus ${vcpus} --name "${vm_name}"
+multipass launch core24 \
+    --memory ${memory} \
+    --disk ${disk} \
+    --cpus ${vcpus} \
+    --name "${vm_name}"
