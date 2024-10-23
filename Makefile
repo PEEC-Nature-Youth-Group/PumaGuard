@@ -4,6 +4,11 @@ venv:
 	./venv/bin/pip install --upgrade pip
 	@echo "venv is initialized"
 
+.PHONY: apidoc
+apidoc: venv
+	. venv/bin/activate && pip install --requirement docs/source/requirements.txt
+	. venv/bin/activate && cd docs && sphinx-apidoc -o source --force ../pumaguard
+
 .PHONY: docs
 docs: venv
 	@echo "building documentation webpage"
