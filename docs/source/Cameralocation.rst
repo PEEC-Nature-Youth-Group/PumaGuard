@@ -10,6 +10,8 @@ The stables are shown in the following satellite image.
 Puma Sightings
 --------------
 
+* On 9/29, three mature goats were killed in lots in the middle of the stables area near 49/50. David Dail flushed the cat and chased it away. Goats are clearly the major problem. We should get a map of the stables with lot numbers and plot where the incidents occurred. 
+
 * Went to the stables on 10/4/24. Moved trail cam to right by a goat pen.
   Scouted out other goat presence and found a lot of them to the east. The
   first place we moved the camera didn't get many animals so we moved it closer
@@ -29,4 +31,5 @@ Puma Sightings
     .. image:: _static/20241022-puma01.png
         :width: 80%
 
-* On 10/23/24 the cougar returned again. Unfortunately, we learned on 10/22 Lot 121 lost a goat. On 10/23 Lot 109 lost 2 goats. Game and Fish was called to track down and kill the cougar. Not sure if they were successful. Also on Sept 29, three mature goats were killed in lots in the middle of the stables area near 49/50. David Dail flushed the cat and chased it away. Goats are clearly the major problem. We should get a map of the stables with lot numbers and plot where the incidents occurred. 
+* On 10/23/24 the cougar returned again. Unfortunately, we learned on 10/22 Lot 121 lost a goat. On 10/23 Lot 109 lost 2 goats. Game and Fish was called to track down and kill the cougar. Unfortunately, they did find and kill the cougar. Time will tell when another cougar comes and takes over the territory and this happens all over again. Clearly a better solution is needed and hopefullly our approach will work.  
+
