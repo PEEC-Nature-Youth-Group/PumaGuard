@@ -28,3 +28,5 @@ Puma Sightings
 
     .. image:: _static/20241022-puma01.png
         :width: 80%
+
+* On 10/23/24 the cougar returned again. Unfortunately, we learned on 10/22 Lot 121 lost a goat. On 10/23 Lot 109 lost 2 goats. Game and Fish was called to track down and kill the cougar. Not sure if they were successful. Also on Sept 29, three mature goats were killed in lots in the middle of the stables area near 49/50. David Dail flushed the cat and chased it away. Goats are clearly the major problem. We should get a map of the stables with lot numbers and plot where the incidents occurred. 
