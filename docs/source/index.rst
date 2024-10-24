@@ -125,8 +125,9 @@ Further Reading
    Camera_parts
    Cameralocation
    camerapowerconsumption
-   solarpanelresearch.rst
-   WeatherProofing.rst
+   solarpanelresearch
+   WeatherProofing
+   raspberrypie5powerconsumption
    modules
 
 Indices and Tables
