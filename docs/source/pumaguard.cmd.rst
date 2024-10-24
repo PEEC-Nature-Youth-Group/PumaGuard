@@ -4,6 +4,14 @@ pumaguard.cmd package
 Submodules
 ----------
 
+pumaguard.cmd.classify module
+-----------------------------
+
+.. automodule:: pumaguard.cmd.classify
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 pumaguard.cmd.output module
 ---------------------------
 
