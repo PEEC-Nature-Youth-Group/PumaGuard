@@ -1,5 +1,5 @@
 name: pumaguard
-base: core22
+base: core22 # We need Python <= 3.10
 adopt-info: pumaguard
 grade: devel
 confinement: devmode
@@ -28,3 +28,4 @@ parts:
     override-build: |
       craftctl set version="$(git describe --tags)"
       craftctl default
+      cp --recursive models ${CRAFT_PART_INSTALL}/models
