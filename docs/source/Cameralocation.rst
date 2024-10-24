@@ -31,5 +31,5 @@ Puma Sightings
     .. image:: _static/20241022-puma01.png
         :width: 80%
 
-* On 10/23/24 the cougar returned again. Unfortunately, we learned on 10/22 Lot 121 lost a goat. On 10/23 Lot 109 lost 2 goats. Game and Fish was called to track down and kill the cougar. Unfortunately, they did find and kill the cougar. Time will tell when another cougar comes and takes over the territory and this happens all over again. Clearly a better solution is needed and hopefullly our approach will work.  
+* On 10/23/24 the cougar returned again. Unfortunately, we learned on 10/22 Lot 121 lost a goat. On 10/23 Lot 109 lost 2 goats. Game and Fish was called to track down and kill the cougar. Unfortunately, they did find and kill the cougar. Time will tell when another cougar comes and takes over the territory and this happens all over again. Clearly a better solution is needed and hopefullly our approach will work.  We will work with mountain lion foundation.
 
