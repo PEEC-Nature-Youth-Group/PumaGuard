@@ -1,5 +1,5 @@
 Camera Parts
-============
+------------
 
 * `Arducam Day-Night Vision for Raspberry Pi Camera, Automatic IR-Cut Switching
   All-Day Image All-Model Support, IR LED for Low Light and Night Vision, M12

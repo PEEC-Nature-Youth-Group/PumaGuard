@@ -121,13 +121,10 @@ Further Reading
    About
    HLD
    Parts
-   lights
    Camera_parts
+   PowerConsiderations
    Cameralocation
-   camerapowerconsumption
-   solarpanelresearch
    WeatherProofing
-   raspberrypie5powerconsumption
    modules
 
 Indices and Tables
