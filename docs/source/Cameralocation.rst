@@ -35,3 +35,4 @@ Puma Sightings
 
 .. image:: _static/Stables\ map.png
     :width: 80%
+    :align: center
