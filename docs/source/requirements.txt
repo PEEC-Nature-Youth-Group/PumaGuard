@@ -1,5 +1,7 @@
 cloud-sptheme
 flask
+numpy
 pillow
 sphinxcontrib-mermaid
 sphinx_new_tab_link
+tensorflow

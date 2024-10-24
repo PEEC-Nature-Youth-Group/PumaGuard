@@ -12,12 +12,14 @@ description: |
   labeled dataset and validated using a separate set of images.
 
 apps:
+  pumaguard-classify:
+    command: bin/pumaguard-classify
+  pumaguard-output:
+    command: bin/pumaguard-output
   pumaguard-server:
     command: bin/pumaguard-server
   pumaguard-trailcam:
     command: bin/pumaguard-trailcam
-  pumaguard-output:
-    command: bin/pumaguard-output
 
 parts:
   pumaguard:
