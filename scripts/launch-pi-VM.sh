@@ -6,9 +6,9 @@ declare force=0
 declare vm_name=""
 declare model="zero"
 declare -A resource_limits=(
-    ["4"]="1G 64G 1"
-    ["5"]="2G 64G 1"
-    ["zero"]="512M 64G 1"
+    ["0"]="512M 64G 1"
+    ["4"]="1G   64G 1"
+    ["5"]="2G   64G 1"
 )
 
 while (( $# > 0 )); do
@@ -36,7 +36,7 @@ EOF
         --list-models)
             echo "Known Raspberry Pi models"
             for model in "${!resource_limits[@]}"; do
-                echo "  Pi ${model}"
+                echo "  ${model}"
             done
             exit 0
             ;;
