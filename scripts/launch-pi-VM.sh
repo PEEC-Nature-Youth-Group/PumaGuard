@@ -7,6 +7,7 @@ declare vm_name=""
 declare model="zero"
 declare -A resource_limits=(
     ["0"]="512M 64G 1"
+    ["3"]="1G   64G 1"
     ["4"]="1G   64G 1"
     ["5"]="2G   64G 1"
 )
