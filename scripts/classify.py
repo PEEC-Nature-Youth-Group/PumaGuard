@@ -4,6 +4,7 @@ This script classifies images.
 
 # pylint: disable=redefined-outer-name
 
+import argparse
 import datetime
 import os
 import pickle
@@ -280,7 +281,7 @@ def compile_model(distribution_strategy: tf.distribute.Strategy,
         model.summary()
 
 
-def classify_images(model: keras.Model):
+def classify_images(model: keras.Model, image_path: str):
     """
     Classify the images and print out the result.
     """
@@ -290,9 +291,10 @@ def classify_images(model: keras.Model):
         color_model = 'grayscale'
     print(f'Using color_mode \'{color_model}\'')
 
+    print(f'Loading images from {image_path}')
     start_time = datetime.datetime.now()
     verification_dataset = keras.preprocessing.image_dataset_from_directory(
-        f'{base_data_directory}/stable/angle 4',
+        image_path,
         batch_size=BATCH_SIZE,
         image_size=image_dimensions,
         shuffle=True,
@@ -338,6 +340,24 @@ def classify_images(model: keras.Model):
                 f'Predicted: {100*(1 - predictions[i][0]):6.2f}% lion '
                 f'({"lion" if predictions[i][0] < 0.5 else "no lion"}), '
                 f'Actual: {"lion" if labels[i] == 0 else "no lion"}')
+
+
+def parse_commandline() -> argparse.Namespace:
+    """
+    Parse the commandline
+
+    Returns:
+        argparse.NameSpace: The parsed options.
+    """
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "images",
+        help=('The path to the folder containing the images. '
+              'The folder needs to subfolders, "lion" and "no lion" '
+              'that contain the images.'),
+        type=str,
+    )
+    return parser.parse_args()
 
 
 # Use data from local directory
@@ -480,6 +500,8 @@ def main():
     """
     print("Tensorflow version " + tf.__version__)
 
+    options = parse_commandline()
+
     distribution_strategy = initialize_tensorflow()
     model = build_model(distribution_strategy)
     compile_model(distribution_strategy, model)
@@ -494,7 +516,7 @@ def main():
           f'val_accuracy: {best_val_accuracy:.4f} - loss: {best_loss:.4f} '
           f'- val_loss: {best_val_loss:.4f}')
 
-    classify_images(model)
+    classify_images(model, options.images)
 
 
 if __name__ == "__main__":
