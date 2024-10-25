@@ -40,23 +40,33 @@ base_output_directory = os.path.realpath(os.path.join(
 # it
 print("Tensorflow version " + tf.__version__)
 
-# Try different backends in the following order: TPU, GPU, CPU and use the
-# first one available
-try:
-    tpu = tf.distribute.cluster_resolver.TPUClusterResolver()
-    tf.config.experimental_connect_to_cluster(tpu)
-    tf.tpu.experimental.initialize_tpu_system(tpu)
-    distribution_strategy = tf.distribute.TPUStrategy(tpu)
-    print(f'Running on a TPU w/{tpu.num_accelerators()["TPU"]} cores')
-except ValueError:
-    print("WARNING: Not connected to a TPU runtime; Will try GPU")
-    if tf.config.list_physical_devices('GPU'):
-        distribution_strategy = tf.distribute.MirroredStrategy()
-        print(f'Running on {len(tf.config.list_physical_devices("GPU"))} GPUs')
-    else:
-        print('WARNING: Not connected to TPU or GPU runtime; '
-              'Will use CPU context')
-        distribution_strategy = tf.distribute.get_strategy()
+
+def initialize_tensorflow() -> tf.distribute.Strategy:
+    """
+    Try different backends in the following order: TPU, GPU, CPU and use the
+    first one available.
+
+    Returns:
+        tf.distribute.Strategy: The distribution strategy object after
+        initialization.
+    """
+    try:
+        tpu = tf.distribute.cluster_resolver.TPUClusterResolver()
+        tf.config.experimental_connect_to_cluster(tpu)
+        tf.tpu.experimental.initialize_tpu_system(tpu)
+        distribution_strategy = tf.distribute.TPUStrategy(tpu)
+        print(f'Running on a TPU w/{tpu.num_accelerators()["TPU"]} cores')
+    except ValueError:
+        print("WARNING: Not connected to a TPU runtime; Will try GPU")
+        if tf.config.list_physical_devices('GPU'):
+            distribution_strategy = tf.distribute.MirroredStrategy()
+            print('Running on '
+                  f'{len(tf.config.list_physical_devices("GPU"))} GPUs')
+        else:
+            print('WARNING: Not connected to TPU or GPU runtime; '
+                  'Will use CPU context')
+            distribution_strategy = tf.distribute.get_strategy()
+    return distribution_strategy
 
 
 # Settings for the different rows in the table
@@ -276,7 +286,7 @@ print(f'Best epoch {best_epoch} - accuracy: {best_accuracy:.4f} - '
 # Define the two models.
 
 
-def pre_trained_model():
+def pre_trained_model() -> keras.Model:
     """
     Use the Xception model with imagenet weights as base model
     """
@@ -303,7 +313,7 @@ def pre_trained_model():
     ])
 
 
-def light_model():
+def light_model() -> keras.Model:
     """
     The light model does not run properly on a TPU runtime. The loss function
     results in `nan` after only one epoch. It does work on GPU runtimes though.
@@ -352,74 +362,102 @@ def light_model():
 # Prepares model so we can run it
 
 
-with distribution_strategy.scope():
-    model_file_exists = os.path.isfile(model_file)
-    if LOAD_MODEL_FROM_FILE and model_file_exists:
-        os.stat(model_file)
-        print(f'Loading model from file {model_file}')
-        start_time = datetime.datetime.now()
-        model = keras.models.load_model(model_file)
-        end_time = datetime.datetime.now()
-        print('Loaded model from file, '
-              f'{get_duration(start_time, end_time)} seconds')
-    else:
-        print('Creating new model')
-        if MODEL_VERSION == "pre-trained":
-            print('Creating new Xception model')
-            model = pre_trained_model()
-        elif MODEL_VERSION == "light":
-            print('Creating new light model')
-            model = light_model()
-        else:
-            raise ValueError(f'unknown model version {MODEL_VERSION}')
+def build_model(distribution_strategy: tf.distribute.Strategy) -> keras.Model:
+    """
+    Build the model.
 
-        if MODEL_VERSION == "pre-trained":
-            model.build(input_shape=(None, *image_dimensions, 3))
-        else:
-            model.build(input_shape=(None, *image_dimensions, 1))
+    Args:
+        distribution_strategy (tf.distribute.Strategy): The distribution
+        strategy from the tensorflow initialization.
 
-        print(f'Number of layers in the model: {len(model.layers)}')
+    Raises:
+        ValueError: If the MODEL_VERSION is illegal, this is raised.
+
+    Returns:
+        keras.Model: The model.
+    """
+    with distribution_strategy.scope():
+        model_file_exists = os.path.isfile(model_file)
+        if LOAD_MODEL_FROM_FILE and model_file_exists:
+            os.stat(model_file)
+            print(f'Loading model from file {model_file}')
+            start_time = datetime.datetime.now()
+            model = keras.models.load_model(model_file)
+            end_time = datetime.datetime.now()
+            print('Loaded model from file, '
+                  f'{get_duration(start_time, end_time)} seconds')
+        else:
+            print('Creating new model')
+            if MODEL_VERSION == "pre-trained":
+                print('Creating new Xception model')
+                model = pre_trained_model()
+            elif MODEL_VERSION == "light":
+                print('Creating new light model')
+                model = light_model()
+            else:
+                raise ValueError(f'unknown model version {MODEL_VERSION}')
+
+            if MODEL_VERSION == "pre-trained":
+                model.build(input_shape=(None, *image_dimensions, 3))
+            else:
+                model.build(input_shape=(None, *image_dimensions, 1))
+
+            print(f'Number of layers in the model: {len(model.layers)}')
+        return model
 
 # Compile model
 
-with distribution_strategy.scope():
-    if MODEL_VERSION == 'pre-trained':
-        print('Compiling pre-trained model')
-        model.compile(
-            optimizer=keras.optimizers.Adam(learning_rate=1e-4),
-            loss='binary_crossentropy',
-            metrics=['accuracy'],
-        )
-    elif MODEL_VERSION == 'light':
-        print('Compiling light model')
-        model.compile(
-            optimizer=keras.optimizers.Adam(learning_rate=ALPHA),
-            loss=keras.losses.BinaryCrossentropy(from_logits=True),
-            metrics=[keras.metrics.BinaryAccuracy(name="accuracy")],
-        )
-    else:
-        raise ValueError(f'Unknown model version {MODEL_VERSION}')
-    model.summary()
+
+def compile_model(distribution_strategy: tf.distribute.Strategy,
+                  model: keras.Model):
+    """
+    Compile the model.
+
+    Args:
+        distribution_strategy (tf.distribute.Strategy): The distribution
+        strategy after initialization.
+        model (keras.Model): The model.
+
+    Raises:
+        ValueError: If the MODEL_VERSION is unknown, this is raised.
+    """
+    with distribution_strategy.scope():
+        if MODEL_VERSION == 'pre-trained':
+            print('Compiling pre-trained model')
+            model.compile(
+                optimizer=keras.optimizers.Adam(learning_rate=1e-4),
+                loss='binary_crossentropy',
+                metrics=['accuracy'],
+            )
+        elif MODEL_VERSION == 'light':
+            print('Compiling light model')
+            model.compile(
+                optimizer=keras.optimizers.Adam(learning_rate=ALPHA),
+                loss=keras.losses.BinaryCrossentropy(from_logits=True),
+                metrics=[keras.metrics.BinaryAccuracy(name="accuracy")],
+            )
+        else:
+            raise ValueError(f'Unknown model version {MODEL_VERSION}')
+        model.summary()
 
 
-if MODEL_VERSION == 'pre-trained':
-    COLOR_MODE = 'rgb'
-else:
-    COLOR_MODE = 'grayscale'
-print(f'Using color_mode \'{COLOR_MODE}\'')
-
-
-def classify_images():
+def classify_images(model: keras.Model):
     """
     Classify the images and print out the result.
     """
+    if MODEL_VERSION == 'pre-trained':
+        color_model = 'rgb'
+    else:
+        color_model = 'grayscale'
+    print(f'Using color_mode \'{color_model}\'')
+
     start_time = datetime.datetime.now()
     verification_dataset = keras.preprocessing.image_dataset_from_directory(
         f'{base_data_directory}/stable/angle 4',
         batch_size=BATCH_SIZE,
         image_size=image_dimensions,
         shuffle=True,
-        color_mode=COLOR_MODE,
+        color_mode=color_model,
     )
     end_time = datetime.datetime.now()
     print(f'Loaded images, {get_duration(start_time, end_time)} seconds')
@@ -467,7 +505,10 @@ def main():
     """
     Main entry point
     """
-    classify_images()
+    distribution_strategy = initialize_tensorflow()
+    model = build_model(distribution_strategy)
+    compile_model(distribution_strategy, model)
+    classify_images(model)
 
 
 if __name__ == "__main__":

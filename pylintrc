@@ -4,6 +4,7 @@ suggestion-mode = yes
 disable =
     W0511,
     R0801,
+    R0914,
 
 [FORMAT]
 max-line-length = 79
