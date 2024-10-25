@@ -2,11 +2,30 @@
 This script classifies images.
 """
 
+# pylint: disable=redefined-outer-name
+
+import datetime
 import os
 import pickle
 import numpy as np
 import tensorflow as tf
 import keras
+
+
+def get_duration(start_time: datetime.timezone,
+                 end_time: datetime.timezone) -> float:
+    """
+    Get duration between start and end time in seconds.
+
+    Args:
+        start_time (datetime.timezone): The start time.
+        end_time (datetime.timezone): The end time.
+
+    Returns:
+        float: The duration in seconds.
+    """
+    duration = end_time - start_time
+    return duration / datetime.timedelta(microseconds=1) / 1e6
 
 
 # Use data from local directory
@@ -338,8 +357,11 @@ with distribution_strategy.scope():
     if LOAD_MODEL_FROM_FILE and model_file_exists:
         os.stat(model_file)
         print(f'Loading model from file {model_file}')
+        start_time = datetime.datetime.now()
         model = keras.models.load_model(model_file)
-        print('Loaded model from file')
+        end_time = datetime.datetime.now()
+        print('Loaded model from file, '
+              f'{get_duration(start_time, end_time)} seconds')
     else:
         print('Creating new model')
         if MODEL_VERSION == "pre-trained":
@@ -391,6 +413,7 @@ def classify_images():
     """
     Classify the images and print out the result.
     """
+    start_time = datetime.datetime.now()
     verification_dataset = keras.preprocessing.image_dataset_from_directory(
         f'{base_data_directory}/stable/angle 4',
         batch_size=BATCH_SIZE,
@@ -398,12 +421,19 @@ def classify_images():
         shuffle=True,
         color_mode=COLOR_MODE,
     )
+    end_time = datetime.datetime.now()
+    print(f'Loaded images, {get_duration(start_time, end_time)} seconds')
 
     all_predictions = []
     all_labels = []
 
     for images, labels in verification_dataset:
+        print(f'Starting classification of batch of {BATCH_SIZE} images')
+        start_time = datetime.datetime.now()
         predictions = model.predict(images)
+        end_time = datetime.datetime.now()
+        print('Classification took '
+              f'{get_duration(start_time, end_time)} seconds')
         all_predictions.extend(predictions)
         all_labels.extend(labels)
 
