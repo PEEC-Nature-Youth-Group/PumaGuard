@@ -123,6 +123,7 @@ Further Reading
    Parts
    Camera_parts
    PowerConsiderations
+   Performance
    Cameralocation
    WeatherProofing
    modules
