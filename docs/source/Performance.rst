@@ -8,7 +8,7 @@ Pi Zero W
 ~~~~~~~~~
 
 - Model: Pi Zero W
-- CPU: 1 GHz single-core ARM1176JZF-S
+- CPU: 1GHz quad-core 64-bit Arm Cortex-A53
 - RAM: 512 MB
 - Performance: 0.5 GFLOPS
 
