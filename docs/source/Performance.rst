@@ -7,10 +7,10 @@ Pi models:
 Pi Zero W
 ~~~~~~~~~
 
-- Model: Pi Zero W
-- CPU: 1GHz quad-core 64-bit Arm Cortex-A53
+- Model: Pi Zero W [PiZero2W]_
+- CPU: 1GHz quad-core 64-bit Arm Cortex-A53 [A53ARM]_ [A53Wikipedia]_
 - RAM: 512 MB
-- Performance: 0.5 GFLOPS
+- Performance: 6.144 GFlops [A53Flops]_
 
 Model Performance
 ^^^^^^^^^^^^^^^^^
@@ -25,7 +25,18 @@ Model Performance
 Pi 5
 ~~~~
 
-- Model: Pi 5
-- CPU: 2.0 GHz quad-core ARM Cortex-A76
+- Model: Pi 5 [Pi5]_
+- CPU: 2.0 GHz quad-core ARM Cortex-A76 [A76ARM]_ [A76Wikipedia]_
 - RAM: 4 GB, 8 GB, or 16 GB
 - Performance: 25 GFLOPS
+
+Refernces
+~~~~~~~~~
+
+.. [PiZero2W] https://www.raspberrypi.com/products/raspberry-pi-zero-2-w/
+.. [A53ARM] https://www.arm.com/products/silicon-ip-cpu/cortex-a/cortex-a53
+.. [A53Wikipedia] https://en.wikipedia.org/wiki/ARM_Cortex-A53
+.. [A53Flops] https://blasfeo.syscop.de/comparisons/cortexa53/
+.. [Pi5] https://www.raspberrypi.com/products/raspberry-pi-5/
+.. [A76ARM] https://developer.arm.com/Processors/Cortex-A76
+.. [A76Wikipedia] https://en.wikipedia.org/wiki/ARM_Cortex-A76
