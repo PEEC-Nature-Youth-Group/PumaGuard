@@ -30,8 +30,8 @@ Pi 5
 - RAM: 4 GB, 8 GB, or 16 GB
 - Performance: 31.4 GFLOPS [RaspberryPerformance]_
 
-Refernces
-~~~~~~~~~
+References
+~~~~~~~~~~
 
 .. [PiZero2W] https://www.raspberrypi.com/products/raspberry-pi-zero-2-w/
 .. [A53ARM] https://www.arm.com/products/silicon-ip-cpu/cortex-a/cortex-a53
