@@ -70,3 +70,7 @@ prepare-central prepare-trailcam prepare-output: prepare-%:
 release:
 	export NEW_RELEASE=$(shell git tag | sort | tail -n1 | awk -F v '{print $$2 + 1}') && \
 	  git tag -a -m "Release v$${NEW_RELEASE}" v$${NEW_RELEASE}
+
+.PHONY: configure-pi-zero
+configure-pi-zero:
+	ansible-playbook --inventory pi-zero, --ask-become-pass scripts/configure-pi.yaml

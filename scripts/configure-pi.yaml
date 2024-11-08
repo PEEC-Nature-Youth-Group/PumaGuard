@@ -1,0 +1,132 @@
+---
+- name: Configure Raspberry Pi Zero
+  hosts: all
+  become: true
+  vars:
+    swap_size: 4096
+
+  tasks:
+    - name: Check the current size of the swap file
+      ansible.builtin.stat:
+        path: /var/swap
+        get_checksum: false
+      register: swap_file
+
+    - name: Set file size fact
+      ansible.builtin.set_fact:
+        current_swap_size: "{{ (swap_file.stat.size / 1024 / 1024) | round(0, 'floor') | int }}"
+      when: swap_file.stat.exists
+
+    - name: Set file size fact to zero if file doesn't exist
+      ansible.builtin.set_fact:
+        current_swap_size: 0
+      when: not swap_file.stat.exists
+
+    - name: Print current swap file size
+      ansible.builtin.debug:
+        msg: "Current swap file size {{ current_swap_size }}; desired swap file size {{ swap_size }}"
+
+    - name: Check if swap is already enabled
+      ansible.builtin.shell: swapon --show | grep -q '/var/swap'
+      register: swap_enabled
+      ignore_errors: true
+      changed_when: false
+
+    - name: Check whether to create new swap file
+      ansible.builtin.set_fact:
+        new_swap: "{{ (current_swap_size | int) != (swap_size | int) }}"
+
+    - name: Turn off swap if size mismatch
+      ansible.builtin.command: swapoff /var/swap
+      register: swap_off
+      when: new_swap and (swap_enabled.rc == 0)
+      changed_when: swap_off.rc == 0
+
+    - name: Remove old swap file
+      ansible.builtin.file:
+        path: /var/swap
+        state: absent
+      when: new_swap
+
+    - name: Create a swap file
+      ansible.builtin.command: dd if=/dev/zero of=/var/swap bs=1M count={{ swap_size }} status=progress
+      args:
+        creates: /var/swap
+      when: new_swap
+
+    - name: Change permissions of the swap file
+      ansible.builtin.file:
+        path: /var/swap
+        owner: root
+        group: root
+        mode: '0600'
+
+    - name: Set up the swap file
+      ansible.builtin.command: mkswap /var/swap
+      register: mkswap
+      when: new_swap
+      changed_when: mkswap.rc == 0
+
+    - name: Enable the swap file if not already enabled
+      ansible.builtin.command: swapon /var/swap
+      register: swap_on
+      when: swap_enabled.rc != 0 or new_swap
+      changed_when: swap_on.rc == 0
+
+    - name: Ensure swap file is enabled on boot
+      ansible.builtin.lineinfile:
+        path: /etc/fstab
+        line: '/var/swap none swap sw 0 0'
+        create: true
+        mode: "0644"
+
+    - name: Update the package list
+      ansible.builtin.apt:
+        update_cache: true
+
+    - name: Upgrade all packages
+      ansible.builtin.apt:
+        upgrade: dist
+        autoremove: true
+        purge: true
+        update_cache: true
+        update_cache_retries: 5
+
+    - name: Install packages
+      ansible.builtin.apt:
+        name:
+          - git
+          - htop
+          - libatomic1 # For VSCode
+          - make
+          - python3-pip
+          - vim
+
+    - name: Install poetry
+      ansible.builtin.pip:
+        name: poetry
+
+    - name: Check if a reboot is required
+      ansible.builtin.command: /usr/bin/test -f /var/run/reboot-required
+      register: reboot_required
+      ignore_errors: true
+      changed_when: false
+
+    - name: Reboot the server if necessary
+      ansible.builtin.reboot:
+        msg: "Reboot initiated by Ansible due to package upgrades"
+        connect_timeout: 5
+        reboot_timeout: 600
+        pre_reboot_delay: 0
+        post_reboot_delay: 30
+      when: reboot_required.rc == 0
+
+    - name: Clone PumaGuard repository
+      ansible.builtin.git:
+        repo: 'https://github.com/PEEC-Nature-Youth-Group/PumaGuard.git'
+        dest: /home/peec/PumaGuard
+        clone: true
+        update: true
+        version: main
+      become: true
+      become_user: peec
