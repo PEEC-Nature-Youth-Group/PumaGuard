@@ -80,10 +80,6 @@
         create: true
         mode: "0644"
 
-    - name: Update the package list
-      ansible.builtin.apt:
-        update_cache: true
-
     - name: Upgrade all packages
       ansible.builtin.apt:
         upgrade: dist
@@ -91,6 +87,8 @@
         purge: true
         update_cache: true
         update_cache_retries: 5
+        update_cache_retry_max_delay: 60
+        lock_timeout: 60
 
     - name: Install packages
       ansible.builtin.apt:
