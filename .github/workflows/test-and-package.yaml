@@ -8,6 +8,7 @@ on:
     branches: [main]
   workflow_dispatch:
   workflow_call:
+  merge_group:
 
 env:
   PYTHON_VERSION: "3.12" # Needs to work with Tensorflow
