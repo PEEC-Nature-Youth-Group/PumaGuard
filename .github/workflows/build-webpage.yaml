@@ -1,3 +1,4 @@
+---
 name: Build and Test Webpage
 
 on:
@@ -8,6 +9,7 @@ on:
     branches:
       - main
   workflow_dispatch:
+  merge_group:
 
 jobs:
   build-webpage:
