@@ -472,14 +472,14 @@ base_data_directory = os.path.join(os.path.dirname(__file__), '../data')
 base_output_directory = os.path.join(os.path.dirname(__file__), '../models')
 
 # Set the notebook number to run.
-NOTEBOOK_NUMBER = 1
+NOTEBOOK_NUMBER = 6
 
 # Load an existing model and its weights from disk (True) or create a fresh new
 # model (False).
-LOAD_MODEL_FROM_FILE = True
+LOAD_MODEL_FROM_FILE = False
 
 # Load previous training history from file (True).
-LOAD_HISTORY_FROM_FILE = True
+LOAD_HISTORY_FROM_FILE = False
 
 # How many epochs to train for.
 EPOCHS = 300
