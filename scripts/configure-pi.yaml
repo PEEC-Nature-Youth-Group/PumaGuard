@@ -54,12 +54,19 @@
         creates: /var/swap
       when: new_swap
 
+    - name: Check permissions of the swap file
+      ansible.builtin.stat:
+        path: /var/swap
+        get_checksum: false
+      register: swap_file
+
     - name: Change permissions of the swap file
       ansible.builtin.file:
         path: /var/swap
         owner: root
         group: root
         mode: '0600'
+      when: swap_file.stat.mode != '0600'
 
     - name: Set up the swap file
       ansible.builtin.command: mkswap /var/swap
