@@ -15,6 +15,7 @@ python = ">=3.10,<3.12"
 tensorflow = "2.15.0"
 
 [tool.poetry.group.dev.dependencies]
+ansible-lint = {version = "^24.10.0", markers = "platform_system != 'Windows'"}
 bashate = "^2.1.1"
 ipykernel = "^6.29.5"
 matplotlib = "^3.9.2"
