@@ -34,23 +34,27 @@ build:
 	poetry build
 
 .PHONY: lint
-lint: install pylint mypy bashate
+lint: install pylint mypy bashate ansible-lint
 
 .PHONY: pylint
-pylint:
+pylint: install
 	poetry run pylint --verbose --recursive=true --rcfile=pylintrc pumaguard tests scripts
 
 .PHONY: mypy
-mypy:
+mypy: install
 	poetry run mypy --install-types --non-interactive pumaguard
 
 .PHONY: bashate
-bashate:
+bashate: install
 	poetry run bashate -v scripts/*sh
 
 .PHONY: lint-notebooks
 lint-notebooks: install
 	poetry run pynblint notebooks
+
+.PHONY: ansible-lint
+ansible-lint: install
+	poetry run ansible-lint -v scripts
 
 .PHONY: snap
 snap:

@@ -3,7 +3,7 @@
   hosts: all
   become: true
   vars:
-    swap_size: 4096
+    swap_size: "{{ 6 * 1024 }}"
 
   tasks:
     - name: Check the current size of the swap file
