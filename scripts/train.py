@@ -33,7 +33,8 @@ class TrainingHistory(keras.callbacks.Callback):
                       'previous epochs')
                 last_output = f'Epoch {self.number_epochs}: '
                 for key in keys:
-                    last_output += f'{key}: {self.history[key][-1]:.4f}'
+                    if len(self.history[key]) > 0:
+                        last_output += f'{key}: {self.history[key][-1]:.4f}'
                     if key != keys[-1]:
                         last_output += ' - '
                 print(last_output)
@@ -94,6 +95,22 @@ class TrainingHistory(keras.callbacks.Callback):
                 )
 
 
+def get_duration(start_time: datetime.timezone,
+                 end_time: datetime.timezone) -> float:
+    """
+    Get duration between start and end time in seconds.
+
+    Args:
+        start_time (datetime.timezone): The start time.
+        end_time (datetime.timezone): The end time.
+
+    Returns:
+        float: The duration in seconds.
+    """
+    duration = end_time - start_time
+    return duration / datetime.timedelta(microseconds=1) / 1e6
+
+
 def intialize_tensorflow() -> tf.distribute.Strategy:
     """
     Initialize Tensorflow on available hardware.
@@ -149,7 +166,6 @@ def pre_trained_model():
     Returns:
         The model.
     """
-    # Use the Xception model with imagenet weights as base model
     base_model = keras.applications.Xception(
         weights='imagenet',
         include_top=False,
@@ -219,8 +235,29 @@ def light_model():
     x = keras.layers.Dropout(0.1)(x)
 
     outputs = keras.layers.Dense(1, activation=None)(x)
-
     return keras.Model(inputs, outputs)
+
+
+def light_model_2():
+    """
+    Another attempt at a light model.
+    """
+    return keras.Sequential([
+        keras.layers.Conv2D(
+            32,
+            (3, 3),
+            activation='relu',
+            input_shape=(*image_dimensions, 1),
+        ),
+        keras.layers.MaxPooling2D(2, 2),
+        keras.layers.Conv2D(64, (3, 3), activation='relu'),
+        keras.layers.MaxPooling2D(2, 2),
+        keras.layers.Conv2D(128, (3, 3), activation='relu'),
+        keras.layers.MaxPooling2D(2, 2),
+        keras.layers.Flatten(),
+        keras.layers.Dense(512, activation='relu'),
+        keras.layers.Dense(1, activation='sigmoid'),
+    ])
 
 
 def organize_data(work_directory):
@@ -305,35 +342,37 @@ def create_model(distribution_strategy):
             if MODEL_VERSION == "pre-trained":
                 print('Creating new Xception model')
                 model = pre_trained_model()
+                model.build(input_shape=(None, *image_dimensions, 3))
+                print('Compiling pre-trained model')
+                model.compile(
+                    optimizer=keras.optimizers.Adam(learning_rate=1e-4),
+                    loss='binary_crossentropy',
+                    metrics=['accuracy'],
+                )
             elif MODEL_VERSION == "light":
                 print('Creating new light model')
                 model = light_model()
+                model.build(input_shape=(None, *image_dimensions, 1))
+                print('Compiling light model')
+                model.compile(
+                    optimizer=keras.optimizers.Adam(learning_rate=ALPHA),
+                    loss=keras.losses.BinaryCrossentropy(from_logits=True),
+                    metrics=[keras.metrics.BinaryAccuracy(name="accuracy")],
+                )
+            elif MODEL_VERSION == "light-2":
+                print('Creating new light-2 model')
+                model = light_model_2()
+                model.build(input_shape=(None, *image_dimensions, 1))
+                print('Compiling light-2 model')
+                model.compile(
+                    optimizer=keras.optimizers.Adam(learning_rate=1e-4),
+                    loss='binary_crossentropy',
+                    metrics=['accuracy'],
+                )
             else:
                 raise ValueError(f'unknown model version {MODEL_VERSION}')
 
-            if MODEL_VERSION == "pre-trained":
-                model.build(input_shape=(None, *image_dimensions, 3))
-            else:
-                model.build(input_shape=(None, *image_dimensions, 1))
-
-            print(f'Number of layers in the model: {len(model.layers)}')
-
-        if MODEL_VERSION == 'pre-trained':
-            print('Compiling pre-trained model')
-            model.compile(
-                optimizer=keras.optimizers.Adam(learning_rate=1e-4),
-                loss='binary_crossentropy',
-                metrics=['accuracy'],
-            )
-        elif MODEL_VERSION == 'light':
-            print('Compiling light model')
-            model.compile(
-                optimizer=keras.optimizers.Adam(learning_rate=ALPHA),
-                loss=keras.losses.BinaryCrossentropy(from_logits=True),
-                metrics=[keras.metrics.BinaryAccuracy(name="accuracy")],
-            )
-        else:
-            raise ValueError(f'Unknown model version {MODEL_VERSION}')
+        print(f'Number of layers in the model: {len(model.layers)}')
         model.summary()
     return model
 
@@ -472,7 +511,7 @@ base_data_directory = os.path.join(os.path.dirname(__file__), '../data')
 base_output_directory = os.path.join(os.path.dirname(__file__), '../models')
 
 # Set the notebook number to run.
-NOTEBOOK_NUMBER = 6
+NOTEBOOK_NUMBER = 7
 
 # Load an existing model and its weights from disk (True) or create a fresh new
 # model (False).
@@ -556,6 +595,19 @@ elif NOTEBOOK_NUMBER == 6:
     WITH_AUGMENTATION = False
     BATCH_SIZE = 16
     MODEL_VERSION = "pre-trained"
+    lion_directories = [
+        f'{base_data_directory}/lion',
+        f'{base_data_directory}/cougar',
+    ]
+    no_lion_directories = [
+        f'{base_data_directory}/no_lion',
+        f'{base_data_directory}/nocougar',
+    ]
+elif NOTEBOOK_NUMBER == 7:
+    image_dimensions = (512, 512)  # height, width
+    WITH_AUGMENTATION = False
+    BATCH_SIZE = 16
+    MODEL_VERSION = "light-2"
     lion_directories = [
         f'{base_data_directory}/lion',
         f'{base_data_directory}/cougar',

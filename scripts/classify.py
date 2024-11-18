@@ -13,6 +13,88 @@ import tensorflow as tf
 import keras
 
 
+class TrainingHistory(keras.callbacks.Callback):
+    """
+    Store the training history.
+    """
+
+    def __init__(self):
+        super().__init__()
+        self.history = {}
+        self.number_epochs = 0
+        history_file_exists = os.path.isfile(history_file)
+        if history_file_exists and LOAD_HISTORY_FROM_FILE:
+            print(f'Loading history from file {history_file}')
+            with open(history_file, 'rb') as f:
+                self.history = pickle.load(f)
+                keys = list(self.history.keys())
+                self.number_epochs = len(self.history[keys[0]])
+                print(f'Loaded history of {self.number_epochs} '
+                      'previous epochs')
+                last_output = f'Epoch {self.number_epochs}: '
+                for key in keys:
+                    if len(self.history[key]) > 0:
+                        last_output += f'{key}: {self.history[key][-1]:.4f}'
+                    if key != keys[-1]:
+                        last_output += ' - '
+                print(last_output)
+        else:
+            print(f'Creating new history file {history_file}')
+        for key in ['duration', 'accuracy']:
+            if key not in self.history:
+                self.history[key] = []
+
+    def on_train_begin(self, logs=None):
+        keys = list(self.history.keys())
+        if len(keys) == 0:
+            self.number_epochs = 0
+        else:
+            self.number_epochs = len(self.history[keys[0]])
+        print(f'Starting new training with {self.number_epochs} '
+              'previous epochs')
+
+    def on_epoch_end(self, epoch, logs=None):
+        if 'batch_size' not in self.history:
+            self.history['batch_size'] = []
+        self.history['batch_size'].append(BATCH_SIZE)
+        for key in logs:
+            if key not in self.history:
+                self.history[key] = []
+            self.history[key].append(logs[key])
+        with open(history_file, 'wb') as f:
+            pickle.dump(self.history, f)
+            print(f'Epoch {epoch + self.number_epochs + 1} '
+                  'history pickled and saved to file')
+
+    def get_best_epoch(self, key):
+        """
+        get_best_epoch Get the best epoch so far.
+
+        Arguments:
+            history -- _description_
+            key -- _description_
+
+        Returns:
+            _description_
+        """
+        max_value = 0
+        max_epoch = 0
+        if key not in self.history or \
+                len(self.history[key]) == 0:
+            return 0, 0, 0, 0, 0
+        for epoch in range(len(self.history[key])):
+            value = self.history[key][epoch]
+            if value >= max_value:  # We want the last, best value
+                max_value = value
+                max_epoch = epoch
+        return (self.history['accuracy'][max_epoch],
+                self.history['val_accuracy'][max_epoch],
+                self.history['loss'][max_epoch],
+                self.history['val_loss'][max_epoch],
+                max_epoch,
+                )
+
+
 def get_duration(start_time: datetime.timezone,
                  end_time: datetime.timezone) -> float:
     """
@@ -31,6 +113,8 @@ def get_duration(start_time: datetime.timezone,
 
 def initialize_tensorflow() -> tf.distribute.Strategy:
     """
+    Initialize Tensorflow on available hardware.
+
     Try different backends in the following order: TPU, GPU, CPU and use the
     first one available.
 
@@ -38,103 +122,30 @@ def initialize_tensorflow() -> tf.distribute.Strategy:
         tf.distribute.Strategy: The distribution strategy object after
         initialization.
     """
+    print("Tensorflow version " + tf.__version__)
     try:
         tpu = tf.distribute.cluster_resolver.TPUClusterResolver()
         tf.config.experimental_connect_to_cluster(tpu)
         tf.tpu.experimental.initialize_tpu_system(tpu)
-        distribution_strategy = tf.distribute.TPUStrategy(tpu)
         print(f'Running on a TPU w/{tpu.num_accelerators()["TPU"]} cores')
+        return tf.distribute.TPUStrategy(tpu)
     except ValueError:
         print("WARNING: Not connected to a TPU runtime; Will try GPU")
         if tf.config.list_physical_devices('GPU'):
-            distribution_strategy = tf.distribute.MirroredStrategy()
             print('Running on '
                   f'{len(tf.config.list_physical_devices("GPU"))} GPUs')
-        else:
-            print('WARNING: Not connected to TPU or GPU runtime; '
-                  'Will use CPU context')
-            distribution_strategy = tf.distribute.get_strategy()
-    return distribution_strategy
-
-
-# Define callbacks for training.
-class StoreHistory(keras.callbacks.Callback):
-    """
-    Store the training history.
-    """
-
-    def __init__(self):
-        super().__init__()
-        self.history = {}
-        self.number_epochs = 0
-        history_file_exists = os.path.isfile(history_file)
-        if history_file_exists and LOAD_HISTORY_FROM_FILE:
-            print(f'Loading history from file {history_file}')
-            with open(history_file, 'rb') as f:
-                self.history = pickle.load(f)
-                keys = list(self.history.keys())
-                self.number_epochs = len(self.history[keys[0]])
-                print(
-                    f'Loaded history of {self.number_epochs} previous epochs')
-                last_output = f'Epoch {self.number_epochs}: '
-                for key in keys:
-                    last_output += f'{key}: {self.history[key][-1]:.4f}'
-                    if key != keys[-1]:
-                        last_output += ' - '
-                print(last_output)
-        else:
-            print(f'Creating new history file {history_file}')
-        for key in ['duration', 'accuracy']:
-            if key not in self.history:
-                self.history[key] = []
-
-    def on_train_begin(self, logs=None):
-        keys = list(self.history.keys())
-        if len(keys) == 0:
-            self.number_epochs = 0
-        else:
-            self.number_epochs = len(self.history[keys[0]])
-        print(
-            f'Starting new training with {self.number_epochs} previous epochs')
-
-    def on_epoch_end(self, epoch, logs=None):
-        if 'batch_size' not in self.history:
-            self.history['batch_size'] = []
-        self.history['batch_size'].append(BATCH_SIZE)
-        for key in logs:
-            if key not in self.history:
-                self.history[key] = []
-            self.history[key].append(logs[key])
-        with open(history_file, 'wb') as f:
-            pickle.dump(self.history, f)
-            print(f'Epoch {epoch + self.number_epochs + 1} '
-                  'history pickled and saved to file')
-
-
-def get_best_epoch(history, key):
-    """
-    Get the best Epoch.
-    """
-    max_value = 0
-    max_epoch = 0
-    if key not in history.history or len(history.history[key]) == 0:
-        return 0, 0, 0, 0, 0
-    for epoch in range(len(history.history[key])):
-        value = history.history[key][epoch]
-        if value >= max_value:  # We want the last, best value
-            max_value = value
-            max_epoch = epoch
-    return (history.history['accuracy'][max_epoch],
-            history.history['val_accuracy'][max_epoch],
-            history.history['loss'][max_epoch],
-            history.history['val_loss'][max_epoch],
-            max_epoch,
-            )
+            return tf.distribute.MirroredStrategy()
+        print('WARNING: Not connected to TPU or GPU runtime; '
+                'Will use CPU context')
+        return tf.distribute.get_strategy()
 
 
 def pre_trained_model() -> keras.Model:
     """
-    Use the Xception model with imagenet weights as base model
+    The pre-trained model (Xception).
+
+    Returns:
+        The model.
     """
     base_model = keras.applications.Xception(
         weights='imagenet',
@@ -161,8 +172,12 @@ def pre_trained_model() -> keras.Model:
 
 def light_model() -> keras.Model:
     """
-    The light model does not run properly on a TPU runtime. The loss function
-    results in `nan` after only one epoch. It does work on GPU runtimes though.
+    Define the "light model" which is loosely based on the Xception model and
+    constructs a CNN.
+
+    Note, the light model does not run properly on a TPU runtime. The loss
+    function results in `nan` after only one epoch. It does work on GPU
+    runtimes though.
     """
     inputs = keras.Input(shape=(*image_dimensions, 1))
 
@@ -275,6 +290,13 @@ def compile_model(distribution_strategy: tf.distribute.Strategy,
                 optimizer=keras.optimizers.Adam(learning_rate=ALPHA),
                 loss=keras.losses.BinaryCrossentropy(from_logits=True),
                 metrics=[keras.metrics.BinaryAccuracy(name="accuracy")],
+            )
+        elif MODEL_VERSION == 'light-2':
+            print('Compiling light-2 model')
+            model.compile(
+                optimizer=keras.optimizers.Adam(learning_rate=1e-4),
+                loss='binary_crossentropy',
+                metrics=['accuracy'],
             )
         else:
             raise ValueError(f'Unknown model version {MODEL_VERSION}')
@@ -462,6 +484,19 @@ elif NOTEBOOK_NUMBER == 6:
         f'{base_data_directory}/no_lion',
         f'{base_data_directory}/nocougar',
     ]
+elif NOTEBOOK_NUMBER == 7:
+    image_dimensions = (512, 512)  # height, width
+    WITH_AUGMENTATION = False
+    BATCH_SIZE = 16
+    MODEL_VERSION = "light-2"
+    lion_directories = [
+        f'{base_data_directory}/lion',
+        f'{base_data_directory}/cougar',
+    ]
+    no_lion_directories = [
+        f'{base_data_directory}/no_lion',
+        f'{base_data_directory}/nocougar',
+    ]
 else:
     raise ValueError(f'Unknown notebook {NOTEBOOK_NUMBER}')
 
@@ -506,10 +541,10 @@ def main():
     model = build_model(distribution_strategy)
     compile_model(distribution_strategy, model)
 
-    full_history = StoreHistory()
+    full_history = TrainingHistory()
 
     best_accuracy, best_val_accuracy, best_loss, best_val_loss, best_epoch = \
-        get_best_epoch(full_history, 'accuracy')
+        full_history.get_best_epoch('accuracy')
     print(f'Total time {sum(full_history.history["duration"])} '
           f'for {len(full_history.history["accuracy"])} epochs')
     print(f'Best epoch {best_epoch} - accuracy: {best_accuracy:.4f} - '
