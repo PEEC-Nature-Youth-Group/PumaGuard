@@ -2,15 +2,171 @@
 Train a model.
 """
 
+import argparse
 from datetime import datetime
 import glob
 import os
 import pickle
 import shutil
 import tempfile
-import tensorflow as tf
-import keras
+import tensorflow as tf  # type: ignore
+import keras  # type: ignore
 import matplotlib.pyplot as plt
+
+
+class Presets():
+    """
+    Presets for training.
+    """
+
+    __color_mode: str = 'undefined'
+    __load_model_from_file = False
+    __load_history_from_file = False
+    __epochs = 300
+
+    def __init__(self, notebook_number: int = 1):
+        self.base_data_directory = os.path.join(
+            os.path.dirname(__file__), '../../data')
+        self.base_output_directory = os.path.join(
+            os.path.dirname(__file__), '../../models')
+
+        self.notebook_number = notebook_number
+
+        # Default step size.
+        self.alpha = 1e-5
+
+        # No changes below this line.
+        if self.notebook_number == 1:
+            self.__epochs = 2_400
+            self.image_dimensions = (128, 128)  # height, width
+            self.with_augmentation = False
+            self.batch_size = 16
+            self.model_version = "light"
+            self.alpha = 1e-5
+            self.lion_directories = [
+                # f'{self.base_data_directory}/lion_1',
+                f'{self.base_data_directory}/lion',
+            ]
+            self.no_lion_directories = [
+                # f'{self.base_data_directory}/no_lion_1',
+                f'{self.base_data_directory}/no_lion',
+            ]
+        elif self.notebook_number == 2:
+            self.__epochs = 1_200
+            self.image_dimensions = (256, 256)  # height, width
+            self.with_augmentation = False
+            self.batch_size = 32
+            self.model_version = "light"
+            self.lion_directories = [
+                # f'{base_data_directory}/lion_1',
+                f'{self.base_data_directory}/lion',
+            ]
+            self.no_lion_directories = [
+                # f'{base_data_directory}/no_lion_1',
+                f'{self.base_data_directory}/no_lion',
+            ]
+        elif self.notebook_number == 3:
+            self.__epochs = 900
+            self.image_dimensions = (256, 256)  # height, width
+            self.with_augmentation = True
+            self.batch_size = 32
+            self.model_version = "light"
+            self.lion_directories = [
+                f'{self.base_data_directory}/lion',
+            ]
+            self.no_lion_directories = [
+                f'{self.base_data_directory}/no_lion',
+            ]
+        elif self.notebook_number == 4:
+            self.image_dimensions = (128, 128)  # height, width
+            self.with_augmentation = False
+            self.batch_size = 16
+            self.model_version = "pre-trained"
+            self.lion_directories = [
+                f'{self.base_data_directory}/lion_1',
+            ]
+            self.no_lion_directories = [
+                f'{self.base_data_directory}/no_lion_1',
+            ]
+        elif self.notebook_number == 5:
+            self.image_dimensions = (128, 128)  # height, width
+            self.with_augmentation = False
+            self.batch_size = 16
+            self.model_version = "pre-trained"
+            self.lion_directories = [
+                f'{self.base_data_directory}/lion',
+            ]
+            self.no_lion_directories = [
+                f'{self.base_data_directory}/no_lion',
+            ]
+        elif self.notebook_number == 6:
+            self.image_dimensions = (512, 512)  # height, width
+            self.with_augmentation = False
+            self.batch_size = 16
+            self.model_version = "pre-trained"
+            self.lion_directories = [
+                f'{self.base_data_directory}/lion',
+                f'{self.base_data_directory}/cougar',
+            ]
+            self.no_lion_directories = [
+                f'{self.base_data_directory}/no_lion',
+                f'{self.base_data_directory}/nocougar',
+            ]
+        else:
+            raise ValueError(f'Unknown notebook {self.notebook_number}')
+
+        self.model_file = f'{self.base_output_directory}/' \
+            f'model_weights_{self.notebook_number}_{self.model_version}' \
+            f'_{self.image_dimensions[0]}_{self.image_dimensions[1]}.keras'
+        self.history_file = f'{self.base_output_directory}/' \
+            f'model_history_{self.notebook_number}_{self.model_version}' \
+            f'_{self.image_dimensions[0]}_{self.image_dimensions[1]}.pickle'
+
+    @property
+    def color_mode(self) -> str:
+        """
+        Get the color_mode.
+        """
+        return self.__color_mode
+
+    @color_mode.setter
+    def color_mode(self, mode: str):
+        """
+        Set the color_mode.
+        """
+        if mode not in ['rgb', 'grayscale']:
+            raise ValueError("color_mode must be either 'rgb' or 'grayscale'")
+        self.__color_mode = mode
+
+    @property
+    def load_history_from_file(self) -> bool:
+        """
+        Load history from file.
+        """
+        return self.__load_history_from_file
+
+    @property
+    def load_model_from_file(self) -> bool:
+        """
+        Load model from file.
+        """
+        return self.__load_model_from_file
+
+    @property
+    def epochs(self) -> int:
+        """
+        The number of epochs.
+        """
+        return self.__epochs
+
+    @epochs.setter
+    def epochs(self, epochs: int):
+        """
+        Set the number of epochs.
+        """
+        if epochs < 1:
+            raise ValueError('epochs needs to be a positive integer')
+        self.__epochs = epochs
 
 
 class TrainingHistory(keras.callbacks.Callback):
@@ -18,14 +174,15 @@ class TrainingHistory(keras.callbacks.Callback):
     This class stores the training history
     """
 
-    def __init__(self):
+    def __init__(self, presets: Presets):
         super().__init__()
+        self.presets = presets
         self.history = {}
         self.number_epochs = 0
-        history_file_exists = os.path.isfile(HISTORY_FILE)
-        if history_file_exists and LOAD_HISTORY_FROM_FILE:
-            print(f'Loading history from file {HISTORY_FILE}')
-            with open(HISTORY_FILE, 'rb') as f:
+        history_file_exists = os.path.isfile(presets.history_file)
+        if history_file_exists and presets.load_history_from_file:
+            print(f'Loading history from file {presets.history_file}')
+            with open(presets.history_file, 'rb') as f:
                 self.history = pickle.load(f)
                 keys = list(self.history.keys())
                 self.number_epochs = len(self.history[keys[0]])
@@ -33,13 +190,12 @@ class TrainingHistory(keras.callbacks.Callback):
                       'previous epochs')
                 last_output = f'Epoch {self.number_epochs}: '
                 for key in keys:
-                    if len(self.history[key]) > 0:
-                        last_output += f'{key}: {self.history[key][-1]:.4f}'
+                    last_output += f'{key}: {self.history[key][-1]:.4f}'
                     if key != keys[-1]:
                         last_output += ' - '
                 print(last_output)
         else:
-            print(f'Creating new history file {HISTORY_FILE}')
+            print(f'Creating new history file {presets.history_file}')
         for key in ['duration', 'accuracy']:
             if key not in self.history:
                 self.history[key] = []
@@ -54,14 +210,17 @@ class TrainingHistory(keras.callbacks.Callback):
               'previous epochs')
 
     def on_epoch_end(self, epoch, logs=None):
+        """
+        Run at the end of each epoch.
+        """
         if 'batch_size' not in self.history:
             self.history['batch_size'] = []
-        self.history['batch_size'].append(BATCH_SIZE)
+        self.history['batch_size'].append(self.presets.batch_size)
         for key in logs:
             if key not in self.history:
                 self.history[key] = []
             self.history[key].append(logs[key])
-        with open(HISTORY_FILE, 'wb') as f:
+        with open(self.presets.history_file, 'wb') as f:
             pickle.dump(self.history, f)
             print(f'Epoch {epoch + self.number_epochs + 1}'
                   'history pickled and saved to file')
@@ -93,22 +252,6 @@ class TrainingHistory(keras.callbacks.Callback):
                 self.history['val_loss'][max_epoch],
                 max_epoch,
                 )
-
-
-def get_duration(start_time: datetime.timezone,
-                 end_time: datetime.timezone) -> float:
-    """
-    Get duration between start and end time in seconds.
-
-    Args:
-        start_time (datetime.timezone): The start time.
-        end_time (datetime.timezone): The end time.
-
-    Returns:
-        float: The duration in seconds.
-    """
-    duration = end_time - start_time
-    return duration / datetime.timedelta(microseconds=1) / 1e6
 
 
 def intialize_tensorflow() -> tf.distribute.Strategy:
@@ -149,27 +292,28 @@ def copy_images(work_directory, lion_images, no_lion_images):
     print('Copied all images')
 
 
-def image_augmentation(image, augmentation_layers):
+def image_augmentation(image, with_augmentation: bool, augmentation_layers):
     """
     Use augmentation if `with_augmentation` is set to True
     """
-    if WITH_AUGMENTATION:
+    if with_augmentation:
         for layer in augmentation_layers:
             image = layer(image)
     return image
 
 
-def pre_trained_model():
+def pre_trained_model(presets: Presets) -> keras.src.engine.training.Model:
     """
     The pre-trained model (Xception).
 
     Returns:
         The model.
     """
+    # Use the Xception model with imagenet weights as base model
     base_model = keras.applications.Xception(
         weights='imagenet',
         include_top=False,
-        input_shape=(*image_dimensions, 3),
+        input_shape=(*presets.image_dimensions, 3),
     )
 
     print(f'Number of layers in the base model: {len(base_model.layers)}')
@@ -189,7 +333,7 @@ def pre_trained_model():
     ])
 
 
-def light_model():
+def light_model(presets: Presets) -> keras.src.engine.training.Model:
     """
     Define the "light model" which is loosely based on the Xception model and
     constructs a CNN.
@@ -198,7 +342,7 @@ def light_model():
     function results in `nan` after only one epoch. It does work on GPU
     runtimes though.
     """
-    inputs = keras.Input(shape=(*image_dimensions, 1))
+    inputs = keras.Input(shape=(*presets.image_dimensions, 1))
 
     # Entry block
     x = keras.layers.Rescaling(1.0 / 255)(inputs)
@@ -235,10 +379,11 @@ def light_model():
     x = keras.layers.Dropout(0.1)(x)
 
     outputs = keras.layers.Dense(1, activation=None)(x)
+
     return keras.Model(inputs, outputs)
 
 
-def light_model_2():
+def light_model_2(presets: Presets) -> keras.src.engine.training.Model:
     """
     Another attempt at a light model.
     """
@@ -247,7 +392,7 @@ def light_model_2():
             32,
             (3, 3),
             activation='relu',
-            input_shape=(*image_dimensions, 1),
+            input_shape=(*presets.image_dimensions, 1),
         ),
         keras.layers.MaxPooling2D(2, 2),
         keras.layers.Conv2D(64, (3, 3), activation='relu'),
@@ -260,15 +405,15 @@ def light_model_2():
     ])
 
 
-def organize_data(work_directory):
+def organize_data(presets: Presets, work_directory: str):
     """
     Organizes the data and splits it into training and validation datasets.
     """
     lion_images = []
-    for lion in lion_directories:
+    for lion in presets.lion_directories:
         lion_images += glob.glob(os.path.join(lion, '*JPG'))
     no_lion_images = []
-    for no_lion in no_lion_directories:
+    for no_lion in presets.no_lion_directories:
         no_lion_images += glob.glob(os.path.join(no_lion, '*JPG'))
 
     print(f'Found {len(lion_images)} images tagged as `lion`')
@@ -284,7 +429,7 @@ def organize_data(work_directory):
                 no_lion_images=no_lion_images)
 
 
-def create_datasets(work_directory, color_mode):
+def create_datasets(presets: Presets, work_directory: str, color_mode: str):
     """
     Create the training and validation datasets.
     """
@@ -303,20 +448,22 @@ def create_datasets(work_directory, color_mode):
     training_dataset, validation_dataset = \
         keras.preprocessing.image_dataset_from_directory(
             work_directory,
-            batch_size=BATCH_SIZE,
+            batch_size=presets.batch_size,
             validation_split=0.2,
             subset='both',
             # Seed is always the same in order to ensure that we can reproduce
             # the same training session
             seed=123,
             shuffle=True,
-            image_size=image_dimensions,
+            image_size=presets.image_dimensions,
             color_mode=color_mode,
         )
 
     training_dataset = training_dataset.map(
         lambda img, label: (image_augmentation(
-            image=img, augmentation_layers=augmentation_layers), label),
+            image=img,
+            with_augmentation=presets.with_augmentation,
+            augmentation_layers=augmentation_layers), label),
         num_parallel_calls=tf.data.AUTOTUNE,
     )
 
@@ -326,54 +473,60 @@ def create_datasets(work_directory, color_mode):
     return training_dataset, validation_dataset
 
 
-def create_model(distribution_strategy):
+def create_model(presets: Presets,
+                 distribution_strategy: tf.distribute.Strategy):
     """
     Create the model.
     """
     with distribution_strategy.scope():
-        model_file_exists = os.path.isfile(MODEL_FILE)
-        if LOAD_MODEL_FROM_FILE and model_file_exists:
-            os.stat(MODEL_FILE)
-            print(f'Loading model from file {MODEL_FILE}')
-            model = keras.models.load_model(MODEL_FILE)
+        model_file_exists = os.path.isfile(presets.model_file)
+        if presets.load_model_from_file and model_file_exists:
+            os.stat(presets.model_file)
+            print(f'Loading model from file {presets.model_file}')
+            model = keras.models.load_model(presets.model_file)
             print('Loaded model from file')
         else:
             print('Creating new model')
-            if MODEL_VERSION == "pre-trained":
+            if presets.model_version == "pre-trained":
                 print('Creating new Xception model')
-                model = pre_trained_model()
-                model.build(input_shape=(None, *image_dimensions, 3))
+                model = pre_trained_model(presets)
+                print('Building pre-trained model')
+                model.build(input_shape=(None, *presets.image_dimensions, 3))
                 print('Compiling pre-trained model')
                 model.compile(
                     optimizer=keras.optimizers.Adam(learning_rate=1e-4),
                     loss='binary_crossentropy',
                     metrics=['accuracy'],
                 )
-            elif MODEL_VERSION == "light":
+            elif presets.model_version == "light":
                 print('Creating new light model')
-                model = light_model()
-                model.build(input_shape=(None, *image_dimensions, 1))
+                model = light_model(presets)
+                print('Building light model')
+                model.build(input_shape=(None, *presets.image_dimensions, 1))
                 print('Compiling light model')
                 model.compile(
-                    optimizer=keras.optimizers.Adam(learning_rate=ALPHA),
+                    optimizer=keras.optimizers.Adam(
+                        learning_rate=presets.alpha),
                     loss=keras.losses.BinaryCrossentropy(from_logits=True),
                     metrics=[keras.metrics.BinaryAccuracy(name="accuracy")],
                 )
-            elif MODEL_VERSION == "light-2":
+            elif presets.model_version == 'light-2':
                 print('Creating new light-2 model')
-                model = light_model_2()
-                model.build(input_shape=(None, *image_dimensions, 1))
-                print('Compiling light-2 model')
+                model = light_model_2(presets)
+                print('Building light-2 model')
+                model.build(input_shape=(None, *presets.image_dimensions, 1))
+                print('Compiling light model')
                 model.compile(
                     optimizer=keras.optimizers.Adam(learning_rate=1e-4),
                     loss='binary_crossentropy',
                     metrics=['accuracy'],
                 )
             else:
-                raise ValueError(f'unknown model version {MODEL_VERSION}')
+                raise ValueError(
+                    f'unknown model version {presets.model_version}')
 
-        print(f'Number of layers in the model: {len(model.layers)}')
-        model.summary()
+            print(f'Number of layers in the model: {len(model.layers)}')
+
     return model
 
 
@@ -402,12 +555,16 @@ def plot_training_progress(filename, full_history):
     plt.savefig(filename)
 
 
-def train_model(training_dataset, validation_dataset, full_history, model):
+def train_model(training_dataset,
+                validation_dataset,
+                full_history,
+                presets: Presets,
+                model: keras.src.engine.training.Model):
     """
     Train the model.
     """
     checkpoint = keras.callbacks.ModelCheckpoint(
-        filepath=MODEL_FILE,
+        filepath=presets.model_file,
         monitor='val_accuracy',
         save_best_only=True,
         save_weights_only=False,
@@ -423,11 +580,12 @@ def train_model(training_dataset, validation_dataset, full_history, model):
         min_lr=1e-8,  # Lower bound on the learning rate.
     )
 
+    print(f'Training for {presets.epochs} epochs')
     start_time = datetime.now()
     print(start_time)
     model.fit(
         training_dataset,
-        epochs=EPOCHS,
+        epochs=presets.epochs,
         validation_data=validation_dataset,
         callbacks=[
             checkpoint,
@@ -449,28 +607,53 @@ def train_model(training_dataset, validation_dataset, full_history, model):
           f'for {len(full_history.history["accuracy"])} epochs')
 
 
+def parse_commandline() -> argparse.Namespace:
+    """
+    Parse the command line.
+    """
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '--notebook',
+        help='The notebook number',
+        type=int,
+        default=1,
+    )
+    parser.add_argument(
+        '--epochs',
+        help='How many epochs to train',
+        type=int,
+    )
+    return parser.parse_args()
+
+
 def main():
     """
     The main entry point.
     """
-    print(f'Model file   {MODEL_FILE}')
-    print(f'History file {HISTORY_FILE}')
+    options = parse_commandline()
+    presets = Presets(options.notebook)
+
+    if options.epochs:
+        presets.epochs = options.epochs
+
+    print(f'Model file   {presets.model_file}')
+    print(f'History file {presets.history_file}')
 
     work_directory = tempfile.mkdtemp(prefix='pumaguard-work-')
-    organize_data(work_directory=work_directory)
+    organize_data(presets=presets, work_directory=work_directory)
 
-    if MODEL_VERSION == 'pre-trained':
-        color_mode = 'rgb'
+    if presets.model_version == 'pre-trained':
+        presets.color_mode = 'rgb'
     else:
-        color_mode = 'grayscale'
-    print(f'Using color_mode \'{color_mode}\'')
+        presets.color_mode = 'grayscale'
+    print(f'Using color_mode \'{presets.color_mode}\'')
 
-    print(f'image dimensions {image_dimensions}')
+    print(f'image dimensions {presets.image_dimensions}')
 
-    training_dataset, validation_dataset = create_datasets(work_directory,
-                                                           color_mode)
+    training_dataset, validation_dataset = create_datasets(
+        presets, work_directory, presets.color_mode)
 
-    full_history = TrainingHistory()
+    full_history = TrainingHistory(presets)
 
     best_accuracy, best_val_accuracy, best_loss, best_val_loss, \
         best_epoch = full_history.get_best_epoch('accuracy')
@@ -481,10 +664,11 @@ def main():
           f'{best_loss:.4f} - val_loss: {best_val_loss:.4f}')
 
     distribution_strategy = intialize_tensorflow()
-    model = create_model(distribution_strategy)
+    model = create_model(presets, distribution_strategy)
     train_model(training_dataset=training_dataset,
                 validation_dataset=validation_dataset,
                 model=model,
+                presets=presets,
                 full_history=full_history)
 
     # Print some stats of training so far
@@ -505,127 +689,3 @@ def main():
           f'- loss: {best_loss:.4f} - val_loss: {best_val_loss:.4f}')
 
     plot_training_progress('training-progress.png', full_history=full_history)
-
-
-base_data_directory = os.path.join(os.path.dirname(__file__), '../data')
-base_output_directory = os.path.join(os.path.dirname(__file__), '../models')
-
-# Set the notebook number to run.
-NOTEBOOK_NUMBER = 7
-
-# Load an existing model and its weights from disk (True) or create a fresh new
-# model (False).
-LOAD_MODEL_FROM_FILE = False
-
-# Load previous training history from file (True).
-LOAD_HISTORY_FROM_FILE = False
-
-# How many epochs to train for.
-EPOCHS = 300
-
-# Default step size.
-ALPHA = 1e-5
-
-# No changes below this line.
-if NOTEBOOK_NUMBER == 1:
-    EPOCHS = 1
-    image_dimensions = (128, 128)  # height, width
-    WITH_AUGMENTATION = False
-    BATCH_SIZE = 16
-    MODEL_VERSION = "light"
-    ALPHA = 1e-5
-    lion_directories = [
-        # f'{base_data_directory}/lion_1',
-        f'{base_data_directory}/lion',
-    ]
-    no_lion_directories = [
-        # f'{base_data_directory}/no_lion_1',
-        f'{base_data_directory}/no_lion',
-    ]
-elif NOTEBOOK_NUMBER == 2:
-    EPOCHS = 1_200
-    image_dimensions = (256, 256)  # height, width
-    WITH_AUGMENTATION = False
-    BATCH_SIZE = 32
-    MODEL_VERSION = "light"
-    lion_directories = [
-        # f'{base_data_directory}/lion_1',
-        f'{base_data_directory}/lion',
-    ]
-    no_lion_directories = [
-        # f'{base_data_directory}/no_lion_1',
-        f'{base_data_directory}/no_lion',
-    ]
-elif NOTEBOOK_NUMBER == 3:
-    EPOCHS = 900
-    image_dimensions = (256, 256)  # height, width
-    WITH_AUGMENTATION = True
-    BATCH_SIZE = 32
-    MODEL_VERSION = "light"
-    lion_directories = [
-        f'{base_data_directory}/lion',
-    ]
-    no_lion_directories = [
-        f'{base_data_directory}/no_lion',
-    ]
-elif NOTEBOOK_NUMBER == 4:
-    image_dimensions = (128, 128)  # height, width
-    WITH_AUGMENTATION = False
-    BATCH_SIZE = 16
-    MODEL_VERSION = "pre-trained"
-    lion_directories = [
-        f'{base_data_directory}/lion_1',
-    ]
-    no_lion_directories = [
-        f'{base_data_directory}/no_lion_1',
-    ]
-elif NOTEBOOK_NUMBER == 5:
-    image_dimensions = (128, 128)  # height, width
-    WITH_AUGMENTATION = False
-    BATCH_SIZE = 16
-    MODEL_VERSION = "pre-trained"
-    lion_directories = [
-        f'{base_data_directory}/lion',
-    ]
-    no_lion_directories = [
-        f'{base_data_directory}/no_lion',
-    ]
-elif NOTEBOOK_NUMBER == 6:
-    image_dimensions = (512, 512)  # height, width
-    WITH_AUGMENTATION = False
-    BATCH_SIZE = 16
-    MODEL_VERSION = "pre-trained"
-    lion_directories = [
-        f'{base_data_directory}/lion',
-        f'{base_data_directory}/cougar',
-    ]
-    no_lion_directories = [
-        f'{base_data_directory}/no_lion',
-        f'{base_data_directory}/nocougar',
-    ]
-elif NOTEBOOK_NUMBER == 7:
-    image_dimensions = (512, 512)  # height, width
-    WITH_AUGMENTATION = False
-    BATCH_SIZE = 16
-    MODEL_VERSION = "light-2"
-    lion_directories = [
-        f'{base_data_directory}/lion',
-        f'{base_data_directory}/cougar',
-    ]
-    no_lion_directories = [
-        f'{base_data_directory}/no_lion',
-        f'{base_data_directory}/nocougar',
-    ]
-else:
-    raise ValueError(f'Unknown notebook {NOTEBOOK_NUMBER}')
-
-MODEL_FILE = f'{base_output_directory}/' \
-    f'model_weights_{NOTEBOOK_NUMBER}_{MODEL_VERSION}' \
-    f'_{image_dimensions[0]}_{image_dimensions[1]}.keras'
-HISTORY_FILE = f'{base_output_directory}/' \
-    f'model_history_{NOTEBOOK_NUMBER}_{MODEL_VERSION}' \
-    f'_{image_dimensions[0]}_{image_dimensions[1]}.pickle'
-
-
-if __name__ == '__main__':
-    main()

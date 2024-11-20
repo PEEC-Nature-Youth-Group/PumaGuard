@@ -15,7 +15,7 @@ python = ">=3.10,<3.12"
 tensorflow = "2.15.0"
 
 [tool.poetry.group.dev.dependencies]
-ansible-lint = {version = "^24.10.0", markers = "platform_system != 'Windows'"}
+ansible-lint = { version = "24.10.0", markers = 'platform_system != "Windows"' }
 bashate = "^2.1.1"
 ipykernel = "^6.29.5"
 matplotlib = "^3.9.2"
@@ -29,6 +29,7 @@ pick-files = 'scripts.pick_files:main'
 pumaguard-output = 'pumaguard.cmd.output:main'
 pumaguard-server = 'pumaguard.cmd.server:main'
 pumaguard-trailcam = 'pumaguard.cmd.trailcam:main'
+pumaguard-train = 'pumaguard.cmd.train:main'
 
 [build-system]
 requires = ["poetry-core"]

@@ -28,6 +28,14 @@ pumaguard.cmd.trailcam module
    :undoc-members:
    :show-inheritance:
 
+pumaguard.cmd.train module
+--------------------------
+
+.. automodule:: pumaguard.cmd.train
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 
