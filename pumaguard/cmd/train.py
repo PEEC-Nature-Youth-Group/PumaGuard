@@ -3,7 +3,7 @@ Train a model.
 """
 
 import argparse
-from datetime import datetime
+import datetime
 import glob
 import os
 import pickle
@@ -581,7 +581,7 @@ def train_model(training_dataset,
     )
 
     print(f'Training for {presets.epochs} epochs')
-    start_time = datetime.now()
+    start_time = datetime.datetime.now()
     print(start_time)
     model.fit(
         training_dataset,
@@ -593,7 +593,7 @@ def train_model(training_dataset,
             full_history,
         ]
     )
-    end_time = datetime.now()
+    end_time = datetime.datetime.now()
     print(end_time)
 
     duration = (end_time - start_time).total_seconds()
