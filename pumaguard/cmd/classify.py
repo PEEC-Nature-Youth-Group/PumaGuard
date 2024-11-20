@@ -9,8 +9,8 @@ import datetime
 import os
 import pickle
 import numpy as np
-import tensorflow as tf
-import keras
+import tensorflow as tf  # type: ignore
+import keras  # type: ignore
 
 
 class TrainingHistory(keras.callbacks.Callback):
@@ -45,6 +45,13 @@ class TrainingHistory(keras.callbacks.Callback):
                 self.history[key] = []
 
     def on_train_begin(self, logs=None):
+        """
+        Called at the beginning of training.
+
+        Args:
+            logs (dict): Currently no data is passed to this argument for this
+                method but that may change in the future.
+        """
         keys = list(self.history.keys())
         if len(keys) == 0:
             self.number_epochs = 0
@@ -54,6 +61,15 @@ class TrainingHistory(keras.callbacks.Callback):
               'previous epochs')
 
     def on_epoch_end(self, epoch, logs=None):
+        """
+        Called at the end of each epoch.
+
+        Arguments:
+            epoch (int): The current epoch.
+
+        Keyword Arguments:
+            logs (dict): A dictionary of logs from the training process.
+        """
         if 'batch_size' not in self.history:
             self.history['batch_size'] = []
         self.history['batch_size'].append(BATCH_SIZE)
@@ -95,8 +111,8 @@ class TrainingHistory(keras.callbacks.Callback):
                 )
 
 
-def get_duration(start_time: datetime.timezone,
-                 end_time: datetime.timezone) -> float:
+def get_duration(start_time: datetime.datetime,
+                 end_time: datetime.datetime) -> float:
     """
     Get duration between start and end time in seconds.
 
@@ -392,7 +408,7 @@ base_output_directory = os.path.realpath(os.path.join(
 # Settings for the different rows in the table
 
 # Set the notebook number to run.
-NOTEBOOK_NUMBER = 6
+NOTEBOOK_NUMBER = 1
 
 # Load an existing model and its weights from disk (True) or create a fresh new
 # model (False).
@@ -552,7 +568,3 @@ def main():
           f'- val_loss: {best_val_loss:.4f}')
 
     classify_images(model, options.images)
-
-
-if __name__ == "__main__":
-    main()
