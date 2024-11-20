@@ -539,6 +539,7 @@ def create_model(presets: Presets,
                     f'unknown model version {presets.model_version}')
 
             print(f'Number of layers in the model: {len(model.layers)}')
+            model.summary()
 
     return model
 
