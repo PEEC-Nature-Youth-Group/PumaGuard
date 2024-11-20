@@ -128,12 +128,14 @@ class Presets():
         else:
             raise ValueError(f'Unknown notebook {self.notebook_number}')
 
-        self.model_file = f'{self.base_output_directory}/' \
-            f'model_weights_{self.notebook_number}_{self.model_version}' \
-            f'_{self.image_dimensions[0]}_{self.image_dimensions[1]}.keras'
-        self.history_file = f'{self.base_output_directory}/' \
-            f'model_history_{self.notebook_number}_{self.model_version}' \
-            f'_{self.image_dimensions[0]}_{self.image_dimensions[1]}.pickle'
+        self.model_file = os.path.realpath(
+            f'{self.base_output_directory}/'
+            f'model_weights_{self.notebook_number}_{self.model_version}'
+            f'_{self.image_dimensions[0]}_{self.image_dimensions[1]}.keras')
+        self.history_file = os.path.realpath(
+            f'{self.base_output_directory}/'
+            f'model_history_{self.notebook_number}_{self.model_version}'
+            f'_{self.image_dimensions[0]}_{self.image_dimensions[1]}.pickle')
 
     @property
     def color_mode(self) -> str:
