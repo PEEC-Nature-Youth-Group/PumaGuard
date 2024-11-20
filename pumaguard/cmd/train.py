@@ -112,6 +112,19 @@ class Presets():
                 f'{self.base_data_directory}/no_lion',
                 f'{self.base_data_directory}/nocougar',
             ]
+        elif self.notebook_number == 7:
+            self.image_dimensions = (512, 512)  # height, width
+            self.with_augmentation = False
+            self.batch_size = 16
+            self.model_version = "light-2"
+            self.lion_directories = [
+                f'{self.base_data_directory}/lion',
+                f'{self.base_data_directory}/cougar',
+            ]
+            self.no_lion_directories = [
+                f'{self.base_data_directory}/no_lion',
+                f'{self.base_data_directory}/nocougar',
+            ]
         else:
             raise ValueError(f'Unknown notebook {self.notebook_number}')
 
