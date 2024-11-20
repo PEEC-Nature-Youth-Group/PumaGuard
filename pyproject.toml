@@ -26,6 +26,7 @@ pytest = "^8.2.2"
 
 [tool.poetry.scripts]
 pick-files = 'scripts.pick_files:main'
+pumaguard-classify = 'pumaguard.cmd.classify:main'
 pumaguard-output = 'pumaguard.cmd.output:main'
 pumaguard-server = 'pumaguard.cmd.server:main'
 pumaguard-trailcam = 'pumaguard.cmd.trailcam:main'
