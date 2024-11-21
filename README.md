@@ -45,5 +45,12 @@ Colab](https://colab.research.google.com/), do the following from the terminal:
 
 ```console
 git clone https://github.com/PEEC-Nature-Youth-Group/PumaGuard.git
-scripts/train.py
+cd PumaGuard
+scripts/train.py --help
+```
+
+For example, if you want to train the model from row 1 in the notebook,
+
+```console
+scripts/train.py --notebook 1
 ```
