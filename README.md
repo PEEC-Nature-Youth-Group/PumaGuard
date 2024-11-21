@@ -12,12 +12,6 @@
 
 Please visit <http://pumaguard.rtfd.io/> for more information.
 
-## Hacktoberfest 2024
-
-This repository is participating in [Hacktoberfest
-2024](https://hacktoberfest.com/). If you are interested in participating,
-remember to sign up first!
-
 ## GitHub Codespaces
 
 If you do not want to install any new software on your computer you can use
@@ -51,5 +45,5 @@ Colab](https://colab.research.google.com/), do the following from the terminal:
 
 ```console
 git clone https://github.com/PEEC-Nature-Youth-Group/PumaGuard.git
-python3 scripts/train.py
+scripts/train.py
 ```
