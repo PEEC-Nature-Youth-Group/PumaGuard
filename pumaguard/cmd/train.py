@@ -9,9 +9,10 @@ import os
 import pickle
 import shutil
 import tempfile
-import tensorflow as tf  # type: ignore
+
 import keras  # type: ignore
 import matplotlib.pyplot as plt
+import tensorflow as tf  # type: ignore
 
 
 class Presets():
@@ -317,7 +318,7 @@ def image_augmentation(image, with_augmentation: bool, augmentation_layers):
     return image
 
 
-def pre_trained_model(presets: Presets) -> keras.src.engine.training.Model:
+def pre_trained_model(presets: Presets) -> keras.src.Model:
     """
     The pre-trained model (Xception).
 
@@ -348,7 +349,7 @@ def pre_trained_model(presets: Presets) -> keras.src.engine.training.Model:
     ])
 
 
-def light_model(presets: Presets) -> keras.src.engine.training.Model:
+def light_model(presets: Presets) -> keras.src.Model:
     """
     Define the "light model" which is loosely based on the Xception model and
     constructs a CNN.
@@ -398,7 +399,7 @@ def light_model(presets: Presets) -> keras.src.engine.training.Model:
     return keras.Model(inputs, outputs)
 
 
-def light_model_2(presets: Presets) -> keras.src.engine.training.Model:
+def light_model_2(presets: Presets) -> keras.src.Model:
     """
     Another attempt at a light model.
     """
@@ -575,7 +576,7 @@ def train_model(training_dataset,
                 validation_dataset,
                 full_history,
                 presets: Presets,
-                model: keras.src.engine.training.Model):
+                model: keras.src.Model):
     """
     Train the model.
     """
