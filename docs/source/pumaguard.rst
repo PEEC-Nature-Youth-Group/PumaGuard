@@ -52,6 +52,14 @@ pumaguard.train module
    :undoc-members:
    :show-inheritance:
 
+pumaguard.traininghistory module
+--------------------------------
+
+.. automodule:: pumaguard.traininghistory
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 
