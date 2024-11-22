@@ -13,6 +13,9 @@ import keras  # type: ignore
 
 from pumaguard.presets import Presets
 from pumaguard.traininghistory import TrainingHistory
+from pumaguard.utils import (
+    initialize_tensorflow,
+)
 
 
 def get_duration(start_time: datetime.datetime,
@@ -29,35 +32,6 @@ def get_duration(start_time: datetime.datetime,
     """
     duration = end_time - start_time
     return duration / datetime.timedelta(microseconds=1) / 1e6
-
-
-def initialize_tensorflow() -> tf.distribute.Strategy:
-    """
-    Initialize Tensorflow on available hardware.
-
-    Try different backends in the following order: TPU, GPU, CPU and use the
-    first one available.
-
-    Returns:
-        tf.distribute.Strategy: The distribution strategy object after
-        initialization.
-    """
-    print("Tensorflow version " + tf.__version__)
-    try:
-        tpu = tf.distribute.cluster_resolver.TPUClusterResolver()
-        tf.config.experimental_connect_to_cluster(tpu)
-        tf.tpu.experimental.initialize_tpu_system(tpu)
-        print(f'Running on a TPU w/{tpu.num_accelerators()["TPU"]} cores')
-        return tf.distribute.TPUStrategy(tpu)
-    except ValueError:
-        print("WARNING: Not connected to a TPU runtime; Will try GPU")
-        if tf.config.list_physical_devices('GPU'):
-            print('Running on '
-                  f'{len(tf.config.list_physical_devices("GPU"))} GPUs')
-            return tf.distribute.MirroredStrategy()
-        print('WARNING: Not connected to TPU or GPU runtime; '
-              'Will use CPU context')
-        return tf.distribute.get_strategy()
 
 
 def pre_trained_model(presets: Presets) -> keras.src.Model:

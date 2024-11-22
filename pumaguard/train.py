@@ -15,35 +15,9 @@ import tensorflow as tf  # type: ignore
 
 from pumaguard.presets import Presets
 from pumaguard.traininghistory import TrainingHistory
-
-
-def intialize_tensorflow() -> tf.distribute.Strategy:
-    """
-    Initialize Tensorflow on available hardware.
-
-    Try different backends in the following order: TPU, GPU, CPU and use the
-    first one available.
-
-    Returns:
-        tf.distribute.Strategy: The distribution strategy object after
-        initialization.
-    """
-    print("Tensorflow version " + tf.__version__)
-    try:
-        tpu = tf.distribute.cluster_resolver.TPUClusterResolver()
-        tf.config.experimental_connect_to_cluster(tpu)
-        tf.tpu.experimental.initialize_tpu_system(tpu)
-        print(f'Running on a TPU w/{tpu.num_accelerators()["TPU"]} cores')
-        return tf.distribute.TPUStrategy(tpu)
-    except ValueError:
-        print("WARNING: Not connected to a TPU runtime; Will try GPU")
-        if tf.config.list_physical_devices('GPU'):
-            print('Running on '
-                  f'{len(tf.config.list_physical_devices("GPU"))} GPUs')
-            return tf.distribute.MirroredStrategy()
-        print('WARNING: Not connected to TPU or GPU runtime; '
-              'Will use CPU context')
-        return tf.distribute.get_strategy()
+from pumaguard.utils import (
+    initialize_tensorflow,
+)
 
 
 def copy_images(work_directory, lion_images, no_lion_images):
@@ -430,7 +404,7 @@ def main():
           f'- val_accuracy: {best_val_accuracy:.4f} - loss: '
           f'{best_loss:.4f} - val_loss: {best_val_loss:.4f}')
 
-    distribution_strategy = intialize_tensorflow()
+    distribution_strategy = initialize_tensorflow()
     model = create_model(presets, distribution_strategy)
     train_model(training_dataset=training_dataset,
                 validation_dataset=validation_dataset,

@@ -60,6 +60,14 @@ pumaguard.traininghistory module
    :undoc-members:
    :show-inheritance:
 
+pumaguard.utils module
+----------------------
+
+.. automodule:: pumaguard.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 
