@@ -7,7 +7,7 @@ from unittest.mock import patch
 import sys
 import base64
 
-from pumaguard.cmd import server
+from pumaguard import server
 
 
 class TestServer(unittest.TestCase):
@@ -61,7 +61,7 @@ class TestServer(unittest.TestCase):
         """
         Test classify_image endpoint with no image provided.
         """
-        with patch('pumaguard.cmd.server.logger') as mock_logger:
+        with patch('pumaguard.server.logger') as mock_logger:
             response = self.client.post('/classify', json={})
             self.assertEqual(response.status_code, 400)
             self.assertIn('Illegal data provided', response.json['error'])
@@ -88,7 +88,7 @@ class TestServer(unittest.TestCase):
         """
         Test classify_image endpoint with invalid JSON.
         """
-        with patch('pumaguard.cmd.server.logger') as mock_logger:
+        with patch('pumaguard.server.logger') as mock_logger:
             response = self.client.post(
                 '/classify', data='invalid_json',
                 content_type='application/json')
@@ -105,7 +105,7 @@ class TestServer(unittest.TestCase):
         """
         Test classify_image endpoint with invalid image data.
         """
-        with patch('pumaguard.cmd.server.logger') as mock_logger:
+        with patch('pumaguard.server.logger') as mock_logger:
             response = self.client.post(
                 '/classify', json={'image': 'invalid_image_data'})
             self.assertEqual(response.status_code, 400)

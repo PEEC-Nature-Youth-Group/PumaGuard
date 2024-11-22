@@ -24,7 +24,7 @@ from PIL import (
     Image,
     UnidentifiedImageError,
 )
-from .. import __VERSION__
+from . import __VERSION__
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

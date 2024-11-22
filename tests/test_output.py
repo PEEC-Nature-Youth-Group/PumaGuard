@@ -6,7 +6,7 @@ import unittest
 from unittest.mock import patch
 import sys
 
-from pumaguard.cmd import output
+from pumaguard import output
 
 
 class TestServer(unittest.TestCase):
