@@ -1,6 +1,14 @@
 pumaguard package
 =================
 
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   pumaguard.models
+
 Submodules
 ----------
 
