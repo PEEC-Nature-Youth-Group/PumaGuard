@@ -17,9 +17,9 @@ class Presets():
 
     def __init__(self, notebook_number: int = 1):
         self.base_data_directory = os.path.join(
-            os.path.dirname(__file__), '../../data')
+            os.path.dirname(__file__), '../data')
         self.base_output_directory = os.path.join(
-            os.path.dirname(__file__), '../../models')
+            os.path.dirname(__file__), '../models')
 
         self.notebook_number = notebook_number
 
