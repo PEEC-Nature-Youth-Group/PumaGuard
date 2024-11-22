@@ -20,6 +20,14 @@ pumaguard.output module
    :undoc-members:
    :show-inheritance:
 
+pumaguard.presets module
+------------------------
+
+.. automodule:: pumaguard.presets
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 pumaguard.server module
 -----------------------
 
