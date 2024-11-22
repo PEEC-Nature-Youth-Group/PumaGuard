@@ -7,7 +7,7 @@ from unittest.mock import patch
 import sys
 import requests
 
-from pumaguard.cmd import trailcam
+from pumaguard import trailcam
 
 
 class TestTrailcam(unittest.TestCase):
@@ -24,7 +24,7 @@ class TestTrailcam(unittest.TestCase):
                 _ = trailcam.parse_commandline()
                 mock_exit.assert_called()
 
-    @patch('pumaguard.cmd.trailcam.requests.post')
+    @patch('pumaguard.trailcam.requests.post')
     def test_send_image_to_server_success(self, mock_post):
         """
         Test successful image upload to server.
@@ -38,7 +38,7 @@ class TestTrailcam(unittest.TestCase):
         self.assertEqual(response, {'status': 'success'})
         mock_post.assert_called_once()
 
-    @patch('pumaguard.cmd.trailcam.requests.post')
+    @patch('pumaguard.trailcam.requests.post')
     def test_send_image_to_server_failure(self, mock_post):
         """
         Test failed image upload to server.

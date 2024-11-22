@@ -1,13 +1,48 @@
 pumaguard package
 =================
 
-Subpackages
------------
+Submodules
+----------
 
-.. toctree::
-   :maxdepth: 4
+pumaguard.classify module
+-------------------------
 
-   pumaguard.cmd
+.. automodule:: pumaguard.classify
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pumaguard.output module
+-----------------------
+
+.. automodule:: pumaguard.output
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pumaguard.server module
+-----------------------
+
+.. automodule:: pumaguard.server
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pumaguard.trailcam module
+-------------------------
+
+.. automodule:: pumaguard.trailcam
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pumaguard.train module
+----------------------
+
+.. automodule:: pumaguard.train
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 Module contents
 ---------------
