@@ -11,8 +11,8 @@ class Presets():
     """
 
     __color_mode: str = 'undefined'
-    __load_model_from_file = False
-    __load_history_from_file = False
+    __load_model_from_file = True
+    __load_history_from_file = True
     __epochs = 300
 
     def __init__(self, notebook_number: int = 1):
