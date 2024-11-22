@@ -151,12 +151,26 @@ class Presets():
         """
         return self.__load_history_from_file
 
+    @load_history_from_file.setter
+    def load_history_from_file(self, load_history: bool):
+        """
+        Load history from file.
+        """
+        self.__load_history_from_file = load_history
+
     @property
     def load_model_from_file(self) -> bool:
         """
         Load model from file.
         """
         return self.__load_model_from_file
+
+    @load_model_from_file.setter
+    def load_model_from_file(self, load_model: bool):
+        """
+        Load model from file.
+        """
+        self.__load_model_from_file = load_model
 
     @property
     def epochs(self) -> int:
