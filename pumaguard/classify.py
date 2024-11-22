@@ -12,20 +12,23 @@ import numpy as np
 import tensorflow as tf  # type: ignore
 import keras  # type: ignore
 
+from pumaguard.presets import Presets
+
 
 class TrainingHistory(keras.callbacks.Callback):
     """
-    Store the training history.
+    This class stores the training history
     """
 
-    def __init__(self):
+    def __init__(self, presets: Presets):
         super().__init__()
+        self.presets = presets
         self.history = {}
         self.number_epochs = 0
-        history_file_exists = os.path.isfile(history_file)
-        if history_file_exists and LOAD_HISTORY_FROM_FILE:
-            print(f'Loading history from file {history_file}')
-            with open(history_file, 'rb') as f:
+        history_file_exists = os.path.isfile(presets.history_file)
+        if history_file_exists and presets.load_history_from_file:
+            print(f'Loading history from file {presets.history_file}')
+            with open(presets.history_file, 'rb') as f:
                 self.history = pickle.load(f)
                 keys = list(self.history.keys())
                 self.number_epochs = len(self.history[keys[0]])
@@ -39,7 +42,7 @@ class TrainingHistory(keras.callbacks.Callback):
                         last_output += ' - '
                 print(last_output)
         else:
-            print(f'Creating new history file {history_file}')
+            print(f'Creating new history file {presets.history_file}')
         for key in ['duration', 'accuracy']:
             if key not in self.history:
                 self.history[key] = []
@@ -72,14 +75,14 @@ class TrainingHistory(keras.callbacks.Callback):
         """
         if 'batch_size' not in self.history:
             self.history['batch_size'] = []
-        self.history['batch_size'].append(BATCH_SIZE)
+        self.history['batch_size'].append(self.presets.batch_size)
         for key in logs:
             if key not in self.history:
                 self.history[key] = []
             self.history[key].append(logs[key])
-        with open(history_file, 'wb') as f:
+        with open(self.presets.history_file, 'wb') as f:
             pickle.dump(self.history, f)
-            print(f'Epoch {epoch + self.number_epochs + 1} '
+            print(f'Epoch {epoch + self.number_epochs + 1}'
                   'history pickled and saved to file')
 
     def get_best_epoch(self, key):
@@ -152,11 +155,11 @@ def initialize_tensorflow() -> tf.distribute.Strategy:
                   f'{len(tf.config.list_physical_devices("GPU"))} GPUs')
             return tf.distribute.MirroredStrategy()
         print('WARNING: Not connected to TPU or GPU runtime; '
-                'Will use CPU context')
+              'Will use CPU context')
         return tf.distribute.get_strategy()
 
 
-def pre_trained_model() -> keras.Model:
+def pre_trained_model(presets: Presets) -> keras.src.Model:
     """
     The pre-trained model (Xception).
 
@@ -166,7 +169,7 @@ def pre_trained_model() -> keras.Model:
     base_model = keras.applications.Xception(
         weights='imagenet',
         include_top=False,
-        input_shape=(*image_dimensions, 3),
+        input_shape=(*presets.image_dimensions, 3),
     )
 
     print(f'Number of layers in the base model: {len(base_model.layers)}')
@@ -186,7 +189,7 @@ def pre_trained_model() -> keras.Model:
     ])
 
 
-def light_model() -> keras.Model:
+def light_model(presets: Presets) -> keras.src.Model:
     """
     Define the "light model" which is loosely based on the Xception model and
     constructs a CNN.
@@ -195,7 +198,7 @@ def light_model() -> keras.Model:
     function results in `nan` after only one epoch. It does work on GPU
     runtimes though.
     """
-    inputs = keras.Input(shape=(*image_dimensions, 1))
+    inputs = keras.Input(shape=(*presets.image_dimensions, 1))
 
     # Entry block
     x = keras.layers.Rescaling(1.0 / 255)(inputs)
@@ -232,98 +235,95 @@ def light_model() -> keras.Model:
     x = keras.layers.Dropout(0.1)(x)
 
     outputs = keras.layers.Dense(1, activation=None)(x)
+
     return keras.Model(inputs, outputs)
 
 
-def build_model(distribution_strategy: tf.distribute.Strategy) -> keras.Model:
+def light_model_2(presets: Presets) -> keras.src.Model:
     """
-    Build the model.
+    Another attempt at a light model.
+    """
+    return keras.Sequential([
+        keras.layers.Conv2D(
+            32,
+            (3, 3),
+            activation='relu',
+            input_shape=(*presets.image_dimensions, 1),
+        ),
+        keras.layers.MaxPooling2D(2, 2),
+        keras.layers.Conv2D(64, (3, 3), activation='relu'),
+        keras.layers.MaxPooling2D(2, 2),
+        keras.layers.Conv2D(128, (3, 3), activation='relu'),
+        keras.layers.MaxPooling2D(2, 2),
+        keras.layers.Flatten(),
+        keras.layers.Dense(512, activation='relu'),
+        keras.layers.Dense(1, activation='sigmoid'),
+    ])
 
-    Args:
-        distribution_strategy (tf.distribute.Strategy): The distribution
-        strategy from the tensorflow initialization.
 
-    Raises:
-        ValueError: If the MODEL_VERSION is illegal, this is raised.
-
-    Returns:
-        keras.Model: The model.
+def create_model(presets: Presets,
+                 distribution_strategy: tf.distribute.Strategy):
+    """
+    Create the model.
     """
     with distribution_strategy.scope():
-        model_file_exists = os.path.isfile(model_file)
-        if LOAD_MODEL_FROM_FILE and model_file_exists:
-            os.stat(model_file)
-            print(f'Loading model from file {model_file}')
-            start_time = datetime.datetime.now()
-            model = keras.models.load_model(model_file)
-            end_time = datetime.datetime.now()
-            print('Loaded model from file, '
-                  f'{get_duration(start_time, end_time)} seconds')
+        model_file_exists = os.path.isfile(presets.model_file)
+        if presets.load_model_from_file and model_file_exists:
+            os.stat(presets.model_file)
+            print(f'Loading model from file {presets.model_file}')
+            model = keras.models.load_model(presets.model_file)
+            print('Loaded model from file')
         else:
             print('Creating new model')
-            if MODEL_VERSION == "pre-trained":
+            if presets.model_version == "pre-trained":
                 print('Creating new Xception model')
-                model = pre_trained_model()
-            elif MODEL_VERSION == "light":
+                model = pre_trained_model(presets)
+                print('Building pre-trained model')
+                model.build(input_shape=(None, *presets.image_dimensions, 3))
+                print('Compiling pre-trained model')
+                model.compile(
+                    optimizer=keras.optimizers.Adam(learning_rate=1e-4),
+                    loss='binary_crossentropy',
+                    metrics=['accuracy'],
+                )
+            elif presets.model_version == "light":
                 print('Creating new light model')
-                model = light_model()
+                model = light_model(presets)
+                print('Building light model')
+                model.build(input_shape=(None, *presets.image_dimensions, 1))
+                print('Compiling light model')
+                model.compile(
+                    optimizer=keras.optimizers.Adam(
+                        learning_rate=presets.alpha),
+                    loss=keras.losses.BinaryCrossentropy(from_logits=True),
+                    metrics=[keras.metrics.BinaryAccuracy(name="accuracy")],
+                )
+            elif presets.model_version == 'light-2':
+                print('Creating new light-2 model')
+                model = light_model_2(presets)
+                print('Building light-2 model')
+                model.build(input_shape=(None, *presets.image_dimensions, 1))
+                print('Compiling light model')
+                model.compile(
+                    optimizer=keras.optimizers.Adam(learning_rate=1e-4),
+                    loss='binary_crossentropy',
+                    metrics=['accuracy'],
+                )
             else:
-                raise ValueError(f'unknown model version {MODEL_VERSION}')
-
-            if MODEL_VERSION == "pre-trained":
-                model.build(input_shape=(None, *image_dimensions, 3))
-            else:
-                model.build(input_shape=(None, *image_dimensions, 1))
+                raise ValueError(
+                    f'unknown model version {presets.model_version}')
 
             print(f'Number of layers in the model: {len(model.layers)}')
-        return model
+            model.summary()
+
+    return model
 
 
-def compile_model(distribution_strategy: tf.distribute.Strategy,
-                  model: keras.Model):
-    """
-    Compile the model.
-
-    Args:
-        distribution_strategy (tf.distribute.Strategy): The distribution
-        strategy after initialization.
-        model (keras.Model): The model.
-
-    Raises:
-        ValueError: If the MODEL_VERSION is unknown, this is raised.
-    """
-    with distribution_strategy.scope():
-        if MODEL_VERSION == 'pre-trained':
-            print('Compiling pre-trained model')
-            model.compile(
-                optimizer=keras.optimizers.Adam(learning_rate=1e-4),
-                loss='binary_crossentropy',
-                metrics=['accuracy'],
-            )
-        elif MODEL_VERSION == 'light':
-            print('Compiling light model')
-            model.compile(
-                optimizer=keras.optimizers.Adam(learning_rate=ALPHA),
-                loss=keras.losses.BinaryCrossentropy(from_logits=True),
-                metrics=[keras.metrics.BinaryAccuracy(name="accuracy")],
-            )
-        elif MODEL_VERSION == 'light-2':
-            print('Compiling light-2 model')
-            model.compile(
-                optimizer=keras.optimizers.Adam(learning_rate=1e-4),
-                loss='binary_crossentropy',
-                metrics=['accuracy'],
-            )
-        else:
-            raise ValueError(f'Unknown model version {MODEL_VERSION}')
-        model.summary()
-
-
-def classify_images(model: keras.Model, image_path: str):
+def classify_images(presets: Presets, model: keras.Model, image_path: str):
     """
     Classify the images and print out the result.
     """
-    if MODEL_VERSION == 'pre-trained':
+    if presets.model_version == 'pre-trained':
         color_model = 'rgb'
     else:
         color_model = 'grayscale'
@@ -333,8 +333,8 @@ def classify_images(model: keras.Model, image_path: str):
     start_time = datetime.datetime.now()
     verification_dataset = keras.preprocessing.image_dataset_from_directory(
         image_path,
-        batch_size=BATCH_SIZE,
-        image_size=image_dimensions,
+        batch_size=presets.batch_size,
+        image_size=presets.image_dimensions,
         shuffle=True,
         color_mode=color_model,
     )
@@ -345,7 +345,8 @@ def classify_images(model: keras.Model, image_path: str):
     all_labels = []
 
     for images, labels in verification_dataset:
-        print(f'Starting classification of batch of {BATCH_SIZE} images')
+        print('Starting classification of batch '
+              f'of {presets.batch_size} images')
         start_time = datetime.datetime.now()
         predictions = model.predict(images)
         end_time = datetime.datetime.now()
@@ -398,153 +399,6 @@ def parse_commandline() -> argparse.Namespace:
     return parser.parse_args()
 
 
-# Use data from local directory
-base_data_directory = os.path.realpath(os.path.join(
-    os.path.dirname(__file__), '../data'))
-base_output_directory = os.path.realpath(os.path.join(
-    os.path.dirname(__file__), '../models'))
-
-
-# Settings for the different rows in the table
-
-# Set the notebook number to run.
-NOTEBOOK_NUMBER = 1
-
-# Load an existing model and its weights from disk (True) or create a fresh new
-# model (False).
-LOAD_MODEL_FROM_FILE = True
-
-# Load previous training history from file (True).
-LOAD_HISTORY_FROM_FILE = True
-
-# How many epochs to train for.
-EPOCHS = 300
-
-# Default learning rate.
-ALPHA = 1e-5
-
-# No changes below this line.
-if NOTEBOOK_NUMBER == 1:
-    EPOCHS = 2_100
-    image_dimensions = (128, 128)  # height, width
-    WITH_AUGMENTATION = False
-    BATCH_SIZE = 16
-    MODEL_VERSION = "light"
-    ALPHA = 1e-5
-    lion_directories = [
-        # f'{base_data_directory}/lion_1',
-        f'{base_data_directory}/lion',
-    ]
-    no_lion_directories = [
-        # f'{base_data_directory}/no_lion_1',
-        f'{base_data_directory}/no_lion',
-    ]
-elif NOTEBOOK_NUMBER == 2:
-    EPOCHS = 1_200
-    image_dimensions = (256, 256)  # height, width
-    WITH_AUGMENTATION = False
-    BATCH_SIZE = 32
-    MODEL_VERSION = "light"
-    lion_directories = [
-        # f'{base_data_directory}/lion_1',
-        f'{base_data_directory}/lion',
-    ]
-    no_lion_directories = [
-        # f'{base_data_directory}/no_lion_1',
-        f'{base_data_directory}/no_lion',
-    ]
-elif NOTEBOOK_NUMBER == 3:
-    EPOCHS = 900
-    image_dimensions = (256, 256)  # height, width
-    WITH_AUGMENTATION = True
-    BATCH_SIZE = 32
-    MODEL_VERSION = "light"
-    lion_directories = [
-        f'{base_data_directory}/lion',
-    ]
-    no_lion_directories = [
-        f'{base_data_directory}/no_lion',
-    ]
-elif NOTEBOOK_NUMBER == 4:
-    image_dimensions = (128, 128)  # height, width
-    WITH_AUGMENTATION = False
-    BATCH_SIZE = 16
-    MODEL_VERSION = "pre-trained"
-    lion_directories = [
-        f'{base_data_directory}/lion_1',
-    ]
-    no_lion_directories = [
-        f'{base_data_directory}/no_lion_1',
-    ]
-elif NOTEBOOK_NUMBER == 5:
-    image_dimensions = (128, 128)  # height, width
-    WITH_AUGMENTATION = False
-    BATCH_SIZE = 16
-    MODEL_VERSION = "pre-trained"
-    lion_directories = [
-        f'{base_data_directory}/lion',
-    ]
-    no_lion_directories = [
-        f'{base_data_directory}/no_lion',
-    ]
-elif NOTEBOOK_NUMBER == 6:
-    image_dimensions = (512, 512)  # height, width
-    WITH_AUGMENTATION = False
-    BATCH_SIZE = 16
-    MODEL_VERSION = "pre-trained"
-    lion_directories = [
-        f'{base_data_directory}/lion',
-        f'{base_data_directory}/cougar',
-    ]
-    no_lion_directories = [
-        f'{base_data_directory}/no_lion',
-        f'{base_data_directory}/nocougar',
-    ]
-elif NOTEBOOK_NUMBER == 7:
-    image_dimensions = (512, 512)  # height, width
-    WITH_AUGMENTATION = False
-    BATCH_SIZE = 16
-    MODEL_VERSION = "light-2"
-    lion_directories = [
-        f'{base_data_directory}/lion',
-        f'{base_data_directory}/cougar',
-    ]
-    no_lion_directories = [
-        f'{base_data_directory}/no_lion',
-        f'{base_data_directory}/nocougar',
-    ]
-else:
-    raise ValueError(f'Unknown notebook {NOTEBOOK_NUMBER}')
-
-model_file = (f'{base_output_directory}/model_weights_{NOTEBOOK_NUMBER}_'
-              f'{MODEL_VERSION}_{image_dimensions[0]}_'
-              f'{image_dimensions[1]}.keras')
-history_file = (f'{base_output_directory}/model_history_{NOTEBOOK_NUMBER}_'
-                f'{MODEL_VERSION}_{image_dimensions[0]}_'
-                f'{image_dimensions[1]}.pickle')
-
-print(f'Model file   {model_file}')
-print(f'History file {history_file}')
-
-
-checkpoint = keras.callbacks.ModelCheckpoint(
-    filepath=model_file,
-    monitor='val_accuracy',
-    save_best_only=True,
-    save_weights_only=False,
-    verbose=1,
-)
-
-reduce_learning_rate = keras.callbacks.ReduceLROnPlateau(
-    monitor='val_loss',
-    factor=0.75,  # New lr = lr * factor.
-    patience=50,
-    verbose=1,
-    mode='min',
-    min_lr=1e-8,  # Lower bound on the learning rate.
-)
-
-
 def main():
     """
     Main entry point
@@ -552,12 +406,9 @@ def main():
     print("Tensorflow version " + tf.__version__)
 
     options = parse_commandline()
+    presets = Presets(options.notebook)
 
-    distribution_strategy = initialize_tensorflow()
-    model = build_model(distribution_strategy)
-    compile_model(distribution_strategy, model)
-
-    full_history = TrainingHistory()
+    full_history = TrainingHistory(presets)
 
     best_accuracy, best_val_accuracy, best_loss, best_val_loss, best_epoch = \
         full_history.get_best_epoch('accuracy')
@@ -567,4 +418,6 @@ def main():
           f'val_accuracy: {best_val_accuracy:.4f} - loss: {best_loss:.4f} '
           f'- val_loss: {best_val_loss:.4f}')
 
-    classify_images(model, options.images)
+    distribution_strategy = initialize_tensorflow()
+    model = create_model(presets, distribution_strategy)
+    classify_images(presets, model, options.images)
