@@ -174,6 +174,12 @@ def parse_commandline() -> argparse.Namespace:
         help='How many epochs to train',
         type=int,
     )
+    parser.add_argument(
+        '--no-load-previous-session',
+        help='Do not load previous training session from file',
+        type=bool,
+        action='store_true',
+    )
     return parser.parse_args()
 
 
@@ -186,6 +192,13 @@ def main():
 
     if options.epochs:
         presets.epochs = options.epochs
+
+    if options.no_load_previous_session:
+        presets.load_history_from_file = False
+        presets.load_model_from_file = False
+    else:
+        presets.load_history_from_file = True
+        presets.load_model_from_file = True
 
     print(f'Model file   {presets.model_file}')
     print(f'History file {presets.history_file}')
