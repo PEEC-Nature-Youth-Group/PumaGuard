@@ -177,7 +177,6 @@ def parse_commandline() -> argparse.Namespace:
     parser.add_argument(
         '--no-load-previous-session',
         help='Do not load previous training session from file',
-        type=bool,
         action='store_true',
     )
     return parser.parse_args()
