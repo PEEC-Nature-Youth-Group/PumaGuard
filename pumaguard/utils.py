@@ -10,6 +10,9 @@ import keras  # type: ignore
 import tensorflow as tf  # type: ignore
 
 from pumaguard.presets import Presets
+from pumaguard.models.pretrained import pre_trained_model
+from pumaguard.models.light import light_model
+from pumaguard.models.light_2 import light_model_2
 
 
 def initialize_tensorflow() -> tf.distribute.Strategy:
@@ -130,3 +133,61 @@ def create_datasets(presets: Presets, work_directory: str, color_mode: str):
     validation_dataset = validation_dataset.prefetch(tf.data.AUTOTUNE)
 
     return training_dataset, validation_dataset
+
+
+def create_model(presets: Presets,
+                 distribution_strategy: tf.distribute.Strategy):
+    """
+    Create the model.
+    """
+    with distribution_strategy.scope():
+        model_file_exists = os.path.isfile(presets.model_file)
+        if presets.load_model_from_file and model_file_exists:
+            os.stat(presets.model_file)
+            print(f'Loading model from file {presets.model_file}')
+            model = keras.models.load_model(presets.model_file)
+            print('Loaded model from file')
+        else:
+            print('Creating new model')
+            if presets.model_version == "pre-trained":
+                print('Creating new Xception model')
+                model = pre_trained_model(presets)
+                print('Building pre-trained model')
+                model.build(input_shape=(None, *presets.image_dimensions, 3))
+                print('Compiling pre-trained model')
+                model.compile(
+                    optimizer=keras.optimizers.Adam(learning_rate=1e-4),
+                    loss='binary_crossentropy',
+                    metrics=['accuracy'],
+                )
+            elif presets.model_version == "light":
+                print('Creating new light model')
+                model = light_model(presets)
+                print('Building light model')
+                model.build(input_shape=(None, *presets.image_dimensions, 1))
+                print('Compiling light model')
+                model.compile(
+                    optimizer=keras.optimizers.Adam(
+                        learning_rate=presets.alpha),
+                    loss=keras.losses.BinaryCrossentropy(from_logits=True),
+                    metrics=[keras.metrics.BinaryAccuracy(name="accuracy")],
+                )
+            elif presets.model_version == 'light-2':
+                print('Creating new light-2 model')
+                model = light_model_2(presets)
+                print('Building light-2 model')
+                model.build(input_shape=(None, *presets.image_dimensions, 1))
+                print('Compiling light model')
+                model.compile(
+                    optimizer=keras.optimizers.Adam(learning_rate=1e-4),
+                    loss='binary_crossentropy',
+                    metrics=['accuracy'],
+                )
+            else:
+                raise ValueError(
+                    f'unknown model version {presets.model_version}')
+
+            print(f'Number of layers in the model: {len(model.layers)}')
+            model.summary()
+
+    return model
