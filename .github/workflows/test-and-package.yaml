@@ -15,7 +15,7 @@ env:
 
 jobs:
   lint-notebooks:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - uses: actions/checkout@v4
@@ -32,7 +32,7 @@ jobs:
         run: make lint-notebooks
 
   lint-python:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - uses: actions/checkout@v4
@@ -53,7 +53,7 @@ jobs:
         run: make bashate
 
   lint-ansible:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - name: Run ansible-lint
@@ -65,7 +65,7 @@ jobs:
           requirements_file: ""
 
   test-python:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - uses: actions/checkout@v4
@@ -82,7 +82,7 @@ jobs:
         run: make test
 
   build-python:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [test-python, lint-notebooks, lint-python]
 
     steps:
@@ -156,7 +156,7 @@ jobs:
           path: ${{ steps.snap.outputs.snap }}
 
   release:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [build-python, build-snap, lint-ansible]
     permissions: write-all
 
@@ -191,7 +191,7 @@ jobs:
         if: ${{ github.ref_type == 'tag' }}
 
   integration:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [build-snap]
 
     steps:
