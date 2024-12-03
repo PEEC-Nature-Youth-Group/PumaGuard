@@ -20,34 +20,10 @@ pumaguard.classify module
    :undoc-members:
    :show-inheritance:
 
-pumaguard.output module
------------------------
-
-.. automodule:: pumaguard.output
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 pumaguard.presets module
 ------------------------
 
 .. automodule:: pumaguard.presets
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-pumaguard.server module
------------------------
-
-.. automodule:: pumaguard.server
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-pumaguard.trailcam module
--------------------------
-
-.. automodule:: pumaguard.trailcam
    :members:
    :undoc-members:
    :show-inheritance:
