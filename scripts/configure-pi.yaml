@@ -152,7 +152,7 @@
 
     - name: Make sure tensorflow is installed
       ansible.builtin.command:
-        cmd: poetry run pip install tensorflow==2.15.0
+        cmd: poetry run pip install tensorflow==2.17.1
         chdir: PumaGuard
       become: true
       become_user: peec
