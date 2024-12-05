@@ -204,5 +204,4 @@ jobs:
           name: snap
       - run: ls -lh
       - run: |
-          exit 0 # Disabled for now
           make integration

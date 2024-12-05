@@ -61,8 +61,11 @@ snap:
 	snapcraft
 
 .PHONY: integration
-integration: prepare-central prepare-trailcam prepare-output
-	multipass info
+integration: install
+	mkdir --parents integration-test/lion
+	mkdir --parents integration-test/no-lion
+	cp data/stable/angle\ 1/Lion/SYFW1930.JPG integration-test/lion
+	poetry run pumaguard-classify --notebook 1 integration-test 2>&1 | tee integration-test.output
 
 .PHONY: prepare-trailcam prepare-output prepare-central
 prepare-central prepare-trailcam prepare-output: prepare-%:
