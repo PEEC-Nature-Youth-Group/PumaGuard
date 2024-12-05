@@ -66,6 +66,7 @@ jobs:
 
   test-python:
     runs-on: ubuntu-24.04
+    needs: [lint-python]
 
     steps:
       - uses: actions/checkout@v4
