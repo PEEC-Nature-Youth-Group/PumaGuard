@@ -105,6 +105,12 @@ def parse_commandline() -> argparse.Namespace:
     """
     parser = argparse.ArgumentParser()
     parser.add_argument(
+        '--notebook',
+        help='The notebook number',
+        type=int,
+        default=1,
+    )
+    parser.add_argument(
         "images",
         help=('The path to the folder containing the images. '
               'The folder needs to subfolders, "lion" and "no lion" '
