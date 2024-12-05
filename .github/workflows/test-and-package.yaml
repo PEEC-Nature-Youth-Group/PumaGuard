@@ -157,7 +157,7 @@ jobs:
 
   release:
     runs-on: ubuntu-24.04
-    needs: [build-python, build-snap, lint-ansible]
+    needs: [build-python, build-snap, integration, lint-ansible]
     permissions: write-all
 
     steps:
