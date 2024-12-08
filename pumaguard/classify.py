@@ -6,8 +6,11 @@ This script classifies images.
 
 import argparse
 import datetime
+import os
+import shutil
+import tempfile
+
 import numpy as np
-import tensorflow as tf  # type: ignore
 import keras  # type: ignore
 
 from pumaguard.presets import Presets
@@ -111,34 +114,57 @@ def parse_commandline() -> argparse.Namespace:
         default=1,
     )
     parser.add_argument(
-        "images",
-        help=('The path to the folder containing the images. '
-              'The folder needs to subfolders, "lion" and "no lion" '
-              'that contain the images.'),
+        'image',
+        metavar='IMAGE[:LABEL]',
+        help=('An image to classify with an optional label. '
+              'If the label is missing then "lion" is assumed.'),
+        nargs='+',
         type=str,
     )
-    return parser.parse_args()
+    options = parser.parse_args()
+    return options
 
 
 def main():
     """
     Main entry point
     """
-    print("Tensorflow version " + tf.__version__)
 
     options = parse_commandline()
-    presets = Presets(options.notebook)
 
-    full_history = TrainingHistory(presets)
+    with tempfile.TemporaryDirectory() as workdir:
+        images = {}
+        for image in options.image:
+            parsed = image.split(':')
+            if len(parsed) == 1:
+                if 'lion' not in images:
+                    images['lion'] = []
+                images['lion'].append(parsed[0])
+            elif len(parsed) == 2:
+                if parsed[1] not in images:
+                    images[parsed[1]] = []
+                images[parsed[1]].append(parsed[0])
+        if len(images) > 2:
+            raise ValueError(
+                f'more than 2 labels were specified: {images.keys()}')
 
-    best_accuracy, best_val_accuracy, best_loss, best_val_loss, best_epoch = \
-        full_history.get_best_epoch('accuracy')
-    print(f'Total time {sum(full_history.history["duration"])} '
-          f'for {len(full_history.history["accuracy"])} epochs')
-    print(f'Best epoch {best_epoch} - accuracy: {best_accuracy:.4f} - '
-          f'val_accuracy: {best_val_accuracy:.4f} - loss: {best_loss:.4f} '
-          f'- val_loss: {best_val_loss:.4f}')
+        for label in images:  # pylint: disable=consider-using-dict-items
+            os.makedirs(os.path.join(workdir, label))
+            for filename in images[label]:
+                shutil.copy(filename, os.path.join(workdir, label))
 
-    distribution_strategy = initialize_tensorflow()
-    model = create_model(presets, distribution_strategy)
-    classify_images(presets, model, options.images)
+        presets = Presets(options.notebook)
+        full_history = TrainingHistory(presets)
+
+        best_accuracy, best_val_accuracy, \
+            best_loss, best_val_loss, best_epoch = \
+            full_history.get_best_epoch('accuracy')
+        print(f'Total time {sum(full_history.history["duration"])} '
+              f'for {len(full_history.history["accuracy"])} epochs')
+        print(f'Best epoch {best_epoch} - accuracy: {best_accuracy:.4f} - '
+              f'val_accuracy: {best_val_accuracy:.4f} - loss: {best_loss:.4f} '
+              f'- val_loss: {best_val_loss:.4f}')
+
+        distribution_strategy = initialize_tensorflow()
+        model = create_model(presets, distribution_strategy)
+        classify_images(presets, model, workdir)
