@@ -115,7 +115,7 @@ def parse_commandline() -> argparse.Namespace:
     )
     parser.add_argument(
         'image',
-        metavar='IMAGE[:LABEL]',
+        metavar='FILE[:{lion,no-lion}]',
         help=('An image to classify with an optional label. '
               'If the label is missing then "lion" is assumed.'),
         nargs='+',
@@ -123,6 +123,37 @@ def parse_commandline() -> argparse.Namespace:
     )
     options = parser.parse_args()
     return options
+
+
+def split_argument(image: str) -> tuple[str, str]:
+    """
+    Split a FILE:[{lion,no-lion}] command line argument into filename and
+    label.
+
+    Arguments:
+        image -- The FILE:[{lion.no-lion}] command line argument.
+
+    Raises:
+        ValueError: If an unknown syntax was used for the argument.
+
+    Returns:
+        A (filename, label) tuple.
+    """
+    parsed = image.split(':')
+    if len(parsed) == 1:
+        filename = parsed[0]
+        label = 'lion'
+    elif len(parsed) == 2:
+        filename, label = parsed
+        if label not in ['lion', 'no-lion']:
+            raise ValueError(
+                f'unknown category {label}'
+            )
+    else:
+        raise ValueError(
+            'please use FILE[:{lion,no-lion}]'
+        )
+    return (filename, label)
 
 
 def main():
@@ -135,18 +166,10 @@ def main():
     with tempfile.TemporaryDirectory() as workdir:
         images = {}
         for image in options.image:
-            parsed = image.split(':')
-            if len(parsed) == 1:
-                if 'lion' not in images:
-                    images['lion'] = []
-                images['lion'].append(parsed[0])
-            elif len(parsed) == 2:
-                if parsed[1] not in images:
-                    images[parsed[1]] = []
-                images[parsed[1]].append(parsed[0])
-        if len(images) > 2:
-            raise ValueError(
-                f'more than 2 labels were specified: {images.keys()}')
+            filename, label = split_argument(image)
+            if label not in images:
+                images[label] = []
+            images[label].append(filename)
 
         for label in images:  # pylint: disable=consider-using-dict-items
             os.makedirs(os.path.join(workdir, label))
