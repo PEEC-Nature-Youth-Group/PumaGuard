@@ -27,6 +27,7 @@ pytest = "^8.2.2"
 pick-files = 'scripts.pick_files:main'
 pumaguard-classify = 'pumaguard.classify:main'
 pumaguard-train = 'pumaguard.train:main'
+pumaguard-server = 'pumaguard.server:main'
 
 [build-system]
 requires = ["poetry-core"]
