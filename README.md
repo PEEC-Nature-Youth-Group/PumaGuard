@@ -54,3 +54,16 @@ For example, if you want to train the model from row 1 in the notebook,
 ```console
 scripts/train.py --notebook 1
 ```
+
+## Running the server
+
+The `pumaguard-server` watches a folder and classifies new files as they are
+added to that folder. Run with
+
+```console
+poetry run pumaguard-server FOLDER
+```
+
+Where `FOLDER` is the folder to watch.
+
+![Server Demo Session](docs/source/_static/server-demo.gif)
