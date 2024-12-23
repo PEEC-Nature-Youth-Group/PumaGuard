@@ -102,6 +102,7 @@
         name:
           - git
           - htop
+          - inotify-tools
           - libatomic1 # For VSCode
           - make
           - python3-pip
