@@ -1,6 +1,16 @@
 """
 Pumaguard server watches folders for new images and returns the probability
 that the new images show pumas.
+
+usage: pumaguard-server [-h] [--debug] [--notebook NOTEBOOK] FOLDER [FOLDER ...]
+
+positional arguments:
+  FOLDER               The folder(s) to watch. Can be used multiple times.
+
+options:
+  -h, --help           show this help message and exit
+  --debug              Debug the application
+  --notebook NOTEBOOK  The notebook number
 """
 
 import argparse
