@@ -14,6 +14,7 @@ description: |
 apps:
   pumaguard-classify:
     command: bin/pumaguard-classify
+    completer: bin/classify-bash-completions.sh
   pumaguard-train:
     command: bin/pumaguard-train
 
@@ -27,3 +28,4 @@ parts:
       craftctl set version="$(git describe --tags)"
       craftctl default
       cp --recursive models ${CRAFT_PART_INSTALL}/models
+      install --mode 0755 scripts/classify-bash-completions.sh ${CRAFT_PART_INSTALL}/bin/classify-bash-completions.sh
