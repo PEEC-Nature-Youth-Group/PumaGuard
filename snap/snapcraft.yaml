@@ -12,6 +12,8 @@ description: |
   labeled dataset and validated using a separate set of images.
 
 apps:
+  pumaguard-server:
+    command: bin/pumaguard-server
   pumaguard-classify:
     command: bin/pumaguard-classify
   pumaguard-train:
