@@ -1,8 +1,8 @@
 name: pumaguard
 base: core22 # We need Python <= 3.10
 adopt-info: pumaguard
-grade: devel
-confinement: devmode
+grade: stable
+confinement: strict
 
 summary: PumaGuard is a machine-learning based Puma mitigation solution
 description: |
