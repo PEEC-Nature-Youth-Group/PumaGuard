@@ -30,4 +30,6 @@ parts:
       craftctl set version="$(git describe --tags)"
       craftctl default
       cp --recursive models ${CRAFT_PART_INSTALL}/models
-      install --mode 0755 scripts/classify-bash-completions.sh ${CRAFT_PART_INSTALL}/bin/classify-bash-completions.sh
+      for script in classify train server; do
+        install --mode 0755 scripts/${script}-bash-completions.sh ${CRAFT_PART_INSTALL}/bin/${script}-bash-completions.sh
+      done
