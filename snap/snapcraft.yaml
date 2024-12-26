@@ -14,6 +14,7 @@ description: |
 apps:
   pumaguard-server:
     command: bin/pumaguard-server
+    completer: bin/server-bash-completions.sh
   pumaguard-classify:
     command: bin/pumaguard-classify
     completer: bin/classify-bash-completions.sh

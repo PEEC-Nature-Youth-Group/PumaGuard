@@ -2,16 +2,19 @@
 Pumaguard server watches folders for new images and returns the probability
 that the new images show pumas.
 
-usage: pumaguard-server [-h] [--debug] \
-    [--notebook NOTEBOOK] FOLDER [FOLDER ...]
+.. code-block:: shell
 
-positional arguments:
-  FOLDER               The folder(s) to watch. Can be used multiple times.
+    usage: pumaguard-server [-h] [--debug] [--notebook NOTEBOOK] \
+        [--completion {bash}] [FOLDER ...]
 
-options:
-  -h, --help           show this help message and exit
-  --debug              Debug the application
-  --notebook NOTEBOOK  The notebook number
+    positional arguments:
+      FOLDER               The folder(s) to watch. Can be used multiple times.
+
+    options:
+      -h, --help           show this help message and exit
+      --debug              Debug the application
+      --notebook NOTEBOOK  The notebook number
+      --completion {bash}  Print out bash completion script.
 """
 
 import argparse
@@ -19,6 +22,7 @@ import logging
 import os
 import shutil
 import subprocess
+import sys
 import tempfile
 import threading
 import time
@@ -65,9 +69,60 @@ def parse_commandline() -> argparse.Namespace:
     parser.add_argument(
         'FOLDER',
         help='The folder(s) to watch. Can be used multiple times.',
-        nargs='+',
+        nargs='*',
     )
-    return parser.parse_args()
+    parser.add_argument(
+        '--completion',
+        choices=['bash'],
+        help='Print out bash completion script.',
+    )
+    options = parser.parse_args()
+    if options.completion:
+        if options.completion == 'bash':
+            print_bash_completion()
+            sys.exit(0)
+        else:
+            raise ValueError(f'unknown completion {options.completion}')
+    if not options.image:
+        raise ValueError('missing FOLDER argument')
+    return options
+
+
+def print_bash_completion():
+    """
+    Print bash completion script.
+    """
+    print('''#!/bin/bash
+
+_pumaguard_server_completions() {
+    local cur prev opts
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+    opts="-h --debug --help --notebook"
+
+    if [[ ${cur} == -* ]]; then
+        COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+        return 0
+    fi
+
+    case "${prev}" in
+        --notebook)
+            return 0
+            ;;
+        *)
+            COMPREPLY=( $(compgen -f -- ${cur}) )
+            return 0
+            ;;
+    esac
+
+    COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+    return 0
+}
+
+complete -F _pumaguard_server_completions pumaguard.pumaguard-server
+complete -F _pumaguard_server_completions pumaguard-server
+''')
 
 
 class FolderObserver:
