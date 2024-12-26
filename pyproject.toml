@@ -22,6 +22,7 @@ mypy = "^1.11.2"
 pylint = "^3.2.6"
 pynblint = "^0.1.6"
 pytest = "^8.2.2"
+pytest-cov = "^6.0.0"
 
 [tool.poetry.scripts]
 pick-files = 'scripts.pick_files:main'
