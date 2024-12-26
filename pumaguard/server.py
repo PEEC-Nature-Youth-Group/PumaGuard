@@ -83,7 +83,7 @@ def parse_commandline() -> argparse.Namespace:
             sys.exit(0)
         else:
             raise ValueError(f'unknown completion {options.completion}')
-    if not options.image:
+    if not options.FOLDER:
         raise ValueError('missing FOLDER argument')
     return options
 
