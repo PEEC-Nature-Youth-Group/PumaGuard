@@ -23,13 +23,7 @@ import tempfile
 import threading
 import time
 
-import keras  # type: ignore
-
-from pumaguard.utils import (
-    create_model,
-    initialize_tensorflow,
-    Presets,
-)
+from pumaguard.utils import classify_images
 
 logger = logging.getLogger('PumaGuard-Server')
 
@@ -134,31 +128,9 @@ class FolderObserver:
             os.makedirs(os.path.join(workdir, 'no-lion'))
             shutil.copy(filepath, os.path.join(workdir, 'lion'))
 
-            presets = Presets(self.notebook)
-            distribution_strategy = initialize_tensorflow()
-            model = create_model(presets, distribution_strategy)
-            if presets.model_version == 'pre-trained':
-                color_model = 'rgb'
-            else:
-                color_model = 'grayscale'
-            try:
-                logger.info('creating dataaset')
-                verification_dataset = \
-                    keras.preprocessing.image_dataset_from_directory(
-                        workdir,
-                        label_mode=None,
-                        batch_size=presets.batch_size,
-                        image_size=presets.image_dimensions,
-                        color_mode=color_model,
-                    )
-                logger.info('classifying images')
-                for images in verification_dataset:
-                    logger.info('working on batch')
-                    predictions = model.predict(images)
-                    logger.info('Chance of puma in %s: %.2f%%',
-                                filepath, (1 - predictions) * 100)
-            except ValueError as e:
-                logger.error('unable to process file: %s', e)
+            predictions = classify_images(self.notebook, workdir)
+            logger.info('Chance of puma in %s: %.2f%%',
+                        filepath, (1 - predictions[0]) * 100)
 
 
 class FolderManager:
