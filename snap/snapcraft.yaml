@@ -15,11 +15,17 @@ apps:
   pumaguard-server:
     command: bin/pumaguard-server
     completer: bin/server-bash-completions.sh
+    plugs:
+      - home
   pumaguard-classify:
     command: bin/pumaguard-classify
     completer: bin/classify-bash-completions.sh
+    plugs:
+      - home
   pumaguard-train:
     command: bin/pumaguard-train
+    plugs:
+      - home
 
 parts:
   pumaguard:
@@ -34,3 +40,5 @@ parts:
       for script in classify train server; do
         install --mode 0755 scripts/${script}-bash-completions.sh ${CRAFT_PART_INSTALL}/bin/${script}-bash-completions.sh
       done
+    stage-packages:
+      - inotify-tools
