@@ -4,8 +4,7 @@ that the new images show pumas.
 
 .. code-block:: shell
 
-    usage: pumaguard-server [-h] [--debug] [--notebook NOTEBOOK] \
-        [--completion {bash}] [FOLDER ...]
+    usage: pumaguard-server [-h] [--debug] [--notebook NOTEBOOK] [--completion {bash}] [FOLDER ...]
 
     positional arguments:
       FOLDER               The folder(s) to watch. Can be used multiple times.
@@ -15,7 +14,7 @@ that the new images show pumas.
       --debug              Debug the application
       --notebook NOTEBOOK  The notebook number
       --completion {bash}  Print out bash completion script.
-"""
+"""  # pylint: disable=line-too-long
 
 import argparse
 import logging
