@@ -8,6 +8,7 @@ import argparse
 import datetime
 import os
 import shutil
+import sys
 import tempfile
 
 import numpy as np
@@ -118,11 +119,61 @@ def parse_commandline() -> argparse.Namespace:
         metavar='FILE[:{lion,no-lion}]',
         help=('An image to classify with an optional label. '
               'If the label is missing then "lion" is assumed.'),
-        nargs='+',
+        nargs='*',
         type=str,
     )
+    parser.add_argument(
+        '--completion',
+        choices=['bash'],
+        help='Print out bash completion script.',
+    )
     options = parser.parse_args()
+    if options.completion:
+        if options.completion == 'bash':
+            print_bash_completion()
+            sys.exit(0)
+        else:
+            raise ValueError(f'unknown completion {options.completion}')
+    if not options.image:
+        raise ValueError('missing FILE argument')
     return options
+
+
+def print_bash_completion():
+    """
+    Print bash completion script.
+    """
+    print('''#!/bin/bash
+
+_pumaguard_classify_completions() {
+    local cur prev opts
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+    opts="-h --help --notebook"
+
+    if [[ ${cur} == -* ]]; then
+        COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+        return 0
+    fi
+
+    case "${prev}" in
+        --notebook)
+            return 0
+            ;;
+        *)
+            COMPREPLY=( $(compgen -f -- ${cur}) )
+            return 0
+            ;;
+    esac
+
+    COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+    return 0
+}
+
+complete -F _pumaguard_classify_completions pumaguard.pumaguard-classify
+complete -F _pumaguard_classify_completions pumaguard-classify
+''')
 
 
 def split_argument(image: str) -> tuple[str, str]:
