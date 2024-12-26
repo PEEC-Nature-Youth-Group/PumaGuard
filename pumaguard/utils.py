@@ -2,6 +2,7 @@
 Some utility functions.
 """
 
+import logging
 import glob
 import os
 import shutil
@@ -13,6 +14,8 @@ from pumaguard.presets import Presets
 from pumaguard.models.pretrained import pre_trained_model
 from pumaguard.models.light import light_model
 from pumaguard.models.light_2 import light_model_2
+
+logger = logging.getLogger('PumaGuard-Server')
 
 
 def initialize_tensorflow() -> tf.distribute.Strategy:
@@ -191,3 +194,34 @@ def create_model(presets: Presets,
             model.summary()
 
     return model
+
+
+def classify_images(notebook: int, workdir: str) -> list[float]:
+    """
+    Classify images in a workdir and return the probabilities.
+    """
+    presets = Presets(notebook)
+    distribution_strategy = initialize_tensorflow()
+    model = create_model(presets, distribution_strategy)
+    if presets.model_version == 'pre-trained':
+        color_model = 'rgb'
+    else:
+        color_model = 'grayscale'
+    try:
+        logger.info('creating dataset')
+        verification_dataset = \
+            keras.preprocessing.image_dataset_from_directory(
+                workdir,
+                label_mode=None,
+                batch_size=presets.batch_size,
+                image_size=presets.image_dimensions,
+                color_mode=color_model,
+            )
+        logger.info('classifying images')
+        for images in verification_dataset:
+            logger.info('working on batch')
+            predictions = model.predict(images)
+        return predictions[0].tolist()
+    except ValueError as e:
+        logger.error('unable to process file: %s', e)
+    return []
