@@ -3,7 +3,8 @@ Test server.
 """
 
 import unittest
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
+import os
 import sys
 
 from pumaguard.server import (
@@ -15,8 +16,68 @@ from pumaguard.server import (
 
 class TestFolderObserver(unittest.TestCase):
     """
-    Unit tests for server
+    Unit tests for FolderObserver class
     """
+
+    def setUp(self):
+        self.folder = 'test_folder'
+        self.notebook = 1
+        self.observer = FolderObserver(self.folder, self.notebook)
+
+    @patch('pumaguard.server.subprocess.Popen')
+    def test_observe_new_file(self, MockPopen):  # pylint: disable=invalid-name
+        """
+        Test observing a new file.
+        """
+        mock_process = MagicMock()
+        mock_process.stdout = iter(['test_folder/new_file.jpg\n'])
+        MockPopen.return_value.__enter__.return_value = mock_process
+
+        with patch.object(self.observer, '_handle_new_file') \
+                as mock_handle_new_file:
+            self.observer._observe()  # pylint: disable=protected-access
+            mock_handle_new_file.assert_called_once_with(
+                'test_folder/new_file.jpg')
+
+    @patch('pumaguard.server.threading.Thread')
+    def test_start(self, MockThread):  # pylint: disable=invalid-name
+        """
+        Test starting the observer.
+        """
+        self.observer.start()
+        MockThread.assert_called_once_with(
+            target=self.observer._observe)  # pylint: disable=protected-access
+        MockThread.return_value.start.assert_called_once()
+
+    def test_stop(self):
+        """
+        Test stopping the observer.
+        """
+        self.observer._stop_event = MagicMock()  # pylint: disable=protected-access
+        self.observer.stop()
+        self.observer._stop_event.set.assert_called_once()  # pylint: disable=protected-access
+
+    @patch('pumaguard.server.shutil.copy')
+    @patch('pumaguard.server.tempfile.TemporaryDirectory')
+    @patch('pumaguard.server.classify_images')
+    def test_handle_new_file(self, mock_classify_images,
+                             MockTemporaryDirectory, mock_copy):  # pylint: disable=invalid-name
+        """
+        Test handling a new file.
+        """
+        mock_classify_images.return_value = [0.2]
+        mock_temp_dir = MagicMock()
+        MockTemporaryDirectory.return_value.__enter__.return_value = \
+            mock_temp_dir
+
+        self.observer._handle_new_file(  # pylint: disable=protected-access
+            'test_folder/new_file.jpg')
+
+        mock_copy.assert_called_once_with(
+            'test_folder/new_file.jpg', os.path.join(mock_temp_dir, 'lion'))
+        mock_classify_images.assert_called_once_with(
+            self.notebook, mock_temp_dir)
+        self.assertEqual(mock_classify_images.return_value, [0.2])
 
 
 class TestParseCommandline(unittest.TestCase):
