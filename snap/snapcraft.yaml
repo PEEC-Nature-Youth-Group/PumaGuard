@@ -13,21 +13,30 @@ description: |
 
 apps:
   pumaguard-server:
-    command: bin/pumaguard-server
+    command: bin/snapcraft-preload $SNAP/bin/python3 $SNAP/bin/pumaguard-server
     completer: bin/server-bash-completions.sh
     plugs:
       - home
   pumaguard-classify:
-    command: bin/pumaguard-classify
+    command: bin/snapcraft-preload $SNAP/bin/python3 $SNAP/bin/pumaguard-classify
     completer: bin/classify-bash-completions.sh
     plugs:
       - home
   pumaguard-train:
-    command: bin/pumaguard-train
+    command: bin/snapcraft-preload $SNAP/bin/python3 $SNAP/bin/pumaguard-train
     plugs:
       - home
 
 parts:
+  snapcraft-preload:
+    source: https://github.com/sergiusens/snapcraft-preload.git
+    plugin: cmake
+    cmake-parameters:
+      - -DCMAKE_INSTALL_PREFIX=/
+    build-packages:
+      - on amd64:
+          - gcc-multilib
+          - g++-multilib
   pumaguard:
     plugin: python
     source: .
