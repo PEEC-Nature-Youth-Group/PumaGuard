@@ -17,15 +17,18 @@ apps:
     completer: bin/server-bash-completions.sh
     plugs:
       - home
+      - network
   pumaguard-classify:
     command: bin/snapcraft-preload $SNAP/bin/python3 $SNAP/bin/pumaguard-classify
     completer: bin/classify-bash-completions.sh
     plugs:
       - home
+      - network
   pumaguard-train:
     command: bin/snapcraft-preload $SNAP/bin/python3 $SNAP/bin/pumaguard-train
     plugs:
       - home
+      - network
 
 parts:
   snapcraft-preload:
