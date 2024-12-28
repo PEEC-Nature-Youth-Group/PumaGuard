@@ -71,6 +71,11 @@ def classify_images(presets: Presets, model: keras.Model, image_path: str):
         end_time = datetime.datetime.now()
         print('Classification took '
               f'{get_duration(start_time, end_time)} seconds')
+        for i in range(len(images)):
+            print(
+                f'Predicted: {100*(1 - predictions[i][0]):6.2f}% lion '
+                f'({"lion" if predictions[i][0] < 0.5 else "no lion"}), '
+                f'Actual: {"lion" if labels[i] == 0 else "no lion"}')
         all_predictions.extend(predictions)
         all_labels.extend(labels)
 
@@ -89,15 +94,6 @@ def classify_images(presets: Presets, model: keras.Model, image_path: str):
     accuracy = correct_predictions / total_images * 100
 
     print(f"Percentage of correctly classified images: {accuracy:.2f}%")
-
-    for images, labels in iter(verification_dataset):
-        # Predict the labels for the images
-        predictions = model.predict(images)
-        for i in range(len(images)):
-            print(
-                f'Predicted: {100*(1 - predictions[i][0]):6.2f}% lion '
-                f'({"lion" if predictions[i][0] < 0.5 else "no lion"}), '
-                f'Actual: {"lion" if labels[i] == 0 else "no lion"}')
 
 
 def parse_commandline() -> argparse.Namespace:
