@@ -85,7 +85,8 @@ def parse_commandline() -> argparse.Namespace:
         help='''What implementation (method) to use for watching
         the folder. Linux on baremetal supports both methods. Linux
         in WSL supports inotify on folders using ext4 but only os
-        on folders that are mounted from the Windows host.''',
+        on folders that are mounted from the Windows host. Defaults
+        to "%(default)s"''',
         choices=['inotify', 'os'],
         default='os',
     )
