@@ -4,6 +4,8 @@ Test server.
 
 import unittest
 from unittest.mock import patch, MagicMock
+
+import io
 import os
 import sys
 
@@ -22,7 +24,7 @@ class TestFolderObserver(unittest.TestCase):
     def setUp(self):
         self.folder = 'test_folder'
         self.notebook = 1
-        self.observer = FolderObserver(self.folder, self.notebook)
+        self.observer = FolderObserver(self.folder, self.notebook, 'inotify')
 
     @patch('pumaguard.server.subprocess.Popen')
     def test_observe_new_file(self, MockPopen):  # pylint: disable=invalid-name
@@ -86,7 +88,9 @@ class TestParseCommandline(unittest.TestCase):
     """
 
     @patch.object(sys, 'argv', ['pumaguard-server', '--debug',
-                                '--notebook', '2', 'folder1', 'folder2'])
+                                '--notebook', '2',
+                                '--watch-method', 'inotify',
+                                'folder1', 'folder2'])
     def test_parse_commandline_with_all_arguments(self):
         """
         Test with all arguments.
@@ -95,6 +99,7 @@ class TestParseCommandline(unittest.TestCase):
         self.assertTrue(options.debug)
         self.assertEqual(options.notebook, 2)
         self.assertEqual(options.FOLDER, ['folder1', 'folder2'])
+        self.assertEqual(options.watch_method, 'inotify')
 
     @patch.object(sys, 'argv', ['pumaguard-server', 'folder1'])
     def test_parse_commandline_with_minimal_arguments(self):
@@ -105,14 +110,32 @@ class TestParseCommandline(unittest.TestCase):
         self.assertFalse(options.debug)
         self.assertEqual(options.notebook, 1)
         self.assertEqual(options.FOLDER, ['folder1'])
+        self.assertEqual(options.watch_method, 'os')
 
-    @patch.object(sys, 'argv', ['pumaguard-server', '--completion', 'bash'])
-    def test_parse_commandline_with_completion(self):
+    @patch.object(sys, 'argv', ['pumaguard-server', '--completion',
+                                'bash', 'FOLDER'])
+    @patch('sys.exit')
+    def test_parse_commandline_with_completion(self, mock_exit):
         """
         Test completions.
         """
-        with self.assertRaises(SystemExit):
+        with patch('sys.stdout', new=io.StringIO()) as my_out:
             parse_commandline()
+            result = my_out.getvalue()
+            self.assertIn('complete -F', result)
+        mock_exit.assert_called_once()
+
+    @patch.object(sys, 'argv', ['pumaguard-server', '--completion',
+                                'bash', 'FOLDER'])
+    @patch('sys.exit')
+    @patch('pumaguard.server.print_bash_completion')
+    def test_parse_commandline_with_completion_2(self, mock_print, mock_exit):
+        """
+        Test completions.
+        """
+        parse_commandline()
+        mock_exit.assert_called_once()
+        mock_print.assert_called_once()
 
     @patch.object(sys, 'argv', ['pumaguard-server'])
     def test_parse_commandline_missing_folder(self):
@@ -138,9 +161,9 @@ class TestFolderManager(unittest.TestCase):
         Test register folder.
         """
         folder = 'test_folder'
-        self.manager.register_folder(folder)
+        self.manager.register_folder(folder, 'inotify')
         self.assertEqual(len(self.manager.observers), 1)
-        MockFolderObserver.assert_called_with(folder, self.notebook)
+        MockFolderObserver.assert_called_with(folder, self.notebook, 'inotify')
 
     @patch.object(FolderObserver, 'start')
     def test_start_all(self, mock_start):
@@ -148,7 +171,7 @@ class TestFolderManager(unittest.TestCase):
         Test the start_all method.
         """
         folder = 'test_folder'
-        self.manager.register_folder(folder)
+        self.manager.register_folder(folder, 'inotify')
         self.manager.start_all()
         mock_start.assert_called_once()
 
@@ -158,7 +181,7 @@ class TestFolderManager(unittest.TestCase):
         Test the stop_all method.
         """
         folder = 'test_folder'
-        self.manager.register_folder(folder)
+        self.manager.register_folder(folder, 'inotify')
         self.manager.start_all()
         self.manager.stop_all()
         mock_stop.assert_called_once()
