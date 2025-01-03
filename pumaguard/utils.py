@@ -4,6 +4,7 @@ Some utility functions.
 
 import logging
 import glob
+import hashlib
 import os
 import shutil
 
@@ -138,6 +139,34 @@ def create_datasets(presets: Presets, work_directory: str, color_mode: str):
     return training_dataset, validation_dataset
 
 
+def get_md5(filepath: str) -> str:
+    """
+    Compute the MD5 hash for a file.
+    """
+    hasher = hashlib.md5()
+    with open(filepath, 'rb') as f:
+        while True:
+            data = f.read(65536)
+            if not data:
+                break
+            hasher.update(data)
+    return hasher.hexdigest()
+
+
+def get_sha256(filepath: str) -> str:
+    """
+    Compute the SHA-256 hash for a file.
+    """
+    hasher = hashlib.sha256()
+    with open(filepath, 'rb') as f:
+        while True:
+            data = f.read(65536)
+            if not data:
+                break
+            hasher.update(data)
+    return hasher.hexdigest()
+
+
 def create_model(presets: Presets,
                  distribution_strategy: tf.distribute.Strategy):
     """
@@ -150,6 +179,7 @@ def create_model(presets: Presets,
             print(f'Loading model from file {presets.model_file}')
             model = keras.models.load_model(presets.model_file)
             print('Loaded model from file')
+            print(f'Model version {get_md5(presets.model_file)}')
         else:
             print('Creating new model')
             if presets.model_version == "pre-trained":
