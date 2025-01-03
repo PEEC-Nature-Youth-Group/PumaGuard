@@ -4,16 +4,21 @@ that the new images show pumas.
 
 .. code-block:: shell
 
-    usage: pumaguard-server [-h] [--debug] [--notebook NOTEBOOK] [--completion {bash}] [FOLDER ...]
+    usage: pumaguard-server [-h] [--debug] [--notebook NOTEBOOK] [--completion {bash}] [--watch-method {inotify,os}] [FOLDER ...]
 
     positional arguments:
-      FOLDER               The folder(s) to watch. Can be used multiple times.
+      FOLDER                The folder(s) to watch. Can be used multiple times.
 
     options:
-      -h, --help           show this help message and exit
-      --debug              Debug the application
-      --notebook NOTEBOOK  The notebook number
-      --completion {bash}  Print out bash completion script.
+      -h, --help            show this help message and exit
+      --debug               Debug the application
+      --notebook NOTEBOOK   The notebook number
+      --completion {bash}   Print out bash completion script.
+      --watch-method {inotify,os}
+                            What implementation (method) to use for watching the
+                            folder. Linux on baremetal supports both methods. Linux
+                            in WSL supports inotify on folders using ext4 but only
+                            os on folders that are mounted from the Windows host.
 """  # pylint: disable=line-too-long
 
 import argparse
@@ -75,6 +80,15 @@ def parse_commandline() -> argparse.Namespace:
         choices=['bash'],
         help='Print out bash completion script.',
     )
+    parser.add_argument(
+        '--watch-method',
+        help='''What implementation (method) to use for watching
+        the folder. Linux on baremetal supports both methods. Linux
+        in WSL supports inotify on folders using ext4 but only os
+        on folders that are mounted from the Windows host.''',
+        choices=['inotify', 'os'],
+        default='os',
+    )
     options = parser.parse_args()
     if options.completion:
         if options.completion == 'bash':
@@ -98,7 +112,7 @@ _pumaguard_server_completions() {
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
-    opts="-h --debug --help --notebook"
+    opts="-h --debug --help --notebook --watch-method --completion"
 
     if [[ ${cur} == -* ]]; then
         COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
@@ -107,6 +121,16 @@ _pumaguard_server_completions() {
 
     case "${prev}" in
         --notebook)
+            return 0
+            ;;
+        --completion)
+            opts="bash"
+            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            return 0
+            ;;
+        --watch-method)
+            opts="inotify os"
+            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
             return 0
             ;;
         *)
@@ -129,9 +153,10 @@ class FolderObserver:
     FolderObserver watches a folder for new files.
     """
 
-    def __init__(self, folder: str, notebook: int):
+    def __init__(self, folder: str, notebook: int, method: str):
         self.folder = folder
         self.notebook = notebook
+        self.method = method
         self._stop_event = threading.Event()
 
     def start(self):
@@ -151,22 +176,40 @@ class FolderObserver:
         """
         Observe whether a new file is created in the folder.
         """
-        with subprocess.Popen(
-            ['inotifywait', '--monitor', '--event',
-                'create', '--format', '%w%f', self.folder,],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            encoding='utf-8',
-            text=True,
-        ) as process:
-            for line in process.stdout:
-                if self._stop_event.is_set():
-                    process.terminate()
-                    break
-                logger.info('New file detected: %s', line.strip())
-                threading.Thread(
-                    target=self._handle_new_file,
-                    args=(line.strip(),)).start()
+        if self.method == 'inotify':
+            with subprocess.Popen(
+                ['inotifywait', '--monitor', '--event',
+                    'create', '--format', '%w%f', self.folder,],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                encoding='utf-8',
+                text=True,
+            ) as process:
+                for line in process.stdout:
+                    if self._stop_event.is_set():
+                        process.terminate()
+                        break
+                    logger.info('New file detected: %s', line.strip())
+                    threading.Thread(
+                        target=self._handle_new_file,
+                        args=(line.strip(),),
+                    ).start()
+        elif self.method == 'os':
+            known_files = set(os.listdir(self.folder))
+            while not self._stop_event.is_set():
+                current_files = set(os.listdir(self.folder))
+                new_files = current_files - known_files
+                for new_file in new_files:
+                    full_path = os.path.join(self.folder, new_file)
+                    logger.info('New file detected: %s', full_path)
+                    threading.Thread(
+                        target=self._handle_new_file,
+                        args=(full_path,),
+                    ).start()
+                known_files = current_files
+                time.sleep(1)
+        else:
+            raise ValueError('FIXME: This method is not implemented')
 
     def _handle_new_file(self, filepath: str):
         """
@@ -196,14 +239,14 @@ class FolderManager:
         self.notebook = notebook
         self.observers: list[FolderObserver] = []
 
-    def register_folder(self, folder: str):
+    def register_folder(self, folder: str, method: str):
         """
         Register a new folder for observation.
 
         Arguments:
             folder -- The path of the folder to watch.
         """
-        observer = FolderObserver(folder, self.notebook)
+        observer = FolderObserver(folder, self.notebook, method)
         self.observers.append(observer)
         logger.info('registered %s', folder)
 
@@ -236,7 +279,7 @@ def main():
 
     manager = FolderManager(options.notebook)
     for folder in options.FOLDER:
-        manager.register_folder(folder)
+        manager.register_folder(folder, options.watch_method)
 
     manager.start_all()
 
