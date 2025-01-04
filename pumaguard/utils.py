@@ -18,6 +18,8 @@ from pumaguard.models.light_2 import light_model_2
 
 logger = logging.getLogger('PumaGuard-Server')
 
+__MODEL__: keras.src.Model = None
+
 
 def initialize_tensorflow() -> tf.distribute.Strategy:
     """
@@ -168,7 +170,8 @@ def get_sha256(filepath: str) -> str:
 
 
 def create_model(presets: Presets,
-                 distribution_strategy: tf.distribute.Strategy):
+                 distribution_strategy: tf.distribute.Strategy) \
+        -> keras.src.Model:
     """
     Create the model.
     """
@@ -226,13 +229,29 @@ def create_model(presets: Presets,
     return model
 
 
-def classify_images(notebook: int, workdir: str) -> list[float]:
+def get_model(notebook: int) -> keras.src.Model:
+    """
+    Create new model.
+
+    Arguments:
+        notebook -- The notebook version.
+
+    Returns:
+        The model.
+    """
+    global __MODEL__
+    if not __MODEL__:
+        presets = Presets(notebook)
+        distribution_strategy = initialize_tensorflow()
+        __MODEL__ = create_model(presets, distribution_strategy)
+    return __MODEL__
+
+
+def classify_images(model: keras.src.Model, notebook: int, workdir: str) -> list[float]:
     """
     Classify images in a workdir and return the probabilities.
     """
     presets = Presets(notebook)
-    distribution_strategy = initialize_tensorflow()
-    model = create_model(presets, distribution_strategy)
     if presets.model_version == 'pre-trained':
         color_model = 'rgb'
     else:
