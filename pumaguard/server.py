@@ -31,7 +31,10 @@ import tempfile
 import threading
 import time
 
-from pumaguard.utils import classify_images
+from pumaguard.utils import (
+    classify_images,
+    get_model,
+)
 
 logger = logging.getLogger('PumaGuard-Server')
 
@@ -225,7 +228,8 @@ class FolderObserver:
             os.makedirs(os.path.join(workdir, 'no-lion'))
             shutil.copy(filepath, os.path.join(workdir, 'lion'))
 
-            predictions = classify_images(self.notebook, workdir)
+            predictions = classify_images(model=get_model(
+                self.notebook), notebook=self.notebook, workdir=workdir)
             logger.info('Chance of puma in %s: %.2f%%',
                         filepath, (1 - predictions[0]) * 100)
 
