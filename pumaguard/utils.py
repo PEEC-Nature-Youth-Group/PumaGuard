@@ -168,7 +168,8 @@ def get_sha256(filepath: str) -> str:
 
 
 def create_model(presets: Presets,
-                 distribution_strategy: tf.distribute.Strategy):
+                 distribution_strategy: tf.distribute.Strategy) \
+        -> keras.src.Model:
     """
     Create the model.
     """
@@ -226,13 +227,44 @@ def create_model(presets: Presets,
     return model
 
 
+class Model():
+    """
+    The Model used.
+    """
+
+    _instance = None
+    _initialized = False
+
+    def __new__(cls, notebook: int):
+        """
+        Create a new model.
+        """
+        if cls._instance is None:
+            cls._instance = super(Model, cls).__new__(cls)
+        return cls._instance
+
+    def __init__(self, notebook: int):
+        if not self._initialized:
+            self._notebook = notebook
+            self._presets = Presets(notebook)
+            self._distribution_strategy = initialize_tensorflow()
+            self._model = create_model(
+                self._presets, self._distribution_strategy)
+            self._initialized = True
+
+    def get_model(self) -> keras.src.Model:
+        """
+        Get the model.
+        """
+        return self._model
+
+
 def classify_images(notebook: int, workdir: str) -> list[float]:
     """
     Classify images in a workdir and return the probabilities.
     """
     presets = Presets(notebook)
-    distribution_strategy = initialize_tensorflow()
-    model = create_model(presets, distribution_strategy)
+    model = Model(notebook).get_model()
     if presets.model_version == 'pre-trained':
         color_model = 'rgb'
     else:

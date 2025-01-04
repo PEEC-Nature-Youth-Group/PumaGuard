@@ -10,6 +10,7 @@ import hashlib
 from pumaguard.utils import (
     get_md5,
     get_sha256,
+    Model,
 )
 
 
@@ -45,3 +46,17 @@ class TestHashFunctions(unittest.TestCase):
             self.assertEqual(result, expected)
         finally:
             os.remove(tmp_name)
+
+
+class TestModel(unittest.TestCase):
+    """
+    Test Model class.
+    """
+
+    def test_model_singleton(self):
+        """
+        Test singleton property.
+        """
+        m1 = Model(1)
+        m2 = Model(2)
+        self.assertEqual(m1, m2)
