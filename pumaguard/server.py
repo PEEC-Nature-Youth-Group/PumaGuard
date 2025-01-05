@@ -31,6 +31,7 @@ import tempfile
 import threading
 import time
 
+from pumaguard import __VERSION__
 from pumaguard.utils import classify_images
 
 logger = logging.getLogger('PumaGuard-Server')
@@ -275,6 +276,7 @@ def main():
     """
 
     initialize_logger()
+    logger.info('PumaGuard Server version %s', __VERSION__)
     options = parse_commandline()
     if options.debug:
         logger.setLevel(logging.DEBUG)
