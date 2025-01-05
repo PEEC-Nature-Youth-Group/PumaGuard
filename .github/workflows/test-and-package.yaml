@@ -80,7 +80,8 @@ jobs:
           pip install poetry
           poetry install
       - name: Run tests
-        run: make test
+        run: |
+          make test
 
   build-python:
     runs-on: ubuntu-24.04
