@@ -78,7 +78,7 @@ class TestFolderObserver(unittest.TestCase):
         mock_copy.assert_called_once_with(
             'test_folder/new_file.jpg', os.path.join(mock_temp_dir, 'lion'))
         mock_classify_images.assert_called_once_with(
-            self.notebook, mock_temp_dir)
+            notebook=self.notebook, workdir=mock_temp_dir)
         self.assertEqual(mock_classify_images.return_value, [0.2])
 
 

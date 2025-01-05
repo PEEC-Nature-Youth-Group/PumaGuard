@@ -226,7 +226,8 @@ class FolderObserver:
             os.makedirs(os.path.join(workdir, 'no-lion'))
             shutil.copy(filepath, os.path.join(workdir, 'lion'))
 
-            predictions = classify_images(self.notebook, workdir)
+            predictions = classify_images(
+                notebook=self.notebook, workdir=workdir)
             logger.info('Chance of puma in %s: %.2f%%',
                         filepath, (1 - predictions[0]) * 100)
 
