@@ -3,6 +3,9 @@ Test basic TensorFlow functions.
 """
 
 import unittest
+import logging
+import os
+
 import tensorflow as tf
 
 
@@ -26,3 +29,11 @@ class TestTensorFlow(unittest.TestCase):
         """
         conf = tf.config.list_physical_devices('CPU')
         self.assertTrue(len(conf) > 0)
+
+    def test_onednn_opts(self):
+        """
+        Test whether the TF_ONEDNN_OPTS are enabled.
+        """
+        logger = logging.getLogger('tests')
+        onednn_opts = os.environ.get("TF_ENABLE_ONEDNN_OPTS", default='unset')
+        logger.info('Option TF_ENABLE_ONEDNN_OPTS = %s', onednn_opts)
