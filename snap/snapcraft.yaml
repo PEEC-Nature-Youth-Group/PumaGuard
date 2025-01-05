@@ -11,6 +11,9 @@ description: |
   monitoring, research, and conservation efforts. The model is trained on a
   labeled dataset and validated using a separate set of images.
 
+environment:
+  TF_ENABLE_ONEDNN_OPTS: 0
+
 apps:
   pumaguard-server:
     command: bin/snapcraft-preload $SNAP/bin/python3 $SNAP/bin/pumaguard-server
