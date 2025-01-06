@@ -65,8 +65,18 @@ integration: install
 	poetry run pumaguard-classify \
 		--notebook 6 \
 		"data/stable/angle 1/Lion/SYFW1932.JPG" \
+		"data/stable/angle 2/Lion/SYFW0270.JPG" \
+		"data/stable/angle 2/Lion/SYFW0270_bright.jpg" \
 		2>&1 | tee integration-test.output
-	if [ "$$(awk '/^Predicted:/ { print $$2 }' integration-test.output)" != '84.80%' ]; then \
+	if [ "$$(sed --quiet --regexp-extended '/^Predicted.*1932/s/^.*:\s*([0-9.%]+).*$$/\1/p' integration-test.output)" != '84.80%' ]; then \
+		cat integration-test.output; \
+		false; \
+	fi
+	if [ "$$(sed --quiet --regexp-extended '/^Predicted.*270.JPG/s/^.*:\s*([0-9.%]+).*$$/\1/p' integration-test.output)" != '32.22%' ]; then \
+		cat integration-test.output; \
+		false; \
+	fi
+	if [ "$$(sed --quiet --regexp-extended '/^Predicted.*270_bright.jpg/s/^.*:\s*([0-9.%]+).*$$/\1/p' integration-test.output)" != '91.83%' ]; then \
 		cat integration-test.output; \
 		false; \
 	fi
