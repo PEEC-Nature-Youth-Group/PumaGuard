@@ -57,7 +57,7 @@ def classify_images(presets: Presets, model: keras.Model, image_path: str):
           f'{get_duration(start_time, end_time)} seconds')
 
     print(
-        f'Predicted: {100*(1 - prediction[0][0]):6.2f}% lion '
+        f'Predicted {image_path}: {100*(1 - prediction[0][0]):6.2f}% lion '
         f'({"lion" if prediction[0][0] < 0.5 else "no lion"})')
 
 
