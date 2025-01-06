@@ -14,6 +14,9 @@ from pumaguard.server import (
     FolderObserver,
 )
 
+from pumaguard.utils import (
+    Presets,
+)
 
 class TestFolderObserver(unittest.TestCase):
     """
@@ -23,7 +26,8 @@ class TestFolderObserver(unittest.TestCase):
     def setUp(self):
         self.folder = 'test_folder'
         self.notebook = 1
-        self.observer = FolderObserver(self.folder, self.notebook, 'inotify')
+        self.presets = Presets(self.notebook)
+        self.observer = FolderObserver(self.folder, 'inotify', self.presets)
 
     @patch('pumaguard.server.subprocess.Popen')
     def test_observe_new_file(self, MockPopen):  # pylint: disable=invalid-name
@@ -146,7 +150,8 @@ class TestFolderManager(unittest.TestCase):
 
     def setUp(self):
         self.notebook = 1
-        self.manager = FolderManager(self.notebook)
+        self.presets = Presets(self.notebook)
+        self.manager = FolderManager(self.presets)
 
     @patch('pumaguard.server.FolderObserver')
     def test_register_folder(self, MockFolderObserver):  # pylint: disable=invalid-name
@@ -156,7 +161,7 @@ class TestFolderManager(unittest.TestCase):
         folder = 'test_folder'
         self.manager.register_folder(folder, 'inotify')
         self.assertEqual(len(self.manager.observers), 1)
-        MockFolderObserver.assert_called_with(folder, self.notebook, 'inotify')
+        MockFolderObserver.assert_called_with(folder, 'inotify', self.presets)
 
     @patch.object(FolderObserver, 'start')
     def test_start_all(self, mock_start):
