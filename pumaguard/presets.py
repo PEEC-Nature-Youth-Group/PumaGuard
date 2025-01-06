@@ -33,6 +33,7 @@ class Presets():
             self.with_augmentation = False
             self.batch_size = 16
             self.model_version = "light"
+            self.__color_mode = 'grayscale'
             self.alpha = 1e-5
             self.lion_directories = [
                 # f'{self.base_data_directory}/lion_1',
@@ -48,6 +49,7 @@ class Presets():
             self.with_augmentation = False
             self.batch_size = 32
             self.model_version = "light"
+            self.__color_mode = 'grayscale'
             self.lion_directories = [
                 # f'{base_data_directory}/lion_1',
                 f'{self.base_data_directory}/lion',
@@ -62,6 +64,7 @@ class Presets():
             self.with_augmentation = True
             self.batch_size = 32
             self.model_version = "light"
+            self.__color_mode = 'grayscale'
             self.lion_directories = [
                 f'{self.base_data_directory}/lion',
             ]
@@ -73,6 +76,7 @@ class Presets():
             self.with_augmentation = False
             self.batch_size = 16
             self.model_version = "pre-trained"
+            self.__color_mode = 'rgb'
             self.lion_directories = [
                 f'{self.base_data_directory}/lion_1',
             ]
@@ -84,6 +88,7 @@ class Presets():
             self.with_augmentation = False
             self.batch_size = 16
             self.model_version = "pre-trained"
+            self.__color_mode = 'rgb'
             self.lion_directories = [
                 f'{self.base_data_directory}/lion',
             ]
@@ -95,6 +100,7 @@ class Presets():
             self.with_augmentation = False
             self.batch_size = 16
             self.model_version = "pre-trained"
+            self.__color_mode = 'rgb'
             self.lion_directories = [
                 f'{self.base_data_directory}/lion',
                 f'{self.base_data_directory}/cougar',
@@ -103,11 +109,34 @@ class Presets():
                 f'{self.base_data_directory}/no_lion',
                 f'{self.base_data_directory}/nocougar',
             ]
-        elif self.notebook_number == 7:
+        elif notebook_number == 7:
+            self.image_dimensions = (512, 512)  # height, width
+            self.with_augmentation = False
+            self.batch_size = 16
+            self.model_version = "pre-trained"
+            self.__color_mode = 'rgb'
+            self.lion_directories = [
+                f'{self.base_data_directory}/lion',
+                f'{self.base_data_directory}/cougar',
+                f'{self.base_data_directory}/stable/angle 1/Lion',
+                f'{self.base_data_directory}/stable/angle 2/Lion',
+                f'{self.base_data_directory}/stable/angle 3/Lion',
+                f'{self.base_data_directory}/stable/angle 4/lion',
+            ]
+            self.no_lion_directories = [
+                f'{self.base_data_directory}/no_lion',
+                f'{self.base_data_directory}/nocougar',
+                f'{self.base_data_directory}/stable/angle 1/No Lion',
+                f'{self.base_data_directory}/stable/angle 2/No Lion',
+                f'{self.base_data_directory}/stable/angle 3/No Lion',
+                f'{self.base_data_directory}/stable/angle 4/no lion',
+            ]
+        elif self.notebook_number == 8:
             self.image_dimensions = (512, 512)  # height, width
             self.with_augmentation = False
             self.batch_size = 16
             self.model_version = "light-2"
+            self.__color_mode = 'rgb'
             self.lion_directories = [
                 f'{self.base_data_directory}/lion',
                 f'{self.base_data_directory}/cougar',
