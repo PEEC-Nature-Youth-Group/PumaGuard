@@ -62,10 +62,14 @@ snap:
 
 .PHONY: integration
 integration: install
-	poetry run pumaguard-classify --notebook 1 \
-	  "data/stable/angle 1/Lion/SYFW1930.JPG" \
-	  2>&1 | tee integration-test.output
-	if [ "$$(awk '/^Predicted/ { print $$2 }' integration-test.output)" != '87.73%' ]; then false; fi
+	poetry run pumaguard-classify \
+		--notebook 6 \
+		"data/stable/angle 1/Lion/SYFW1932.JPG" \
+		2>&1 | tee integration-test.output
+	if [ "$$(awk '/^Predicted:/ { print $$2 }' integration-test.output)" != '84.80%' ]; then \
+		cat integration-test.output; \
+		false; \
+	fi
 
 .PHONY: prepare-trailcam prepare-output prepare-central
 prepare-central prepare-trailcam prepare-output: prepare-%:
