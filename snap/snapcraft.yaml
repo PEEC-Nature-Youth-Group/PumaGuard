@@ -1,4 +1,5 @@
 name: pumaguard
+icon: pumaguard-logo.png
 base: core22 # We need Python <= 3.10
 adopt-info: pumaguard
 grade: stable
