@@ -6,7 +6,6 @@ import unittest
 from unittest.mock import patch, MagicMock
 
 import io
-import os
 import sys
 
 from pumaguard.server import (
@@ -59,27 +58,21 @@ class TestFolderObserver(unittest.TestCase):
         self.observer.stop()
         self.observer._stop_event.set.assert_called_once()  # pylint: disable=protected-access
 
-    @patch('pumaguard.server.shutil.copy')
-    @patch('pumaguard.server.tempfile.TemporaryDirectory')
-    @patch('pumaguard.server.classify_images')
-    def test_handle_new_file(self, mock_classify_images,
-                             MockTemporaryDirectory, mock_copy):  # pylint: disable=invalid-name
+    @patch.object(FolderObserver, 'classify_image', return_value=0.7)
+    @patch('pumaguard.server.logger')
+    def test_handle_new_file_prediction(self, mock_logger, mock_classify):  # pylint: disable=unused-argument
         """
-        Test handling a new file.
+        Test that _handle_new_file logs the correct chance of puma
+        when classify_image returns 0.7.
         """
-        mock_classify_images.return_value = [0.2]
-        mock_temp_dir = MagicMock()
-        MockTemporaryDirectory.return_value.__enter__.return_value = \
-            mock_temp_dir
-
         self.observer._handle_new_file(  # pylint: disable=protected-access
-            'test_folder/new_file.jpg')
+            'fake_image.jpg')
+        mock_logger.info.assert_called_once()
+        msg, path, prediction = mock_logger.info.call_args_list[0][0]
 
-        mock_copy.assert_called_once_with(
-            'test_folder/new_file.jpg', os.path.join(mock_temp_dir, 'lion'))
-        mock_classify_images.assert_called_once_with(
-            notebook=self.notebook, workdir=mock_temp_dir)
-        self.assertEqual(mock_classify_images.return_value, [0.2])
+        self.assertEqual(msg, 'Chance of puma in %s: %.2f%%')
+        self.assertEqual(path, 'fake_image.jpg')
+        self.assertAlmostEqual(prediction, 30, places=2)
 
 
 class TestParseCommandline(unittest.TestCase):

@@ -24,15 +24,18 @@ that the new images show pumas.
 import argparse
 import logging
 import os
-import shutil
 import subprocess
 import sys
-import tempfile
 import threading
 import time
+import numpy as np
+from PIL import Image
 
 from pumaguard import __VERSION__
-from pumaguard.utils import classify_images
+from pumaguard.utils import (
+    Model,
+    Presets,
+)
 
 logger = logging.getLogger('PumaGuard-Server')
 
@@ -158,7 +161,13 @@ class FolderObserver:
     def __init__(self, folder: str, notebook: int, method: str):
         self.folder = folder
         self.notebook = notebook
+        self.presets = Presets(notebook)
+        if self.presets.model_version == 'pre-trained':
+            self.presets.color_mode = 'rgb'
+        else:
+            self.presets.color_mode = 'grayscale'
         self.method = method
+        self.model = Model(notebook).get_model()
         self._stop_event = threading.Event()
 
     def start(self):
@@ -220,17 +229,37 @@ class FolderObserver:
         Arguments:
             filepath -- The path of the new file.
         """
-        logger.info('Handling new file: %s', filepath)
-        with tempfile.TemporaryDirectory() as workdir:
-            logger.info('working in folder %s', workdir)
-            os.makedirs(os.path.join(workdir, 'lion'))
-            os.makedirs(os.path.join(workdir, 'no-lion'))
-            shutil.copy(filepath, os.path.join(workdir, 'lion'))
+        logger.debug('Classifying: %s', filepath)
+        prediction = self.classify_image(filepath)
+        logger.info('Chance of puma in %s: %.2f%%',
+                    filepath, (1 - prediction) * 100)
 
-            predictions = classify_images(
-                notebook=self.notebook, workdir=workdir)
-            logger.info('Chance of puma in %s: %.2f%%',
-                        filepath, (1 - predictions[0]) * 100)
+    def classify_image(self, filepath: str) -> float:
+        """
+        Classify the image.
+
+        Arguments:
+            image_path -- The path to the image.
+
+        Returns:
+            The predicted label.
+        """
+        logger.debug('color_mode = %s', self.presets.color_mode)
+        if self.presets.color_mode == 'rgb':
+            img = Image.open(filepath).convert('RGB')
+        elif self.presets.color_mode == 'grayscale':
+            img = Image.open(filepath).convert('L')
+        else:
+            raise ValueError(f'unknown color mode {self.presets.color_mode}')
+        img = img.resize(self.presets.image_dimensions)
+        img_array = np.array(img)
+        # img_array = img_array / 255.0
+        img_array = np.expand_dims(img_array, axis=0)
+        logger.debug('image shape %s', img_array.shape)
+        if self.presets.color_mode == 'grayscale':
+            img_array = np.expand_dims(img_array, axis=-1)
+        prediction = self.model.predict(img_array)
+        return prediction[0][0]
 
 
 class FolderManager:
