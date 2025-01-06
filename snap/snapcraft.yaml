@@ -1,6 +1,7 @@
 name: pumaguard
 base: core22 # We need Python <= 3.10
 adopt-info: pumaguard
+license: Apache-2.0
 grade: stable
 confinement: strict
 
