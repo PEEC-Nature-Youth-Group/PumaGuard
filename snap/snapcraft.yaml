@@ -15,6 +15,7 @@ description: |
 
 environment:
   TF_ENABLE_ONEDNN_OPTS: 0
+  PUMAGUARD_MODEL_PATH: $SNAP/models
 
 apps:
   pumaguard-server:

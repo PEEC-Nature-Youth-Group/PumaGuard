@@ -76,6 +76,10 @@ def parse_commandline() -> argparse.Namespace:
         default=1,
     )
     parser.add_argument(
+        '--model-path',
+        help='Where the models are stored',
+    )
+    parser.add_argument(
         'image',
         metavar='FILE',
         help='An image to classify.',

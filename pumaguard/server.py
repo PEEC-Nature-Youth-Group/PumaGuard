@@ -4,7 +4,7 @@ that the new images show pumas.
 
 .. code-block:: shell
 
-    usage: pumaguard-server [-h] [--debug] [--notebook NOTEBOOK] [--completion {bash}] [--watch-method {inotify,os}] [FOLDER ...]
+    usage: pumaguard-server [-h] [--debug] [--notebook NOTEBOOK] [--model-path MODEL_PATH] [--completion {bash}] [--watch-method {inotify,os}] [FOLDER ...]
 
     positional arguments:
       FOLDER                The folder(s) to watch. Can be used multiple times.
@@ -13,12 +13,15 @@ that the new images show pumas.
       -h, --help            show this help message and exit
       --debug               Debug the application
       --notebook NOTEBOOK   The notebook number
+      --model-path MODEL_PATH
+                            Where the models are stored
       --completion {bash}   Print out bash completion script.
       --watch-method {inotify,os}
-                            What implementation (method) to use for watching the
-                            folder. Linux on baremetal supports both methods. Linux
-                            in WSL supports inotify on folders using ext4 but only
-                            os on folders that are mounted from the Windows host.
+                            What implementation (method) to use for watching
+                            the folder. Linux on baremetal supports both
+                            methods. Linux in WSL supports inotify on folders
+                            using ext4 but only os on folders that are mounted
+                            from the Windows host. Defaults to "os"
 """  # pylint: disable=line-too-long
 
 import argparse
@@ -73,6 +76,11 @@ def parse_commandline() -> argparse.Namespace:
         help='The notebook number',
         type=int,
         default=1,
+    )
+    parser.add_argument(
+        '--model-path',
+        help='Where the models are stored',
+        type=str,
     )
     parser.add_argument(
         'FOLDER',
@@ -158,16 +166,11 @@ class FolderObserver:
     FolderObserver watches a folder for new files.
     """
 
-    def __init__(self, folder: str, notebook: int, method: str):
+    def __init__(self, folder: str, method: str, presets: Presets):
         self.folder = folder
-        self.notebook = notebook
-        self.presets = Presets(notebook)
-        if self.presets.model_version == 'pre-trained':
-            self.presets.color_mode = 'rgb'
-        else:
-            self.presets.color_mode = 'grayscale'
         self.method = method
-        self.model = Model(notebook).get_model()
+        self.presets = presets
+        self.model = Model(presets).get_model()
         self._stop_event = threading.Event()
 
     def start(self):
@@ -267,8 +270,8 @@ class FolderManager:
     FolderManager manages the folders to observe.
     """
 
-    def __init__(self, notebook: int):
-        self.notebook = notebook
+    def __init__(self, presets: Presets):
+        self.presets = presets
         self.observers: list[FolderObserver] = []
 
     def register_folder(self, folder: str, method: str):
@@ -278,7 +281,7 @@ class FolderManager:
         Arguments:
             folder -- The path of the folder to watch.
         """
-        observer = FolderObserver(folder, self.notebook, method)
+        observer = FolderObserver(folder, method, self.presets)
         self.observers.append(observer)
         logger.info('registered %s', folder)
 
@@ -310,7 +313,15 @@ def main():
     if options.debug:
         logger.setLevel(logging.DEBUG)
 
-    manager = FolderManager(options.notebook)
+    presets = Presets(options.notebook)
+    model_path = os.getenv('PUMAGUARD_MODEL_PATH', default=None)
+    if model_path is not None:
+        logger.debug('setting model path to %s', model_path)
+        presets.base_output_directory = model_path
+    if options.model_path:
+        logger.debug('setting model path to %s', options.model_path)
+        presets.base_output_directory = options.model_path
+    manager = FolderManager(presets)
     for folder in options.FOLDER:
         manager.register_folder(folder, options.watch_method)
 

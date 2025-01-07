@@ -13,6 +13,7 @@
             "stopOnEntry": true,
             "justMyCode": false,
             "args": [
+                "--model-path", "/tmp",
                 "${command:pickArgs}"
             ]
         }

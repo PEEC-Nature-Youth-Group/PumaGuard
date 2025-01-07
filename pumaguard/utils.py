@@ -174,15 +174,16 @@ def create_model(presets: Presets,
     Create the model.
     """
     with distribution_strategy.scope():
+        logger.debug('Looking for model at %s', presets.model_file)
         model_file_exists = os.path.isfile(presets.model_file)
         if presets.load_model_from_file and model_file_exists:
             os.stat(presets.model_file)
-            print(f'Loading model from file {presets.model_file}')
+            logger.debug('Loading model from file %s', presets.model_file)
             model = keras.models.load_model(presets.model_file)
-            print('Loaded model from file')
-            print(f'Model version {get_md5(presets.model_file)}')
+            logger.debug('Loaded model from file')
+            logger.info('Model version %s', get_md5(presets.model_file))
         else:
-            print('Creating new model')
+            logger.info('Could not find model; creating new model')
             if presets.model_version == "pre-trained":
                 print('Creating new Xception model')
                 model = pre_trained_model(presets)
@@ -195,7 +196,7 @@ def create_model(presets: Presets,
                     metrics=['accuracy'],
                 )
             elif presets.model_version == "light":
-                print('Creating new light model')
+                logger.info('Creating new light model')
                 model = light_model(presets)
                 print('Building light model')
                 model.build(input_shape=(None, *presets.image_dimensions, 1))
@@ -235,7 +236,7 @@ class Model():
     _instance = None
     _initialized = False
 
-    def __new__(cls, notebook: int):
+    def __new__(cls, presets: Presets):
         """
         Create a new model.
         """
@@ -243,10 +244,9 @@ class Model():
             cls._instance = super(Model, cls).__new__(cls)
         return cls._instance
 
-    def __init__(self, notebook: int):
+    def __init__(self, presets: Presets):
         if not self._initialized:
-            self._notebook = notebook
-            self._presets = Presets(notebook)
+            self._presets = presets
             self._distribution_strategy = initialize_tensorflow()
             self._model = create_model(
                 self._presets, self._distribution_strategy)
@@ -264,7 +264,7 @@ def classify_images(notebook: int, workdir: str) -> list[float]:
     Classify images in a workdir and return the probabilities.
     """
     presets = Presets(notebook)
-    model = Model(notebook).get_model()
+    model = Model(presets).get_model()
     if presets.model_version == 'pre-trained':
         color_model = 'rgb'
     else:

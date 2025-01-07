@@ -14,6 +14,8 @@ class Presets():
     __load_model_from_file = True
     __load_history_from_file = True
     __epochs = 300
+    __base_data_directory: str = 'undefined'
+    __base_output_directory: str = 'undefined'
 
     def __init__(self, notebook_number: int = 1):
         self.base_data_directory = os.path.join(
@@ -148,11 +150,22 @@ class Presets():
         else:
             raise ValueError(f'Unknown notebook {self.notebook_number}')
 
-        self.model_file = os.path.realpath(
+    @property
+    def model_file(self):
+        """
+        Get the location of the model file.
+        """
+        return os.path.realpath(
             f'{self.base_output_directory}/'
             f'model_weights_{self.notebook_number}_{self.model_version}'
             f'_{self.image_dimensions[0]}_{self.image_dimensions[1]}.keras')
-        self.history_file = os.path.realpath(
+
+    @property
+    def history_file(self):
+        """
+        Get the history file.
+        """
+        return os.path.realpath(
             f'{self.base_output_directory}/'
             f'model_history_{self.notebook_number}_{self.model_version}'
             f'_{self.image_dimensions[0]}_{self.image_dimensions[1]}.pickle')
@@ -172,6 +185,34 @@ class Presets():
         if mode not in ['rgb', 'grayscale']:
             raise ValueError("color_mode must be either 'rgb' or 'grayscale'")
         self.__color_mode = mode
+
+    @property
+    def base_data_directory(self) -> str:
+        """
+        Get the base_data_directory.
+        """
+        return self.__base_data_directory
+
+    @base_data_directory.setter
+    def base_data_directory(self, path: str):
+        """
+        Set the base_data_directory.
+        """
+        self.__base_data_directory = path
+
+    @property
+    def base_output_directory(self) -> str:
+        """
+        Get the base_output_directory.
+        """
+        return self.__base_output_directory
+
+    @base_output_directory.setter
+    def base_output_directory(self, path: str):
+        """
+        Set the base_output_directory.
+        """
+        self.__base_output_directory = path
 
     @property
     def load_history_from_file(self) -> bool:
