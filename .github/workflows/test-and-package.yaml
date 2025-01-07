@@ -85,7 +85,7 @@ jobs:
 
   build-python:
     runs-on: ubuntu-24.04
-    needs: [test-python, lint-notebooks, lint-python]
+    needs: [test-python, lint-python]
 
     steps:
       - uses: actions/checkout@v4
@@ -107,7 +107,7 @@ jobs:
 
   build-snap:
     runs-on: ubuntu-22.04
-    needs: [test-python, lint-notebooks, lint-python]
+    needs: [test-python, lint-python]
 
     steps:
       - name: Check container free disk space
@@ -159,7 +159,7 @@ jobs:
 
   release:
     runs-on: ubuntu-24.04
-    needs: [build-python, build-snap, integration, lint-ansible]
+    needs: [build-python, build-snap, lint-notebooks, functional-poetry, functional-snap, lint-ansible]
     permissions: write-all
 
     steps:
@@ -192,7 +192,7 @@ jobs:
           done
         if: ${{ github.ref_type == 'tag' }}
 
-  integration:
+  functional-poetry:
     runs-on: ubuntu-24.04
     needs: [build-python]
 
@@ -208,4 +208,17 @@ jobs:
           pip install poetry
           poetry install
       - run: |
-          make integration
+          make functional-poetry
+
+  functional-snap:
+    runs-on: ubuntu-24.04
+    needs: [build-snap]
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: snap
+      - name: Install snap
+        run: sudo snap install --dangerous ./pumaguard*snap
+      - run: |
+          make functional-snap
