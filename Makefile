@@ -23,7 +23,7 @@ docs: venv
 
 .PHONY: test
 test:
-	poetry run pytest --capture=no --verbose --cov=pumaguard --cov-report=term-missing
+	poetry run pytest --verbose --cov=pumaguard --cov-report=term-missing
 
 .PHONY: install
 install:
