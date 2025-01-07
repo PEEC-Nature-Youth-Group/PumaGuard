@@ -11,8 +11,8 @@ repository = "https://github.com/PEEC-Nature-Youth-Group/PumaGuard"
 flask = "^3.0.3"
 matplotlib = "^3.9.2"
 pillow = "^10.4.0"
-python = ">=3.10,<3.12"
-tensorflow = "2.15.0"
+python = ">=3.12,<4.0"
+tensorflow = "^2.18"
 
 [tool.poetry.group.dev.dependencies]
 ansible-lint = { version = "^24.10.0", markers = 'platform_system != "Windows"' }
@@ -21,8 +21,8 @@ ipykernel = "^6.29.5"
 mypy = "^1.11.2"
 pylint = "^3.2.6"
 pynblint = "^0.1.6"
-pytest = "^8.2.2"
-pytest-cov = "^6.0.0"
+pytest = "^8.3"
+pytest-cov = "^6.0"
 
 [tool.poetry.scripts]
 pick-files = 'scripts.pick_files:main'
