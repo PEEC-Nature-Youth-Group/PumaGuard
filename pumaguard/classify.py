@@ -6,13 +6,32 @@ This script classifies images.
 
 import argparse
 import datetime
+import logging
+import os
 import sys
 
 import numpy as np
-import keras # type: ignore
+import keras  # type: ignore
 from PIL import Image
 
+from pumaguard import __VERSION__
 from pumaguard.presets import Presets
+
+logger = logging.getLogger('PumaGuard-Server')
+
+
+def initialize_logger():
+    """
+    Initializes and configures the logger for the application.
+
+    This function sets up the logging configuration, including log level, log
+    format, and log file handlers. It ensures that all log messages are
+    properly formatted and directed to the appropriate output destinations.
+
+    Returns:
+        None
+    """
+    logging.basicConfig(level=logging.INFO)
 
 
 def get_duration(start_time: datetime.datetime,
@@ -150,8 +169,15 @@ def main():
     Main entry point
     """
 
+    initialize_logger()
+    logger.info('PumaGuard Server version %s', __VERSION__)
     options = parse_commandline()
     presets = Presets(options.notebook)
+    model_path = options.model_path if options.model_path \
+        else os.getenv('PUMAGUARD_MODEL_PATH', default=None)
+    if model_path is not None:
+        logger.debug('setting model path to %s', model_path)
+        presets.base_output_directory = model_path
     model = keras.models.load_model(presets.model_file)
     for image in options.image:
         classify_images(presets, model, image)

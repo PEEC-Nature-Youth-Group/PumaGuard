@@ -318,13 +318,11 @@ def main():
         logger.setLevel(logging.DEBUG)
 
     presets = Presets(options.notebook)
-    model_path = os.getenv('PUMAGUARD_MODEL_PATH', default=None)
+    model_path = options.model_path if options.model_path \
+        else os.getenv('PUMAGUARD_MODEL_PATH', default=None)
     if model_path is not None:
         logger.debug('setting model path to %s', model_path)
         presets.base_output_directory = model_path
-    if options.model_path:
-        logger.debug('setting model path to %s', options.model_path)
-        presets.base_output_directory = options.model_path
     manager = FolderManager(presets)
     for folder in options.FOLDER:
         manager.register_folder(folder, options.watch_method)
