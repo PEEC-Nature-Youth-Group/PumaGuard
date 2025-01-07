@@ -1,3 +1,7 @@
+[project]
+name = "pumaguard"
+dynamic = ["version"]
+
 [tool.poetry]
 name = "pumaguard"
 version = "0.0.0"
@@ -30,6 +34,12 @@ pumaguard-classify = 'pumaguard.classify:main'
 pumaguard-train = 'pumaguard.train:main'
 pumaguard-server = 'pumaguard.server:main'
 
+[tool.poetry.requires-plugins]
+poetry-dynamic-versioning = { version = ">=1.0.0,<2.0.0", extras = ["plugin"] }
+
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
+build-backend = "poetry_dynamic_versioning.backend"
+
+[tool.poetry-dynamic-versioning]
+enable = true
