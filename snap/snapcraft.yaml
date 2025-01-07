@@ -56,7 +56,8 @@ parts:
       craftctl default
       cp --recursive models ${CRAFT_PART_INSTALL}/models
       for script in classify train server; do
-        install --mode 0755 scripts/${script}-bash-completions.sh ${CRAFT_PART_INSTALL}/bin/${script}-bash-completions.sh
+        python3 scripts/${script}.py --completion bash > ${script}-bash-completions.sh
+        install --mode 0755 ${script}-bash-completions.sh ${CRAFT_PART_INSTALL}/bin/${script}-bash-completions.sh
       done
     stage-packages:
       - inotify-tools
