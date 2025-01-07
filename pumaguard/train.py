@@ -5,6 +5,7 @@ This script trains a model.
 import argparse
 import datetime
 import tempfile
+import sys
 
 import keras  # type: ignore
 import matplotlib.pyplot as plt
@@ -117,7 +118,61 @@ def parse_commandline() -> argparse.Namespace:
         help='Do not load previous training session from file',
         action='store_true',
     )
-    return parser.parse_args()
+    parser.add_argument(
+        '--completion',
+        choices=['bash'],
+        help='Print out bash completion script.',
+    )
+    options = parser.parse_args()
+    if options.completion:
+        if options.completion == 'bash':
+            print_bash_completion()
+            sys.exit(0)
+        else:
+            raise ValueError(f'unknown completion {options.completion}')
+    return options
+
+
+def print_bash_completion():
+    """
+    Print bash completion script.
+    """
+    print('''#!/bin/bash
+
+_pumaguard_train_completions() {
+    local cur prev opts
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+    opts="-h --help --notebook --completion"
+
+    if [[ ${cur} == -* ]]; then
+        COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+        return 0
+    fi
+
+    case "${prev}" in
+        --notebook)
+            return 0
+            ;;
+       --completion)
+            opts="bash"
+            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            return 0
+            ;;
+         *)
+            COMPREPLY=( $(compgen -f -- ${cur}) )
+            return 0
+            ;;
+    esac
+
+    COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+    return 0
+}
+
+complete -F _pumaguard_train_completions pumaguard.pumaguard-train
+complete -F _pumaguard_train_completions pumaguard-train
+''')
 
 
 def main():

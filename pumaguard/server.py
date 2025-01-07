@@ -125,7 +125,7 @@ _pumaguard_server_completions() {
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
-    opts="-h --debug --help --notebook --watch-method --completion"
+    opts="-h --debug --help --notebook --watch-method --model-path --completion"
 
     if [[ ${cur} == -* ]]; then
         COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
@@ -144,6 +144,10 @@ _pumaguard_server_completions() {
         --watch-method)
             opts="inotify os"
             COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            return 0
+            ;;
+        --model-path)
+            COMPREPLY=( $(compgen -f -- ${cur}) )
             return 0
             ;;
         *)
