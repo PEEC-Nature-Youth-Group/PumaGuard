@@ -64,38 +64,39 @@ ansible-lint: install
 snap:
 	snapcraft
 
-.PHONY: run-functional-poetry
-run-functional-poetry: install
-	poetry run pumaguard-classify \
-		--notebook 6 \
-		"data/stable/angle 1/Lion/SYFW1932.JPG" \
-		"data/stable/angle 2/Lion/SYFW0270.JPG" \
-		"data/stable/angle 2/Lion/SYFW0270_bright.jpg" \
-		2>&1 | tee functional-poetry-test.output
+FUNCTIONAL_FILES = \
+    "data/stable/angle 1/Lion/SYFW1932.JPG" \
+    "data/stable/angle 2/Lion/SYFW0270.JPG" \
+    "data/stable/angle 2/Lion/SYFW0270_bright.jpg"
 
-.PHONY: run-functional-snap
-run-functional-snap:
-	pumaguard.pumaguard-classify \
-		--notebook 6 \
-		"data/stable/angle 1/Lion/SYFW1932.JPG" \
-		"data/stable/angle 2/Lion/SYFW0270.JPG" \
-		"data/stable/angle 2/Lion/SYFW0270_bright.jpg" \
-		2>&1 | tee functional-snap-test.output
+.PHONY: run-functional
+run-functional:
+	$(EXE) --notebook 6 $(FUNCTIONAL_FILES) 2>&1 | tee functional-test.output
 
-.PHONY: functional-poetry functional-snap
-functional-poetry functional-snap: functional-% : run-functional-%
-	if [ "$$(sed --quiet --regexp-extended '/^Predicted.*1932/s/^.*:\s*([0-9.%]+).*$$/\1/p' $@-test.output)" != '84.80%' ]; then \
-		cat $@-test.output; \
+.PHONY: check-functional
+check-functional:
+	if [ "$$(sed --quiet --regexp-extended '/^Predicted.*1932/s/^.*:\s*([0-9.%]+).*$$/\1/p' functional-test.output)" != '84.80%' ]; then \
+		cat functional-test.output; \
 		false; \
 	fi
-	if [ "$$(sed --quiet --regexp-extended '/^Predicted.*270.JPG/s/^.*:\s*([0-9.%]+).*$$/\1/p' $@-test.output)" != '32.22%' ]; then \
-		cat $@-test.output; \
+	if [ "$$(sed --quiet --regexp-extended '/^Predicted.*270.JPG/s/^.*:\s*([0-9.%]+).*$$/\1/p' functional-test.output)" != '32.22%' ]; then \
+		cat functional-test.output; \
 		false; \
 	fi
-	if [ "$$(sed --quiet --regexp-extended '/^Predicted.*270_bright.jpg/s/^.*:\s*([0-9.%]+).*$$/\1/p' $@-test.output)" != '91.83%' ]; then \
-		cat $@-test.output; \
+	if [ "$$(sed --quiet --regexp-extended '/^Predicted.*270_bright.jpg/s/^.*:\s*([0-9.%]+).*$$/\1/p' functional-test.output)" != '91.83%' ]; then \
+		cat functional-test.output; \
 		false; \
 	fi
+
+.PHONY: functional-poetry
+functional-poetry: install
+	$(MAKE) EXE="poetry run pumaguard-classify" run-functional
+	$(MAKE) check-functional
+
+.PHONY: functional-snap
+functional-snap:
+	$(MAKE) EXE="pumaguard.pumaguard-classify" run-functional
+	$(MAKE) check-functional
 
 .PHONY: prepare-trailcam prepare-output prepare-central
 prepare-central prepare-trailcam prepare-output: prepare-%:
