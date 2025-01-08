@@ -50,7 +50,7 @@ mypy: install
 
 .PHONY: bashate
 bashate: install
-	poetry run bashate -v scripts/*sh
+	poetry run bashate -v scripts/*sh pumaguard/completions/*sh
 
 .PHONY: lint-notebooks
 lint-notebooks: install
