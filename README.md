@@ -67,3 +67,16 @@ poetry run pumaguard-server FOLDER
 Where `FOLDER` is the folder to watch.
 
 ![Server Demo Session](docs/source/_static/server-demo.gif)
+
+## Training new models
+
+For reproducibility, training new models should be done via the train script
+and all necessary data, i.e. images, and the resulting weights and history
+should be committed to the repository.
+
+1. Create new model in pumaguard/models
+2. Add that model to pumaguard/presets.py
+3. Add images to data
+4. Add folders of new images to pumaguard/presets.py
+5. Train new model
+6. Add weights and history to models
