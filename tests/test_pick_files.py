@@ -7,7 +7,9 @@ import shutil
 import tempfile
 import unittest
 
-from scripts.pick_files import pick_files
+from scripts.pick_files import (
+    pick_files,
+)
 
 
 class TestPickFiles(unittest.TestCase):

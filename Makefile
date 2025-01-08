@@ -34,11 +34,15 @@ build:
 	poetry build
 
 .PHONY: lint
-lint: install pylint mypy bashate ansible-lint
+lint: install pylint isort mypy bashate ansible-lint
 
 .PHONY: pylint
 pylint: install
 	poetry run pylint --verbose --recursive=true --rcfile=pylintrc pumaguard tests scripts
+
+.PHONY: isort
+isort:
+	poetry run isort pumaguard tests scripts
 
 .PHONY: mypy
 mypy: install

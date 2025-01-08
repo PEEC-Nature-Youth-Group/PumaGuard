@@ -4,7 +4,9 @@ The pre-trained model.
 
 import keras  # type: ignore
 
-from pumaguard.presets import Presets
+from pumaguard.presets import (
+    Presets,
+)
 
 
 def pre_trained_model(presets: Presets) -> keras.src.Model:

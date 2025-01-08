@@ -2,19 +2,27 @@
 Some utility functions.
 """
 
-import logging
 import glob
 import hashlib
+import logging
 import os
 import shutil
 
 import keras  # type: ignore
 import tensorflow as tf  # type: ignore
 
-from pumaguard.presets import Presets
-from pumaguard.models.pretrained import pre_trained_model
-from pumaguard.models.light import light_model
-from pumaguard.models.light_2 import light_model_2
+from pumaguard.models.light import (
+    light_model,
+)
+from pumaguard.models.light_2 import (
+    light_model_2,
+)
+from pumaguard.models.pretrained import (
+    pre_trained_model,
+)
+from pumaguard.presets import (
+    Presets,
+)
 
 logger = logging.getLogger('PumaGuard-Server')
 

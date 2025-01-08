@@ -10,28 +10,20 @@ import logging
 import os
 import sys
 
-import numpy as np
 import keras  # type: ignore
-from PIL import Image
+import numpy as np
+from PIL import (
+    Image,
+)
 
-from pumaguard import __VERSION__
-from pumaguard.presets import Presets
+from pumaguard import (
+    __VERSION__,
+)
+from pumaguard.presets import (
+    Presets,
+)
 
 logger = logging.getLogger('PumaGuard-Server')
-
-
-def initialize_logger():
-    """
-    Initializes and configures the logger for the application.
-
-    This function sets up the logging configuration, including log level, log
-    format, and log file handlers. It ensures that all log messages are
-    properly formatted and directed to the appropriate output destinations.
-
-    Returns:
-        None
-    """
-    logging.basicConfig(level=logging.INFO)
 
 
 def get_duration(start_time: datetime.datetime,
@@ -169,7 +161,7 @@ def main():
     Main entry point
     """
 
-    initialize_logger()
+    logging.basicConfig(level=logging.INFO)
     logger.info('PumaGuard Server version %s', __VERSION__)
     options = parse_commandline()
     presets = Presets(options.notebook)

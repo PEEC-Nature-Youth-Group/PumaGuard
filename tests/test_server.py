@@ -2,21 +2,23 @@
 Test server.
 """
 
-import unittest
-from unittest.mock import patch, MagicMock
-
 import io
 import sys
-
-from pumaguard.server import (
-    parse_commandline,
-    FolderManager,
-    FolderObserver,
+import unittest
+from unittest.mock import (
+    MagicMock,
+    patch,
 )
 
+from pumaguard.server import (
+    FolderManager,
+    FolderObserver,
+    parse_commandline,
+)
 from pumaguard.utils import (
     Presets,
 )
+
 
 class TestFolderObserver(unittest.TestCase):
     """

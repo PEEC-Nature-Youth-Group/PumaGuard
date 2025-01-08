@@ -2,15 +2,15 @@
 Test utils
 """
 
-import unittest
-import tempfile
-import os
 import hashlib
+import os
+import tempfile
+import unittest
 
 from pumaguard.utils import (
+    Model,
     get_md5,
     get_sha256,
-    Model,
 )
 
 
