@@ -5,6 +5,7 @@ This script trains a model.
 import argparse
 import datetime
 import logging
+import shutil
 import sys
 import tempfile
 
@@ -116,6 +117,11 @@ def parse_commandline() -> argparse.Namespace:
         default=1,
     )
     parser.add_argument(
+        '--model-output',
+        help='The output folder for the new model.',
+        type=str,
+    )
+    parser.add_argument(
         '--epochs',
         help='How many epochs to train',
         type=int,
@@ -203,6 +209,11 @@ def main():
 
     print(f'Model file   {presets.model_file}')
     print(f'History file {presets.history_file}')
+
+    if options.model_output:
+        shutil.copy(presets.model_file, options.model_output)
+        shutil.copy(presets.history_file, options.model_output)
+        presets.base_output_directory = options.model_output
 
     work_directory = tempfile.mkdtemp(prefix='pumaguard-work-')
     organize_data(presets=presets, work_directory=work_directory)
