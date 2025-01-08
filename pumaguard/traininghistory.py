@@ -7,7 +7,9 @@ import pickle
 
 import keras  # type: ignore
 
-from pumaguard.presets import Presets
+from pumaguard.presets import (
+    Presets,
+)
 
 
 class TrainingHistory(keras.callbacks.Callback):

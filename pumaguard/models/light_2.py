@@ -4,7 +4,9 @@ The light-2 model.
 
 import keras  # type: ignore
 
-from pumaguard.presets import Presets
+from pumaguard.presets import (
+    Presets,
+)
 
 
 def light_model_2(presets: Presets) -> keras.src.Model:

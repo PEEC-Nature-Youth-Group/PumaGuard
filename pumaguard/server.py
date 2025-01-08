@@ -31,30 +31,21 @@ import subprocess
 import sys
 import threading
 import time
-import numpy as np
-from PIL import Image
 
-from pumaguard import __VERSION__
+import numpy as np
+from PIL import (
+    Image,
+)
+
+from pumaguard import (
+    __VERSION__,
+)
 from pumaguard.utils import (
     Model,
     Presets,
 )
 
 logger = logging.getLogger('PumaGuard-Server')
-
-
-def initialize_logger():
-    """
-    Initializes and configures the logger for the application.
-
-    This function sets up the logging configuration, including log level, log
-    format, and log file handlers. It ensures that all log messages are
-    properly formatted and directed to the appropriate output destinations.
-
-    Returns:
-        None
-    """
-    logging.basicConfig(level=logging.INFO)
 
 
 def parse_commandline() -> argparse.Namespace:
@@ -311,7 +302,7 @@ def main():
     Main entry point.
     """
 
-    initialize_logger()
+    logging.basicConfig(level=logging.INFO)
     logger.info('PumaGuard Server version %s', __VERSION__)
     options = parse_commandline()
     if options.debug:

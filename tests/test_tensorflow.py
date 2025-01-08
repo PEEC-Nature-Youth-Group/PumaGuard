@@ -2,9 +2,9 @@
 Test basic TensorFlow functions.
 """
 
-import unittest
 import logging
 import os
+import unittest
 
 import tensorflow as tf
 

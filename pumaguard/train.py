@@ -4,20 +4,27 @@ This script trains a model.
 
 import argparse
 import datetime
-import tempfile
+import logging
 import sys
+import tempfile
 
 import keras  # type: ignore
 import matplotlib.pyplot as plt
 
-from pumaguard.presets import Presets
-from pumaguard.traininghistory import TrainingHistory
+from pumaguard.presets import (
+    Presets,
+)
+from pumaguard.traininghistory import (
+    TrainingHistory,
+)
 from pumaguard.utils import (
     create_datasets,
     create_model,
     initialize_tensorflow,
     organize_data,
 )
+
+logger = logging.getLogger('PumaGuard-Server')
 
 
 def plot_training_progress(filename, full_history):
@@ -179,6 +186,8 @@ def main():
     """
     The main entry point.
     """
+    logging.basicConfig(level=logging.INFO)
+
     options = parse_commandline()
     presets = Presets(options.notebook)
 
