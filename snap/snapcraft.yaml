@@ -56,8 +56,13 @@ parts:
     source: .
     build-packages:
       - git
-    override-build: |
+    override-pull: |
+      craftctl default
       craftctl set version="$(git describe --tags)"
+    override-build: |
+      pip install poetry
+      VERSION=$(git describe --tags | sed --regexp-extended 's/^v([0-9]+)(-([0-9]+))?.*/\1.post\3/; s/.post$//')
+      poetry version "${VERSION}"
       craftctl default
       cp --recursive models ${CRAFT_PART_INSTALL}/models
       for script in classify train server; do
@@ -70,6 +75,7 @@ parts:
   ftp:
     plugin: nil
     override-build: |
+      craftctl default
       cat <<EOF > vsftpd.conf
       chroot_local_user=YES
       listen=YES
