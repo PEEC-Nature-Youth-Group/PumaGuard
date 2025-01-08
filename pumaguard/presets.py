@@ -2,6 +2,7 @@
 The presets for each model.
 """
 
+import copy
 import os
 
 
@@ -16,6 +17,7 @@ class Presets():
     __epochs = 300
     __base_data_directory: str = 'undefined'
     __base_output_directory: str = 'undefined'
+    __lion_directories: list[str] = []
 
     def __init__(self, notebook_number: int = 1):
         self.base_data_directory = os.path.join(
@@ -257,3 +259,17 @@ class Presets():
         if epochs < 1:
             raise ValueError('epochs needs to be a positive integer')
         self.__epochs = epochs
+
+    @property
+    def lion_directories(self) -> list[str]:
+        """
+        The directories containing lion images.
+        """
+        return self.__lion_directories
+
+    @lion_directories.setter
+    def lion_directories(self, lions: list[str]):
+        """
+        Set the lion directories.
+        """
+        self.__lion_directories = copy.deepcopy(lions)
