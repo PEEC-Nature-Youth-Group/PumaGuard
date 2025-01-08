@@ -7,6 +7,7 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
+   pumaguard.completions
    pumaguard.models
 
 Submodules

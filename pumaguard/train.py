@@ -5,6 +5,7 @@ This script trains a model.
 import argparse
 import datetime
 import logging
+import os
 import shutil
 import sys
 import tempfile
@@ -150,42 +151,10 @@ def print_bash_completion():
     """
     Print bash completion script.
     """
-    print('''#!/bin/bash
-
-_pumaguard_train_completions() {
-    local cur prev opts
-    COMPREPLY=()
-    cur="${COMP_WORDS[COMP_CWORD]}"
-    prev="${COMP_WORDS[COMP_CWORD-1]}"
-    opts="-h --help --notebook --completion"
-
-    if [[ ${cur} == -* ]]; then
-        COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
-        return 0
-    fi
-
-    case "${prev}" in
-        --notebook)
-            return 0
-            ;;
-       --completion)
-            opts="bash"
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
-            return 0
-            ;;
-         *)
-            COMPREPLY=( $(compgen -f -- ${cur}) )
-            return 0
-            ;;
-    esac
-
-    COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
-    return 0
-}
-
-complete -F _pumaguard_train_completions pumaguard.pumaguard-train
-complete -F _pumaguard_train_completions pumaguard-train
-''')
+    completions_file = os.path.join(os.path.dirname(
+        __file__), 'completions', 'pumaguard-train-completions.sh')
+    with open(completions_file, encoding='utf-8') as fd:
+        print(fd.read())
 
 
 def main():
