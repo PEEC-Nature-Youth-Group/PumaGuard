@@ -35,6 +35,11 @@ apps:
     plugs:
       - home
       - network
+  vsftpd:
+    command: usr/sbin/vsftpd $SNAP/etc/vsftpd.conf
+    daemon: simple
+    plugs:
+      - network-bind
 
 parts:
   snapcraft-preload:
@@ -61,3 +66,15 @@ parts:
       done
     stage-packages:
       - inotify-tools
+
+  ftp:
+    plugin: nil
+    override-build: |
+      cat <<EOF > vsftpd.conf
+      chroot_local_user=YES
+      listen=YES
+      listen_ipv6=YES
+      EOF
+      install --mode 0644 vsftpd.conf ${CRAFT_PART_INSTALL}/etc/vsftpd.conf
+    stage-packages:
+      - vsftpd
