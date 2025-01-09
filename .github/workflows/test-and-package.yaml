@@ -181,7 +181,8 @@ jobs:
 
     steps:
       - uses: actions/download-artifact@v4
-      - run: |
+      - name: Upload release artifacts
+        run: |
           #!/bin/bash
           set -e -u -x
           RELEASE_ID=$(curl -L \
