@@ -56,6 +56,7 @@ parts:
     source: .
     build-packages:
       - git
+      - python3-pip
     override-build: |
       pip install poetry
       VERSION=$(git describe --tags | sed --regexp-extended 's/^v([0-9]+)(-([0-9]+))?.*/\1.post\3/; s/.post$//')
