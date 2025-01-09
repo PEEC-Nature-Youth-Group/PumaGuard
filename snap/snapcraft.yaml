@@ -58,9 +58,9 @@ parts:
       - git
       - python3-pip
     override-build: |
-      pip install poetry
       VERSION=$(git describe --tags | sed --regexp-extended 's/^v([0-9]+)(-([0-9]+))?.*/\1.post\3/; s/.post$//')
-      craftctl set version="$(git describe --tags)"
+      craftctl set version="v${VERSION}"
+      pip install poetry
       poetry version "${VERSION}"
       craftctl default
       cp --recursive models ${CRAFT_PART_INSTALL}/models
