@@ -33,6 +33,7 @@ apps:
       - network
   pumaguard-train:
     command: bin/snapcraft-preload $SNAP/bin/python3 $SNAP/bin/pumaguard-train
+    completer: bin/train-bash-completions.sh
     plugs:
       - home
       - network
