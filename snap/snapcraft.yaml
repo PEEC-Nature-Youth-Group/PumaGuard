@@ -1,6 +1,6 @@
 name: pumaguard
 icon: pumaguard-logo.png
-base: core22 # We need Python <= 3.10
+base: core22 # We need Python <= 3.10 to match the colab environment
 adopt-info: pumaguard
 license: Apache-2.0
 grade: stable
@@ -15,7 +15,7 @@ description: |
 
 environment:
   TF_CPP_MIN_LOG_LEVEL: 3  # or any {'0', '1', '2'}
-  TF_ENABLE_ONEDNN_OPTS: 0
+  # TF_ENABLE_ONEDNN_OPTS: 0
   PUMAGUARD_MODEL_PATH: $SNAP/models
 
 apps:
