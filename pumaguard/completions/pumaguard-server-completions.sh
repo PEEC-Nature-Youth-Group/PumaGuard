@@ -2,14 +2,15 @@
 
 _pumaguard_server_completions() {
     local cur prev opts
+
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
-    opts="-h --help --debug --notebook --watch-method " \
-        "--model-path --completion"
+    opts="-h --help --debug --notebook --watch-method\
+        --model-path --completion"
 
     if [[ ${cur} == -* ]]; then
-        COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+        COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
         return 0
     fi
 
@@ -18,8 +19,7 @@ _pumaguard_server_completions() {
             return 0
             ;;
         --model-path)
-            COMPREPLY=( $(compgen -A directory \
-                -o plusdirs -o nospace -- ${cur}) )
+            COMPREPLY=( $(compgen -d -o dirnames -o nospace -- "${cur}") )
             return 0
             ;;
         --watch-method)
@@ -33,12 +33,12 @@ _pumaguard_server_completions() {
             return 0
             ;;
         *)
-            COMPREPLY=( $(compgen -f -- ${cur}) )
+            COMPREPLY=( $(compgen -d -- "${cur}") )
             return 0
             ;;
     esac
 
-    COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+    COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
     return 0
 }
 

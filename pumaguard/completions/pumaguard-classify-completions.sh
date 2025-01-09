@@ -2,18 +2,23 @@
 
 _pumaguard_classify_completions() {
     local cur prev opts
+
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
-    opts="-h --help --notebook --completion"
+    opts="-h --help --notebook --model-path --completion"
 
     if [[ ${cur} == -* ]]; then
-        COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+        COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
         return 0
     fi
 
     case "${prev}" in
         --notebook)
+            return 0
+            ;;
+        --model-path)
+            COMPREPLY=( $(compgen -d -o dirnames -o nospace -- "${cur}") )
             return 0
             ;;
         --completion)
@@ -22,12 +27,13 @@ _pumaguard_classify_completions() {
             return 0
             ;;
         *)
-            COMPREPLY=( $(compgen -f -- ${cur}) )
+            COMPREPLY=( $(compgen -f -o filenames -o plusdirs \
+                -o nospace -- "${cur}") )
             return 0
             ;;
     esac
 
-    COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+    COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
     return 0
 }
 
