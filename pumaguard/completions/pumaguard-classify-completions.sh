@@ -6,7 +6,7 @@ _pumaguard_classify_completions() {
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
-    opts="-h --help --notebook --model-path --completion"
+    opts="-h --help --debug --notebook --model-path --completion"
 
     if [[ ${cur} == -* ]]; then
         COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
