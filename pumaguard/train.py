@@ -5,6 +5,7 @@ This script trains a model.
 import argparse
 import datetime
 import logging
+import os
 import shutil
 import sys
 import tempfile
@@ -112,6 +113,11 @@ def parse_commandline() -> argparse.Namespace:
     """
     parser = argparse.ArgumentParser()
     parser.add_argument(
+        '--debug',
+        help='Debug the application',
+        action='store_true',
+    )
+    parser.add_argument(
         '--notebook',
         help='The notebook number',
         type=int,
@@ -123,8 +129,12 @@ def parse_commandline() -> argparse.Namespace:
         type=str,
     )
     parser.add_argument(
+        '--model-path',
+        help='Where to load models from.',
+    )
+    parser.add_argument(
         '--epochs',
-        help='How many epochs to train',
+        help='How many epochs to train.',
         type=int,
     )
     parser.add_argument(
@@ -154,7 +164,15 @@ def main():
     logging.basicConfig(level=logging.INFO)
 
     options = parse_commandline()
+    if options.debug:
+        logger.setLevel(logging.DEBUG)
+
     presets = Presets(options.notebook)
+    model_path = options.model_path if options.model_path \
+        else os.getenv('PUMAGUARD_MODEL_PATH', default=None)
+    if model_path is not None:
+        logger.debug('setting model path to %s', model_path)
+        presets.base_output_directory = model_path
 
     if options.epochs:
         presets.epochs = options.epochs
@@ -170,6 +188,7 @@ def main():
     print(f'History file {presets.history_file}')
 
     if options.model_output:
+        logger.debug('setting model output to %s', options.model_output)
         shutil.copy(presets.model_file, options.model_output)
         shutil.copy(presets.history_file, options.model_output)
         presets.base_output_directory = options.model_output
