@@ -5,7 +5,6 @@ This script trains a model.
 import argparse
 import datetime
 import logging
-import os
 import shutil
 import sys
 import tempfile
@@ -24,6 +23,7 @@ from pumaguard.utils import (
     create_model,
     initialize_tensorflow,
     organize_data,
+    print_bash_completion,
 )
 
 logger = logging.getLogger('PumaGuard-Server')
@@ -140,21 +140,11 @@ def parse_commandline() -> argparse.Namespace:
     options = parser.parse_args()
     if options.completion:
         if options.completion == 'bash':
-            print_bash_completion()
+            print_bash_completion('pumaguard-train-completions.sh')
             sys.exit(0)
         else:
             raise ValueError(f'unknown completion {options.completion}')
     return options
-
-
-def print_bash_completion():
-    """
-    Print bash completion script.
-    """
-    completions_file = os.path.join(os.path.dirname(
-        __file__), 'completions', 'pumaguard-train-completions.sh')
-    with open(completions_file, encoding='utf-8') as fd:
-        print(fd.read())
 
 
 def main():

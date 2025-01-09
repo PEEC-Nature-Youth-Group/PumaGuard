@@ -64,7 +64,7 @@ class TestFolderObserver(unittest.TestCase):
         self.observer.stop()
         self.observer._stop_event.set.assert_called_once()  # pylint: disable=protected-access
 
-    @patch.object(FolderObserver, 'classify_image', return_value=0.7)
+    @patch('pumaguard.server.classify_image', return_value=0.7)
     @patch('pumaguard.server.logger')
     def test_handle_new_file_prediction(self, mock_logger, mock_classify):  # pylint: disable=unused-argument
         """
@@ -73,6 +73,8 @@ class TestFolderObserver(unittest.TestCase):
         """
         self.observer._handle_new_file(  # pylint: disable=protected-access
             'fake_image.jpg')
+
+        mock_classify.assert_called_once()
         mock_logger.info.assert_called_once()
         msg, path, prediction = mock_logger.info.call_args_list[0][0]
 
