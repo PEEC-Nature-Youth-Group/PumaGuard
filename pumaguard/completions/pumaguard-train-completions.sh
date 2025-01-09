@@ -5,7 +5,8 @@ _pumaguard_train_completions() {
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
-    opts="-h --help --debug --model-path --model-output --notebook --completion"
+    opts="-h --help --debug --model-path --model-output \
+        --notebook --completion"
 
     if [[ ${cur} == -* ]]; then
         COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )

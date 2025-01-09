@@ -6,7 +6,7 @@ _pumaguard_server_completions() {
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
-    opts="-h --help --debug --notebook --watch-method\
+    opts="-h --help --debug --notebook --watch-method \
         --model-path --completion"
 
     if [[ ${cur} == -* ]]; then

@@ -184,13 +184,16 @@ def main():
         presets.load_history_from_file = True
         presets.load_model_from_file = True
 
-    print(f'Model file   {presets.model_file}')
-    print(f'History file {presets.history_file}')
+    logger.info('Model file   %s', presets.model_file)
+    logger.info('History file %s', presets.history_file)
 
     if options.model_output:
         logger.debug('setting model output to %s', options.model_output)
-        shutil.copy(presets.model_file, options.model_output)
-        shutil.copy(presets.history_file, options.model_output)
+        try:
+            shutil.copy(presets.model_file, options.model_output)
+            shutil.copy(presets.history_file, options.model_output)
+        except FileNotFoundError:
+            logger.warning('unable to find previous model; ignoring')
         presets.base_output_directory = options.model_output
 
     work_directory = tempfile.mkdtemp(prefix='pumaguard-work-')
@@ -200,9 +203,9 @@ def main():
         presets.color_mode = 'rgb'
     else:
         presets.color_mode = 'grayscale'
-    print(f'Using color_mode \'{presets.color_mode}\'')
+    logger.info('using color_mode %s', presets.color_mode)
 
-    print(f'image dimensions {presets.image_dimensions}')
+    logger.info('image dimensions %s', presets.image_dimensions)
 
     training_dataset, validation_dataset = create_datasets(
         presets, work_directory, presets.color_mode)
@@ -211,11 +214,12 @@ def main():
 
     best_accuracy, best_val_accuracy, best_loss, best_val_loss, \
         best_epoch = full_history.get_best_epoch('accuracy')
-    print(f'Total time {sum(full_history.history["duration"])} '
-          f'for {len(full_history.history["accuracy"])} epochs')
-    print(f'Best epoch {best_epoch} - accuracy: {best_accuracy:.4f}'
-          f'- val_accuracy: {best_val_accuracy:.4f} - loss: '
-          f'{best_loss:.4f} - val_loss: {best_val_loss:.4f}')
+    logger.info('Total time %.2f for %.2f epochs',
+                sum(full_history.history["duration"]),
+                len(full_history.history["accuracy"]))
+    logger.info('Best epoch %d - accuracy: %.4f - val_accuracy: %.4f '
+                '- loss: %.4f - val_loss: %.4f', best_epoch, best_accuracy,
+                best_val_accuracy, best_loss, best_val_loss)
 
     distribution_strategy = initialize_tensorflow()
     model = create_model(presets, distribution_strategy)
