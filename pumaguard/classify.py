@@ -5,16 +5,11 @@ This script classifies images.
 # pylint: disable=redefined-outer-name
 
 import argparse
-import datetime
 import logging
 import os
 import sys
 
 import keras  # type: ignore
-import numpy as np
-from PIL import (
-    Image,
-)
 
 from pumaguard import (
     __VERSION__,
@@ -22,54 +17,12 @@ from pumaguard import (
 from pumaguard.presets import (
     Presets,
 )
+from pumaguard.utils import (
+    classify_image,
+    print_bash_completion,
+)
 
 logger = logging.getLogger('PumaGuard-Server')
-
-
-def get_duration(start_time: datetime.datetime,
-                 end_time: datetime.datetime) -> float:
-    """
-    Get duration between start and end time in seconds.
-
-    Args:
-        start_time (datetime.timezone): The start time.
-        end_time (datetime.timezone): The end time.
-
-    Returns:
-        float: The duration in seconds.
-    """
-    duration = end_time - start_time
-    return duration / datetime.timedelta(microseconds=1) / 1e6
-
-
-def classify_images(presets: Presets, model: keras.Model, image_path: str):
-    """
-    Classify the image and print out the result.
-    """
-    print(f'Using color_mode \'{presets.color_mode}\'')
-    print(f'Classifying image {image_path}')
-    start_time = datetime.datetime.now()
-    if presets.color_mode == 'rgb':
-        img = Image.open(image_path).convert('RGB')
-    else:
-        img = Image.open(image_path).convert('L')
-    img = img.resize(presets.image_dimensions)
-
-    img_array = np.array(img)
-    # img_array = img_array / 255.0
-    img_array = np.expand_dims(img_array, axis=0)
-    if presets.color_mode == 'grayscale':
-        img_array = np.expand_dims(img_array, axis=-1)
-
-    prediction = model.predict(img_array)
-
-    end_time = datetime.datetime.now()
-    print('Classification took '
-          f'{get_duration(start_time, end_time)} seconds')
-
-    print(
-        f'Predicted {image_path}: {100*(1 - prediction[0][0]):6.2f}% lion '
-        f'({"lion" if prediction[0][0] < 0.5 else "no lion"})')
 
 
 def parse_commandline() -> argparse.Namespace:
@@ -80,6 +33,11 @@ def parse_commandline() -> argparse.Namespace:
         argparse.NameSpace: The parsed options.
     """
     parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '--debug',
+        help='Debug the application',
+        action='store_true',
+    )
     parser.add_argument(
         '--notebook',
         help='The notebook number',
@@ -105,7 +63,7 @@ def parse_commandline() -> argparse.Namespace:
     options = parser.parse_args()
     if options.completion:
         if options.completion == 'bash':
-            print_bash_completion()
+            print_bash_completion('pumaguard-classify-completions.sh')
             sys.exit(0)
         else:
             raise ValueError(f'unknown completion {options.completion}')
@@ -114,30 +72,27 @@ def parse_commandline() -> argparse.Namespace:
     return options
 
 
-def print_bash_completion():
-    """
-    Print bash completion script.
-    """
-    completions_file = os.path.join(os.path.dirname(
-        __file__), 'completions', 'pumaguard-classify-completions.sh')
-    with open(completions_file, encoding='utf-8') as fd:
-        print(fd.read())
-
-
 def main():
     """
     Main entry point
     """
 
     logging.basicConfig(level=logging.INFO)
-    logger.info('PumaGuard Server version %s', __VERSION__)
+    logger.info('PumaGuard Classify version %s', __VERSION__)
     options = parse_commandline()
+    if options.debug:
+        logger.setLevel(logging.DEBUG)
+
     presets = Presets(options.notebook)
     model_path = options.model_path if options.model_path \
         else os.getenv('PUMAGUARD_MODEL_PATH', default=None)
     if model_path is not None:
         logger.debug('setting model path to %s', model_path)
         presets.base_output_directory = model_path
+
     model = keras.models.load_model(presets.model_file)
     for image in options.image:
-        classify_images(presets, model, image)
+        prediction = classify_image(presets, model, image)
+        print(
+            f'Predicted {image}: {100*(1 - prediction):6.2f}% lion '
+            f'({"lion" if prediction < 0.5 else "no lion"})')

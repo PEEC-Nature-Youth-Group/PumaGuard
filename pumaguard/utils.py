@@ -2,6 +2,7 @@
 Some utility functions.
 """
 
+import datetime
 import glob
 import hashlib
 import logging
@@ -9,7 +10,11 @@ import os
 import shutil
 
 import keras  # type: ignore
+import numpy as np
 import tensorflow as tf  # type: ignore
+from PIL import (
+    Image,
+)
 
 from pumaguard.models.light import (
     light_model,
@@ -54,6 +59,22 @@ def initialize_tensorflow() -> tf.distribute.Strategy:
         print('WARNING: Not connected to TPU or GPU runtime; '
               'Will use CPU context')
         return tf.distribute.get_strategy()
+
+
+def get_duration(start_time: datetime.datetime,
+                 end_time: datetime.datetime) -> float:
+    """
+    Get duration between start and end time in seconds.
+
+    Args:
+        start_time (datetime.timezone): The start time.
+        end_time (datetime.timezone): The end time.
+
+    Returns:
+        float: The duration in seconds.
+    """
+    duration = end_time - start_time
+    return duration / datetime.timedelta(microseconds=1) / 1e6
 
 
 def copy_images(work_directory, lion_images, no_lion_images):
@@ -267,7 +288,7 @@ class Model():
         return self._model
 
 
-def classify_images(notebook: int, workdir: str) -> list[float]:
+def classify_directory(notebook: int, workdir: str) -> list[float]:
     """
     Classify images in a workdir and return the probabilities.
     """
@@ -295,3 +316,64 @@ def classify_images(notebook: int, workdir: str) -> list[float]:
     except ValueError as e:
         logger.error('unable to process file: %s', e)
     return []
+
+
+def classify_image(presets: Presets, model: keras.Model,
+                   image_path: str) -> float:
+    """
+    Classify the image and print out the result.
+
+    Args:
+        presets (Presets): An instance of the Presets class containing image
+        processing settings.
+
+        model (keras.Model): A pre-trained Keras model used for image
+        classification.
+
+        image_path (str): The file path to the image to be classified.
+
+    Returns:
+        float: The classification result as a float value.
+
+    Prints:
+        The color mode being used, the image being classified, and the time
+        taken for classification.
+    """
+    logger.debug('Using color_mode "%s"', presets.color_mode)
+    logger.debug('Classifying image %s', image_path)
+
+    if presets.color_mode == 'rgb':
+        img = Image.open(image_path).convert('RGB')
+    elif presets.color_mode == 'grayscale':
+        img = Image.open(image_path).convert('L')
+    else:
+        raise ValueError(f'unknown color mode {presets.color_mode}')
+
+    start_time = datetime.datetime.now()
+
+    img = img.resize(presets.image_dimensions)
+    img_array = np.array(img)
+    # img_array = img_array / 255.0
+    img_array = np.expand_dims(img_array, axis=0)
+
+    if presets.color_mode == 'grayscale':
+        img_array = np.expand_dims(img_array, axis=-1)
+
+    prediction = model.predict(img_array)
+
+    end_time = datetime.datetime.now()
+
+    logger.debug('Classification took %.2f seconds',
+                 get_duration(start_time, end_time))
+
+    return prediction[0][0]
+
+
+def print_bash_completion(completions_file: str):
+    """
+    Print bash completion script.
+    """
+    completions_file = os.path.join(os.path.dirname(
+        __file__), 'completions', completions_file)
+    with open(completions_file, encoding='utf-8') as fd:
+        print(fd.read())

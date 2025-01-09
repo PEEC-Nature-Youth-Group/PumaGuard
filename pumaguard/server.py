@@ -32,17 +32,14 @@ import sys
 import threading
 import time
 
-import numpy as np
-from PIL import (
-    Image,
-)
-
 from pumaguard import (
     __VERSION__,
 )
 from pumaguard.utils import (
     Model,
     Presets,
+    classify_image,
+    print_bash_completion,
 )
 
 logger = logging.getLogger('PumaGuard-Server')
@@ -96,23 +93,13 @@ def parse_commandline() -> argparse.Namespace:
     options = parser.parse_args()
     if options.completion:
         if options.completion == 'bash':
-            print_bash_completion()
+            print_bash_completion('pumaguard-server-completions.sh')
             sys.exit(0)
         else:
             raise ValueError(f'unknown completion {options.completion}')
     if not options.FOLDER:
         raise ValueError('missing FOLDER argument')
     return options
-
-
-def print_bash_completion():
-    """
-    Print bash completion script.
-    """
-    completions_file = os.path.join(os.path.dirname(
-        __file__), 'completions', 'pumaguard-server-completions.sh')
-    with open(completions_file, encoding='utf-8') as fd:
-        print(fd.read())
 
 
 class FolderObserver:
@@ -187,36 +174,9 @@ class FolderObserver:
             filepath -- The path of the new file.
         """
         logger.debug('Classifying: %s', filepath)
-        prediction = self.classify_image(filepath)
+        prediction = classify_image(self.presets, self.model, filepath)
         logger.info('Chance of puma in %s: %.2f%%',
                     filepath, (1 - prediction) * 100)
-
-    def classify_image(self, filepath: str) -> float:
-        """
-        Classify the image.
-
-        Arguments:
-            image_path -- The path to the image.
-
-        Returns:
-            The predicted label.
-        """
-        logger.debug('color_mode = %s', self.presets.color_mode)
-        if self.presets.color_mode == 'rgb':
-            img = Image.open(filepath).convert('RGB')
-        elif self.presets.color_mode == 'grayscale':
-            img = Image.open(filepath).convert('L')
-        else:
-            raise ValueError(f'unknown color mode {self.presets.color_mode}')
-        img = img.resize(self.presets.image_dimensions)
-        img_array = np.array(img)
-        # img_array = img_array / 255.0
-        img_array = np.expand_dims(img_array, axis=0)
-        logger.debug('image shape %s', img_array.shape)
-        if self.presets.color_mode == 'grayscale':
-            img_array = np.expand_dims(img_array, axis=-1)
-        prediction = self.model.predict(img_array)
-        return prediction[0][0]
 
 
 class FolderManager:
@@ -273,6 +233,7 @@ def main():
     if model_path is not None:
         logger.debug('setting model path to %s', model_path)
         presets.base_output_directory = model_path
+
     manager = FolderManager(presets)
     for folder in options.FOLDER:
         manager.register_folder(folder, options.watch_method)
