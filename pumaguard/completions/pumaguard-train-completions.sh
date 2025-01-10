@@ -2,14 +2,22 @@
 
 _pumaguard_train_completions() {
     local cur prev opts
+
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
-    opts="-h --help --debug --model-path --model-output \
-        --notebook --completion"
+    opts=(
+        -h
+        --help
+        --completion
+        --debug
+        --model-output
+        --model-path
+        --notebook
+    )
 
     if [[ ${cur} == -* ]]; then
-        COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+        COMPREPLY=( $(compgen -W "${opts[*]}" -- "${cur}") )
         return 0
     fi
 
@@ -26,17 +34,17 @@ _pumaguard_train_completions() {
             return 0
             ;;
         --completion)
-            opts="bash"
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            opts=(bash)
+            COMPREPLY=( $(compgen -W "${opts[*]}" -- "${cur}") )
             return 0
             ;;
         *)
-            COMPREPLY=( $(compgen -f -- ${cur}) )
+            COMPREPLY=( $(compgen -f -- "${cur}") )
             return 0
             ;;
     esac
 
-    COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+    COMPREPLY=( $(compgen -W "${opts[*]}" -- "${cur}") )
     return 0
 }
 
