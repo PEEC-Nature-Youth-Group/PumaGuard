@@ -133,6 +133,11 @@ def parse_commandline() -> argparse.Namespace:
         help='Where to load models from.',
     )
     parser.add_argument(
+        '--data-directory',
+        help='The base directory of the trainin data',
+        type=str,
+    )
+    parser.add_argument(
         '--epochs',
         help='How many epochs to train.',
         type=int,
@@ -173,6 +178,12 @@ def main():
     if model_path is not None:
         logger.debug('setting model path to %s', model_path)
         presets.base_output_directory = model_path
+
+    data_directory = options.data_directory if options.data_directory \
+        else os.getenv('PUMAGUARD_DATA_DIRECTORY', default=None)
+    if data_directory is not None:
+        logger.debug('setting data directory to %s', data_directory)
+        presets.base_data_directory = data_directory
 
     if options.epochs:
         presets.epochs = options.epochs
