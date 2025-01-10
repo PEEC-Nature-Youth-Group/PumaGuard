@@ -6,10 +6,17 @@ _pumaguard_classify_completions() {
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
-    opts="-h --help --debug --notebook --model-path --completion"
+    opts=(
+        -h
+        --help
+        --completion
+        --debug
+        --model-path
+        --notebook
+    )
 
     if [[ ${cur} == -* ]]; then
-        COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+        COMPREPLY=( $(compgen -W "${opts[*]}" -- "${cur}") )
         return 0
     fi
 
@@ -22,18 +29,24 @@ _pumaguard_classify_completions() {
             return 0
             ;;
         --completion)
-            opts="bash"
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            opts=(bash)
+            COMPREPLY=( $(compgen -W "${opts[*]}" -- "${cur}") )
             return 0
             ;;
         *)
-            COMPREPLY=( $(compgen -f -o filenames -o plusdirs \
-                -o nospace -- "${cur}") )
+            # Suggest files, but avoid the trailing space for directories
+            if [[ "${cur}" == */ ]]; then
+                # Only suggest directories if the input ends with a slash
+                COMPREPLY=( $(compgen -d -- "${cur}") )
+            else
+                # Suggest files and directories without a trailing space
+                COMPREPLY=( $(compgen -f -- "${cur}") )
+            fi
             return 0
             ;;
     esac
 
-    COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+    COMPREPLY=( $(compgen -W "${opts[*]}" -- "${cur}") )
     return 0
 }
 
