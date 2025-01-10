@@ -342,12 +342,16 @@ def classify_image(presets: Presets, model: keras.Model,
     logger.debug('Using color_mode "%s"', presets.color_mode)
     logger.debug('Classifying image %s', image_path)
 
-    if presets.color_mode == 'rgb':
-        img = Image.open(image_path).convert('RGB')
-    elif presets.color_mode == 'grayscale':
-        img = Image.open(image_path).convert('L')
-    else:
-        raise ValueError(f'unknown color mode {presets.color_mode}')
+    try:
+        if presets.color_mode == 'rgb':
+            img = Image.open(image_path).convert('RGB')
+        elif presets.color_mode == 'grayscale':
+            img = Image.open(image_path).convert('L')
+        else:
+            raise ValueError(f'unknown color mode {presets.color_mode}')
+    except FileNotFoundError as e:
+        logger.error('file not found: %s', e)
+        return -1
 
     start_time = datetime.datetime.now()
 
