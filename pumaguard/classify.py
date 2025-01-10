@@ -93,6 +93,9 @@ def main():
     model = keras.models.load_model(presets.model_file)
     for image in options.image:
         prediction = classify_image(presets, model, image)
-        print(
-            f'Predicted {image}: {100*(1 - prediction):6.2f}% lion '
-            f'({"lion" if prediction < 0.5 else "no lion"})')
+        if prediction >= 0:
+            print(
+                f'Predicted {image}: {100*(1 - prediction):6.2f}% lion '
+                f'({"lion" if prediction < 0.5 else "no lion"})')
+        else:
+            logger.warning('classification failed: file not found')
