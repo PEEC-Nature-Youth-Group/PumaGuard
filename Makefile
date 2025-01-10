@@ -65,9 +65,9 @@ snap:
 	snapcraft
 
 FUNCTIONAL_FILES = \
-    "data/stable/angle 1/Lion/SYFW1932.JPG" \
+    "data/stable/angle 1/Lion/SYFW2061.JPG" \
     "data/stable/angle 2/Lion/SYFW0270.JPG" \
-    "data/stable/angle 2/Lion/SYFW0270_bright.jpg"
+    "data/stable/angle 2/Lion/SYFW0270_bright.JPG"
 
 .PHONY: run-functional
 run-functional:
@@ -75,7 +75,7 @@ run-functional:
 
 .PHONY: check-functional
 check-functional:
-	if [ "$$(sed --quiet --regexp-extended '/^Predicted.*1932/s/^.*:\s*([0-9.%]+).*$$/\1/p' functional-test.output)" != '84.80%' ]; then \
+	if [ "$$(sed --quiet --regexp-extended '/^Predicted.*2061/s/^.*:\s*([0-9.%]+).*$$/\1/p' functional-test.output)" != '66.17%' ]; then \
 		cat functional-test.output; \
 		false; \
 	fi
@@ -83,7 +83,7 @@ check-functional:
 		cat functional-test.output; \
 		false; \
 	fi
-	if [ "$$(sed --quiet --regexp-extended '/^Predicted.*270_bright.jpg/s/^.*:\s*([0-9.%]+).*$$/\1/p' functional-test.output)" != '91.83%' ]; then \
+	if [ "$$(sed --quiet --regexp-extended '/^Predicted.*270_bright.JPG/s/^.*:\s*([0-9.%]+).*$$/\1/p' functional-test.output)" != '91.83%' ]; then \
 		cat functional-test.output; \
 		false; \
 	fi
