@@ -18,6 +18,7 @@ class Presets():
     __base_data_directory: str = 'undefined'
     __base_output_directory: str = 'undefined'
     __lion_directories: list[str] = []
+    __no_lion_directories: list[str] = []
 
     def __init__(self, notebook_number: int = 1):
         self.base_data_directory = os.path.join(
@@ -40,12 +41,12 @@ class Presets():
             self.__color_mode = 'grayscale'
             self.alpha = 1e-5
             self.lion_directories = [
-                # f'{self.base_data_directory}/lion_1',
-                f'{self.base_data_directory}/lion',
+                # 'lion_1',
+                'lion',
             ]
             self.no_lion_directories = [
-                # f'{self.base_data_directory}/no_lion_1',
-                f'{self.base_data_directory}/no_lion',
+                # 'no_lion_1',
+                'no_lion',
             ]
         elif self.notebook_number == 2:
             self.__epochs = 1_200
@@ -56,11 +57,11 @@ class Presets():
             self.__color_mode = 'grayscale'
             self.lion_directories = [
                 # f'{base_data_directory}/lion_1',
-                f'{self.base_data_directory}/lion',
+                'lion',
             ]
             self.no_lion_directories = [
                 # f'{base_data_directory}/no_lion_1',
-                f'{self.base_data_directory}/no_lion',
+                'no_lion',
             ]
         elif self.notebook_number == 3:
             self.__epochs = 900
@@ -70,10 +71,10 @@ class Presets():
             self.model_version = "light"
             self.__color_mode = 'grayscale'
             self.lion_directories = [
-                f'{self.base_data_directory}/lion',
+                'lion',
             ]
             self.no_lion_directories = [
-                f'{self.base_data_directory}/no_lion',
+                'no_lion',
             ]
         elif self.notebook_number == 4:
             self.image_dimensions = (128, 128)  # height, width
@@ -82,10 +83,10 @@ class Presets():
             self.model_version = "pre-trained"
             self.__color_mode = 'rgb'
             self.lion_directories = [
-                f'{self.base_data_directory}/lion_1',
+                'lion_1',
             ]
             self.no_lion_directories = [
-                f'{self.base_data_directory}/no_lion_1',
+                'no_lion_1',
             ]
         elif self.notebook_number == 5:
             self.image_dimensions = (128, 128)  # height, width
@@ -94,10 +95,10 @@ class Presets():
             self.model_version = "pre-trained"
             self.__color_mode = 'rgb'
             self.lion_directories = [
-                f'{self.base_data_directory}/lion',
+                'lion',
             ]
             self.no_lion_directories = [
-                f'{self.base_data_directory}/no_lion',
+                'no_lion',
             ]
         elif self.notebook_number == 6:
             self.image_dimensions = (512, 512)  # height, width
@@ -106,12 +107,12 @@ class Presets():
             self.model_version = "pre-trained"
             self.__color_mode = 'rgb'
             self.lion_directories = [
-                f'{self.base_data_directory}/lion',
-                f'{self.base_data_directory}/cougar',
+                'lion',
+                'cougar',
             ]
             self.no_lion_directories = [
-                f'{self.base_data_directory}/no_lion',
-                f'{self.base_data_directory}/nocougar',
+                'no_lion',
+                'nocougar',
             ]
         elif notebook_number == 7:
             self.image_dimensions = (512, 512)  # height, width
@@ -120,20 +121,20 @@ class Presets():
             self.model_version = "pre-trained"
             self.__color_mode = 'rgb'
             self.lion_directories = [
-                f'{self.base_data_directory}/lion',
-                f'{self.base_data_directory}/cougar',
-                f'{self.base_data_directory}/stable/angle 1/Lion',
-                f'{self.base_data_directory}/stable/angle 2/Lion',
-                f'{self.base_data_directory}/stable/angle 3/Lion',
-                f'{self.base_data_directory}/stable/angle 4/lion',
+                'lion',
+                'cougar',
+                'stable/angle 1/Lion',
+                'stable/angle 2/Lion',
+                'stable/angle 3/Lion',
+                'stable/angle 4/lion',
             ]
             self.no_lion_directories = [
-                f'{self.base_data_directory}/no_lion',
-                f'{self.base_data_directory}/nocougar',
-                f'{self.base_data_directory}/stable/angle 1/No Lion',
-                f'{self.base_data_directory}/stable/angle 2/No Lion',
-                f'{self.base_data_directory}/stable/angle 3/No Lion',
-                f'{self.base_data_directory}/stable/angle 4/no lion',
+                'no_lion',
+                'nocougar',
+                'stable/angle 1/No Lion',
+                'stable/angle 2/No Lion',
+                'stable/angle 3/No Lion',
+                'stable/angle 4/no lion',
             ]
         elif self.notebook_number == 8:
             self.image_dimensions = (512, 512)  # height, width
@@ -142,12 +143,12 @@ class Presets():
             self.model_version = "light-2"
             self.__color_mode = 'rgb'
             self.lion_directories = [
-                f'{self.base_data_directory}/lion',
-                f'{self.base_data_directory}/cougar',
+                'lion',
+                'cougar',
             ]
             self.no_lion_directories = [
-                f'{self.base_data_directory}/no_lion',
-                f'{self.base_data_directory}/nocougar',
+                'no_lion',
+                'nocougar',
             ]
         else:
             raise ValueError(f'Unknown notebook {self.notebook_number}')
@@ -265,7 +266,8 @@ class Presets():
         """
         The directories containing lion images.
         """
-        return self.__lion_directories
+        return [os.path.join(self.base_data_directory, lion)
+                for lion in self.__lion_directories]
 
     @lion_directories.setter
     def lion_directories(self, lions: list[str]):
@@ -273,3 +275,18 @@ class Presets():
         Set the lion directories.
         """
         self.__lion_directories = copy.deepcopy(lions)
+
+    @property
+    def no_lion_directories(self) -> list[str]:
+        """
+        The directories containing no_lion images.
+        """
+        return [os.path.join(self.base_data_directory, no_lion)
+                for no_lion in self.__no_lion_directories]
+
+    @no_lion_directories.setter
+    def no_lion_directories(self, no_lions: list[str]):
+        """
+        Set the no_lion directories.
+        """
+        self.__no_lion_directories = copy.deepcopy(no_lions)

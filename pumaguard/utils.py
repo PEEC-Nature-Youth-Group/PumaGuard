@@ -94,6 +94,10 @@ def organize_data(presets: Presets, work_directory: str):
     """
     Organizes the data and splits it into training and validation datasets.
     """
+    logger.debug('organizing training data, work directory is %s',
+                 work_directory)
+    logger.debug('lion images in    %s', presets.lion_directories)
+    logger.debug('no-lion images in %s', presets.no_lion_directories)
     lion_images = []
     for lion in presets.lion_directories:
         lion_images += glob.glob(os.path.join(lion, '*JPG'))
