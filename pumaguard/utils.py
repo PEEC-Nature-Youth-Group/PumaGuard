@@ -223,8 +223,6 @@ def create_model(presets: Presets,
             if presets.model_version == "pre-trained":
                 logger.debug('Creating new Xception model')
                 model = pre_trained_model(presets)
-                logger.debug('Building pre-trained model')
-                model.build(input_shape=(None, *presets.image_dimensions, 3))
             elif presets.model_version == "light":
                 logger.info('Creating new light model')
                 model = light_model(presets)
