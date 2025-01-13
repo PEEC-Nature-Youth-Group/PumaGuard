@@ -10,9 +10,12 @@ _pumaguard_train_completions() {
         -h
         --help
         --completion
+        --data-directory
         --debug
+        --epochs
         --model-output
         --model-path
+        --no-load-previous-session
         --notebook
     )
 
@@ -22,20 +25,16 @@ _pumaguard_train_completions() {
     fi
 
     case "${prev}" in
-        --notebook)
-            return 0
-            ;;
-        --model-path)
-            COMPREPLY=( $(compgen -d -o dirnames -o nospace -- "${cur}") )
-            return 0
-            ;;
-        --model-output)
-            COMPREPLY=( $(compgen -d -o dirnames -o nospace -- "${cur}") )
-            return 0
-            ;;
         --completion)
             opts=(bash)
             COMPREPLY=( $(compgen -W "${opts[*]}" -- "${cur}") )
+            return 0
+            ;;
+        --epochs|--notebook)
+            return 0
+            ;;
+        --model-path|--model-output|--data-directory)
+            COMPREPLY=( $(compgen -d -o dirnames -o nospace -- "${cur}") )
             return 0
             ;;
         *)

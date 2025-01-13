@@ -113,15 +113,24 @@ def parse_commandline() -> argparse.Namespace:
     """
     parser = argparse.ArgumentParser()
     parser.add_argument(
+        '--completion',
+        choices=['bash'],
+        help='Print out bash completion script.',
+    )
+    parser.add_argument(
+        '--data-directory',
+        help='The base directory of the trainin data',
+        type=str,
+    )
+    parser.add_argument(
         '--debug',
         help='Debug the application',
         action='store_true',
     )
     parser.add_argument(
-        '--notebook',
-        help='The notebook number',
+        '--epochs',
+        help='How many epochs to train.',
         type=int,
-        default=1,
     )
     parser.add_argument(
         '--model-output',
@@ -133,24 +142,15 @@ def parse_commandline() -> argparse.Namespace:
         help='Where to load models from.',
     )
     parser.add_argument(
-        '--data-directory',
-        help='The base directory of the trainin data',
-        type=str,
-    )
-    parser.add_argument(
-        '--epochs',
-        help='How many epochs to train.',
-        type=int,
-    )
-    parser.add_argument(
         '--no-load-previous-session',
         help='Do not load previous training session from file',
         action='store_true',
     )
     parser.add_argument(
-        '--completion',
-        choices=['bash'],
-        help='Print out bash completion script.',
+        '--notebook',
+        help='The notebook number',
+        type=int,
+        default=1,
     )
     options = parser.parse_args()
     if options.completion:
