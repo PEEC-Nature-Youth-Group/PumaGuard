@@ -195,8 +195,8 @@ def main():
         presets.load_history_from_file = True
         presets.load_model_from_file = True
 
-    logger.info('Model file   %s', presets.model_file)
-    logger.info('History file %s', presets.history_file)
+    logger.info('model file   %s', presets.model_file)
+    logger.info('history file %s', presets.history_file)
 
     if options.model_output:
         logger.debug('setting model output to %s', options.model_output)

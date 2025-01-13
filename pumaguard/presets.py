@@ -159,10 +159,18 @@ class Presets():
             self.lion_directories = [
                 'lion',
                 'cougar',
+                'stable/angle 1/Lion',
+                'stable/angle 2/Lion',
+                'stable/angle 3/Lion',
+                'stable/angle 4/lion',
             ]
             self.no_lion_directories = [
                 'no_lion',
                 'nocougar',
+                'stable/angle 1/No Lion',
+                'stable/angle 2/No Lion',
+                'stable/angle 3/No Lion',
+                'stable/angle 4/no lion',
             ]
         else:
             raise ValueError(f'Unknown notebook {self.notebook_number}')

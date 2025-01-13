@@ -26,22 +26,22 @@ class TrainingHistory(keras.callbacks.Callback):
         self.number_epochs = 0
         history_file_exists = os.path.isfile(presets.history_file)
         if history_file_exists and presets.load_history_from_file:
-            print(f'Loading history from file {presets.history_file}')
+            logger.info('loading history from file %s', presets.history_file)
             with open(presets.history_file, 'rb') as f:
                 self.history = pickle.load(f)
                 keys = list(self.history.keys())
                 self.number_epochs = len(self.history[keys[0]])
-                print(f'Loaded history of {self.number_epochs} '
-                      'previous epochs')
+                logger.info('loaded history of %d previous epochs',
+                            self.number_epochs)
                 last_output = f'Epoch {self.number_epochs}: '
                 for key in keys:
                     if len(self.history[key]) > 0:
                         last_output += f'{key}: {self.history[key][-1]:.4f}'
                     if key != keys[-1]:
                         last_output += ' - '
-                print(last_output)
+                logger.info(last_output)
         else:
-            print(f'Creating new history file {presets.history_file}')
+            logger.info('Creating new history file %s', presets.history_file)
         for key in ['duration', 'accuracy']:
             if key not in self.history:
                 self.history[key] = []
