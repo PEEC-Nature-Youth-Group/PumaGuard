@@ -2,6 +2,7 @@
 The training history.
 """
 
+import logging
 import os
 import pickle
 
@@ -11,6 +12,7 @@ from pumaguard.presets import (
     Presets,
 )
 
+logger = logging.getLogger('PumaGuard-Server')
 
 class TrainingHistory(keras.callbacks.Callback):
     """
@@ -79,8 +81,9 @@ class TrainingHistory(keras.callbacks.Callback):
             self.history[key].append(logs[key])
         with open(self.presets.history_file, 'wb') as f:
             pickle.dump(self.history, f)
-            print(f'Epoch {epoch + self.number_epochs + 1}'
-                  'history pickled and saved to file')
+            logger.info(
+                'Epoch %d: history pickled and saved to file',
+                epoch + self.number_epochs + 1)
 
     def get_best_epoch(self, key):
         """
