@@ -141,6 +141,20 @@ class Presets():
             self.with_augmentation = False
             self.batch_size = 16
             self.model_version = "light-2"
+            self.__color_mode = 'grayscale'
+            self.lion_directories = [
+                'lion',
+                'cougar',
+            ]
+            self.no_lion_directories = [
+                'no_lion',
+                'nocougar',
+            ]
+        elif self.notebook_number == 9:
+            self.image_dimensions = (512, 512)  # height, width
+            self.with_augmentation = False
+            self.batch_size = 16
+            self.model_version = "light-3"
             self.__color_mode = 'rgb'
             self.lion_directories = [
                 'lion',

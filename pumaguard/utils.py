@@ -22,6 +22,9 @@ from pumaguard.models.light import (
 from pumaguard.models.light_2 import (
     light_model_2,
 )
+from pumaguard.models.light_3 import (
+    light_model_3,
+)
 from pumaguard.models.pretrained import (
     pre_trained_model,
 )
@@ -243,9 +246,16 @@ def create_model(presets: Presets,
             elif presets.model_version == 'light-2':
                 logger.debug('Creating new light-2 model')
                 model = light_model_2(presets)
-                logger.debug('Building light-2 model')
-                model.build(input_shape=(None, *presets.image_dimensions, 1))
-                logger.debug('Compiling light model')
+                logger.debug('Compiling light-2 model')
+                model.compile(
+                    optimizer=keras.optimizers.Adam(learning_rate=1e-4),
+                    loss='binary_crossentropy',
+                    metrics=['accuracy'],
+                )
+            elif presets.model_version == 'light-3':
+                logger.debug('Creating new light-3 model')
+                model = light_model_3(presets)
+                logger.debug('Compiling light-3 model')
                 model.compile(
                     optimizer=keras.optimizers.Adam(learning_rate=1e-4),
                     loss='binary_crossentropy',

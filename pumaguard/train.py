@@ -210,10 +210,6 @@ def main():
     work_directory = tempfile.mkdtemp(prefix='pumaguard-work-')
     organize_data(presets=presets, work_directory=work_directory)
 
-    if presets.model_version == 'pre-trained':
-        presets.color_mode = 'rgb'
-    else:
-        presets.color_mode = 'grayscale'
     logger.info('using color_mode %s', presets.color_mode)
 
     logger.info('image dimensions %s', presets.image_dimensions)
