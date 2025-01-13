@@ -90,6 +90,13 @@ def main():
         logger.debug('setting model path to %s', model_path)
         presets.base_output_directory = model_path
 
+    try:
+        os.stat(presets.model_file)
+    except FileNotFoundError:
+        logger.error('could not open model file %s', presets.model_file)
+        raise
+
+    logger.debug('loading model from %s', presets.model_file)
     model = keras.models.load_model(presets.model_file)
     for image in options.image:
         prediction = classify_image(presets, model, image)
