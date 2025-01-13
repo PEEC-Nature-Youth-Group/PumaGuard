@@ -20,6 +20,14 @@ pumaguard.models.light\_2 module
    :undoc-members:
    :show-inheritance:
 
+pumaguard.models.light\_3 module
+--------------------------------
+
+.. automodule:: pumaguard.models.light_3
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 pumaguard.models.pretrained module
 ----------------------------------
 
