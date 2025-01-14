@@ -21,6 +21,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends --yes
     curl \
     gh \
     git \
+    inotify-tools \
     iproute2 \
     less \
     locales \
