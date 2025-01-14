@@ -21,16 +21,16 @@ _pumaguard_classify_completions() {
     fi
 
     case "${prev}" in
+        --completion)
+            opts=(bash)
+            COMPREPLY=( $(compgen -W "${opts[*]}" -- "${cur}") )
+            return 0
+            ;;
         --notebook)
             return 0
             ;;
         --model-path)
             COMPREPLY=( $(compgen -d -o dirnames -o nospace -- "${cur}") )
-            return 0
-            ;;
-        --completion)
-            opts=(bash)
-            COMPREPLY=( $(compgen -W "${opts[*]}" -- "${cur}") )
             return 0
             ;;
         *)
