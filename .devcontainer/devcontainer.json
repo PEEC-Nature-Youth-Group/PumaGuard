@@ -20,7 +20,11 @@
 			"extensions": [
 				"DavidAnson.vscode-markdownlint",
 				"GitHub.copilot-chat",
+				"GitHub.copilot",
+				"GitHub.vscode-pull-request-github",
 				"ms-python.autopep8",
+				"ms-python.black-formatter",
+				"ms-python.flake8",
 				"ms-python.pylint",
 				"ms-python.python",
 				"ms-toolsai.jupyter",
