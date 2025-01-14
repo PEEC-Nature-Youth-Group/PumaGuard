@@ -10,17 +10,12 @@
 			"no_proxy": "${localEnv:no_proxy}"
 		}
 	},
-	// "containerEnv": {
-	// 	"http_proxy": "${localEnv:http_proxy}",
-	// 	"https_proxy": "${localEnv:https_proxy}",
-	// 	"no_proxy": "${localEnv:no_proxy}"
-	// },
 	"customizations": {
 		"vscode": {
 			"extensions": [
 				"DavidAnson.vscode-markdownlint",
-				"GitHub.copilot-chat",
 				"GitHub.copilot",
+				"GitHub.copilot-chat",
 				"GitHub.vscode-pull-request-github",
 				"ms-python.autopep8",
 				"ms-python.black-formatter",
@@ -28,7 +23,9 @@
 				"ms-python.pylint",
 				"ms-python.python",
 				"ms-toolsai.jupyter",
+				"ms-vscode-remote.remote-ssh",
 				"stkb.rewrap",
+				"usernamehw.errorlens",
 				"yzhang.markdown-all-in-one"
 			]
 		}
