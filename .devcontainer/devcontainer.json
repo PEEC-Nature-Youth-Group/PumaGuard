@@ -10,11 +10,11 @@
 			"no_proxy": "${localEnv:no_proxy}"
 		}
 	},
-	"containerEnv": {
-		"http_proxy": "${localEnv:http_proxy}",
-		"https_proxy": "${localEnv:https_proxy}",
-		"no_proxy": "${localEnv:no_proxy}"
-	},
+	// "containerEnv": {
+	// 	"http_proxy": "${localEnv:http_proxy}",
+	// 	"https_proxy": "${localEnv:https_proxy}",
+	// 	"no_proxy": "${localEnv:no_proxy}"
+	// },
 	"customizations": {
 		"vscode": {
 			"extensions": [
