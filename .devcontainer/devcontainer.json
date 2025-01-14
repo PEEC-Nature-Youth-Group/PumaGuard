@@ -24,6 +24,7 @@
 				"ms-python.python",
 				"ms-toolsai.jupyter",
 				"ms-vscode-remote.remote-ssh",
+				"ms-vscode.makefile-tools",
 				"stkb.rewrap",
 				"usernamehw.errorlens",
 				"yzhang.markdown-all-in-one"
