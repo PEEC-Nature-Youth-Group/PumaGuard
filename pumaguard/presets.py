@@ -6,6 +6,7 @@ import copy
 import os
 from typing import (
     Callable,
+    Tuple,
 )
 
 from pumaguard.models import (
@@ -16,11 +17,239 @@ from pumaguard.models import (
 )
 
 
+class BasePreset():
+    """
+    Base class for Presets
+    """
+
+    __notebook_number = -1
+    __model_version = 'undefined'
+    __color_mode: str = 'undefined'
+    __image_dimension: Tuple[int, int] = (128, 128)
+    __load_model_from_file = True
+    __load_history_from_file = True
+    __epochs = 300
+    __model_function: Callable
+    __base_data_directory: str = 'undefined'
+    __base_output_directory: str = 'undefined'
+    __lion_directories: list[str] = []
+    __no_lion_directories: list[str] = []
+
+    @property
+    def notebook_number(self) -> int:
+        """
+        Get notebook number.
+        """
+        return self.__notebook_number
+
+    @notebook_number.setter
+    def notebook_number(self, notebook: int):
+        """
+        Set the notebook number.
+        """
+        if notebook < 1:
+            raise ValueError('notebook can not be zero '
+                             f'or negative ({notebook})')
+        self.__notebook_number = notebook
+
+    @property
+    def model_version(self) -> str:
+        """
+        Get the model version name.
+        """
+        return self.__model_version
+
+    @model_version.setter
+    def model_version(self, model_version: str):
+        """
+        Set the model version name.
+        """
+        self.__model_version = model_version
+
+    @property
+    def model_file(self):
+        """
+        Get the location of the model file.
+        """
+        return os.path.realpath(
+            f'{self.base_output_directory}/'
+            f'model_weights_{self.notebook_number}_{self.model_version}'
+            f'_{self.image_dimensions[0]}_{self.image_dimensions[1]}.keras')
+
+    @property
+    def history_file(self):
+        """
+        Get the history file.
+        """
+        return os.path.realpath(
+            f'{self.base_output_directory}/'
+            f'model_history_{self.notebook_number}_{self.model_version}'
+            f'_{self.image_dimensions[0]}_{self.image_dimensions[1]}.pickle')
+
+    @property
+    def color_mode(self) -> str:
+        """
+        Get the color_mode.
+        """
+        return self.__color_mode
+
+    @color_mode.setter
+    def color_mode(self, mode: str):
+        """
+        Set the color_mode.
+        """
+        if mode not in ['rgb', 'grayscale']:
+            raise ValueError("color_mode must be either 'rgb' or 'grayscale'")
+        self.__color_mode = mode
+
+    @property
+    def image_dimensions(self) -> Tuple[int, int]:
+        """
+        Get the image dimensions.
+        """
+        return self.__image_dimension
+
+    @image_dimensions.setter
+    def image_dimensions(self, dimensions: Tuple[int, int]):
+        """
+        Set the image dimensions.
+        """
+        if not (isinstance(dimensions, tuple) and
+                len(dimensions) == 2 and
+                all(isinstance(dim, int) for dim in dimensions)):
+            raise TypeError('image dimensions needs to be a tuple')
+        if not all(x > 0 for x in dimensions):
+            raise ValueError('image dimensions need to be positive')
+
+    @property
+    def base_data_directory(self) -> str:
+        """
+        Get the base_data_directory.
+        """
+        return self.__base_data_directory
+
+    @base_data_directory.setter
+    def base_data_directory(self, path: str):
+        """
+        Set the base_data_directory.
+        """
+        self.__base_data_directory = path
+
+    @property
+    def base_output_directory(self) -> str:
+        """
+        Get the base_output_directory.
+        """
+        return self.__base_output_directory
+
+    @base_output_directory.setter
+    def base_output_directory(self, path: str):
+        """
+        Set the base_output_directory.
+        """
+        self.__base_output_directory = path
+
+    @property
+    def load_history_from_file(self) -> bool:
+        """
+        Load history from file.
+        """
+        return self.__load_history_from_file
+
+    @load_history_from_file.setter
+    def load_history_from_file(self, load_history: bool):
+        """
+        Load history from file.
+        """
+        self.__load_history_from_file = load_history
+
+    @property
+    def load_model_from_file(self) -> bool:
+        """
+        Load model from file.
+        """
+        return self.__load_model_from_file
+
+    @load_model_from_file.setter
+    def load_model_from_file(self, load_model: bool):
+        """
+        Load model from file.
+        """
+        self.__load_model_from_file = load_model
+
+    @property
+    def epochs(self) -> int:
+        """
+        The number of epochs.
+        """
+        return self.__epochs
+
+    @epochs.setter
+    def epochs(self, epochs: int):
+        """
+        Set the number of epochs.
+        """
+        if epochs < 1:
+            raise ValueError('epochs needs to be a positive integer')
+        self.__epochs = epochs
+
+    @property
+    def lion_directories(self) -> list[str]:
+        """
+        The directories containing lion images.
+        """
+        return [os.path.join(self.base_data_directory, lion)
+                for lion in self.__lion_directories]
+
+    @lion_directories.setter
+    def lion_directories(self, lions: list[str]):
+        """
+        Set the lion directories.
+        """
+        self.__lion_directories = copy.deepcopy(lions)
+
+    @property
+    def no_lion_directories(self) -> list[str]:
+        """
+        The directories containing no_lion images.
+        """
+        return [os.path.join(self.base_data_directory, no_lion)
+                for no_lion in self.__no_lion_directories]
+
+    @no_lion_directories.setter
+    def no_lion_directories(self, no_lions: list[str]):
+        """
+        Set the no_lion directories.
+        """
+        self.__no_lion_directories = copy.deepcopy(no_lions)
+
+    @property
+    def model_function(self) -> Callable:
+        """
+        Get the model function.
+        """
+        return self.__model_function
+
+    @model_function.setter
+    def model_function(self, func: Callable):
+        """
+        Set the model function.
+        """
+        self.__model_function = func
+
+
+class Preset01(BasePreset):
+    """
+    Preset 01
+    """
+
+
 class Presets():
     """
     Presets for training.
     """
 
+    __notebook_number = -1
     __color_mode: str = 'undefined'
     __load_model_from_file = True
     __load_history_from_file = True
@@ -193,7 +422,24 @@ class Presets():
                 'stable/angle 4/no lion',
             ]
         else:
-            raise ValueError(f'Unknown notebook {self.notebook_number}')
+            raise ValueError(f'unknown notebook {self.notebook_number}')
+
+    @property
+    def notebook_number(self) -> int:
+        """
+        Get notebook number.
+        """
+        return self.__notebook_number
+
+    @notebook_number.setter
+    def notebook_number(self, notebook: int):
+        """
+        Set the notebook number.
+        """
+        if notebook < 1:
+            raise ValueError('notebook can not be zero '
+                             f'or negative ({notebook})')
+        self.__notebook_number = notebook
 
     @property
     def model_file(self):
