@@ -2,14 +2,14 @@
 The light-3 model.
 """
 
-import keras  # type: ignore
-
-from pumaguard.presets import (
-    Presets,
+from typing import (
+    Tuple,
 )
 
+import keras  # type: ignore
 
-def light_model_3(presets: Presets) -> keras.src.Model:
+
+def light_model_3(image_dimensions: Tuple[int, int]) -> keras.src.Model:
     """
     Ultra-light CNN model for binary image classification (<10k params).
     """
@@ -18,7 +18,7 @@ def light_model_3(presets: Presets) -> keras.src.Model:
             8,
             (3, 3),
             activation='relu',
-            input_shape=(*presets.image_dimensions, 3),
+            input_shape=(*image_dimensions, 3),
             padding='same',
             strides=(2, 2)),
         keras.layers.MaxPooling2D((2, 2)),

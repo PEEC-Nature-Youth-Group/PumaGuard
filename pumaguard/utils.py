@@ -222,16 +222,16 @@ def create_model(presets: Presets,
             logger.info('could not find model; creating new model')
             if presets.model_version == "pre-trained":
                 logger.debug('Creating new Xception model')
-                model = pre_trained_model(presets)
+                model = pre_trained_model(presets.image_dimensions)
             elif presets.model_version == "light":
                 logger.info('Creating new light model')
-                model = light_model(presets)
+                model = light_model(presets.image_dimensions)
             elif presets.model_version == 'light-2':
                 logger.debug('Creating new light-2 model')
-                model = light_model_2(presets)
+                model = light_model_2(presets.image_dimensions)
             elif presets.model_version == 'light-3':
                 logger.debug('Creating new light-3 model')
-                model = light_model_3(presets)
+                model = light_model_3(presets.image_dimensions)
             else:
                 raise ValueError(
                     f'unknown model version {presets.model_version}')
