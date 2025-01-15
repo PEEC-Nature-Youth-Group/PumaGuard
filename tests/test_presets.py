@@ -8,6 +8,7 @@ import unittest
 from pumaguard.presets import (
     BasePreset,
     Presets,
+    Preset01,
 )
 
 
@@ -126,3 +127,25 @@ class TestBasePreset(unittest.TestCase):
             self.base_preset.image_dimensions = (-1, 2)
         self.assertEqual(str(e.exception),
                          'image dimensions need to be positive')
+
+
+class TestPreset01(unittest.TestCase):
+    """
+    Test preset 1.
+    """
+
+    def test_configuration(self):
+        """
+        Test configuration.
+        """
+        preset = Preset01()
+        self.assertEqual(preset.notebook_number, 1)
+        self.assertEqual(preset.epochs, 2400)
+        self.assertEqual(preset.image_dimensions, (128, 128))
+        self.assertFalse(preset.with_augmentation)
+        self.assertEqual(preset.batch_size, 16)
+        self.assertEqual(preset.model_version, "light")
+        self.assertEqual(preset.color_mode, 'grayscale')
+        self.assertAlmostEqual(preset.alpha, 1e-5)
+        self.assertIn('lion', preset.lion_directories[0])
+        self.assertIn('no_lion', preset.no_lion_directories[0])
