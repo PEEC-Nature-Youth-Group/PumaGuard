@@ -4,6 +4,16 @@ The presets for each model.
 
 import copy
 import os
+from typing import (
+    Callable,
+)
+
+from pumaguard.models import (
+    light,
+    light_2,
+    light_3,
+    pretrained,
+)
 
 
 class Presets():
@@ -15,6 +25,7 @@ class Presets():
     __load_model_from_file = True
     __load_history_from_file = True
     __epochs = 300
+    __model_function: Callable
     __base_data_directory: str = 'undefined'
     __base_output_directory: str = 'undefined'
     __lion_directories: list[str] = []
@@ -33,12 +44,13 @@ class Presets():
 
         # No changes below this line.
         if self.notebook_number == 1:
-            self.__epochs = 2_400
+            self.epochs = 2_400
             self.image_dimensions = (128, 128)  # height, width
             self.with_augmentation = False
             self.batch_size = 16
             self.model_version = "light"
-            self.__color_mode = 'grayscale'
+            self.model_function = light.light_model
+            self.color_mode = 'grayscale'
             self.alpha = 1e-5
             self.lion_directories = [
                 # 'lion_1',
@@ -49,12 +61,13 @@ class Presets():
                 'no_lion',
             ]
         elif self.notebook_number == 2:
-            self.__epochs = 1_200
+            self.epochs = 1_200
             self.image_dimensions = (256, 256)  # height, width
             self.with_augmentation = False
             self.batch_size = 32
             self.model_version = "light"
-            self.__color_mode = 'grayscale'
+            self.model_function = light.light_model
+            self.color_mode = 'grayscale'
             self.lion_directories = [
                 # f'{base_data_directory}/lion_1',
                 'lion',
@@ -64,12 +77,13 @@ class Presets():
                 'no_lion',
             ]
         elif self.notebook_number == 3:
-            self.__epochs = 900
+            self.epochs = 900
             self.image_dimensions = (256, 256)  # height, width
             self.with_augmentation = True
             self.batch_size = 32
             self.model_version = "light"
-            self.__color_mode = 'grayscale'
+            self.model_function = light.light_model
+            self.color_mode = 'grayscale'
             self.lion_directories = [
                 'lion',
             ]
@@ -81,7 +95,8 @@ class Presets():
             self.with_augmentation = False
             self.batch_size = 16
             self.model_version = "pre-trained"
-            self.__color_mode = 'rgb'
+            self.model_function = pretrained.pre_trained_model
+            self.color_mode = 'rgb'
             self.lion_directories = [
                 'lion_1',
             ]
@@ -93,7 +108,8 @@ class Presets():
             self.with_augmentation = False
             self.batch_size = 16
             self.model_version = "pre-trained"
-            self.__color_mode = 'rgb'
+            self.model_function = pretrained.pre_trained_model
+            self.color_mode = 'rgb'
             self.lion_directories = [
                 'lion',
             ]
@@ -105,7 +121,8 @@ class Presets():
             self.with_augmentation = False
             self.batch_size = 16
             self.model_version = "pre-trained"
-            self.__color_mode = 'rgb'
+            self.model_function = pretrained.pre_trained_model
+            self.color_mode = 'rgb'
             self.lion_directories = [
                 'lion',
                 'cougar',
@@ -119,7 +136,8 @@ class Presets():
             self.with_augmentation = False
             self.batch_size = 16
             self.model_version = "pre-trained"
-            self.__color_mode = 'rgb'
+            self.model_function = pretrained.pre_trained_model
+            self.color_mode = 'rgb'
             self.lion_directories = [
                 'lion',
                 'cougar',
@@ -141,7 +159,8 @@ class Presets():
             self.with_augmentation = False
             self.batch_size = 16
             self.model_version = "light-2"
-            self.__color_mode = 'grayscale'
+            self.model_function = light_2.light_model_2
+            self.color_mode = 'grayscale'
             self.lion_directories = [
                 'lion',
                 'cougar',
@@ -155,7 +174,8 @@ class Presets():
             self.with_augmentation = False
             self.batch_size = 16
             self.model_version = "light-3"
-            self.__color_mode = 'rgb'
+            self.model_function = light_3.light_model_3
+            self.color_mode = 'rgb'
             self.lion_directories = [
                 'lion',
                 'cougar',
@@ -312,3 +332,17 @@ class Presets():
         Set the no_lion directories.
         """
         self.__no_lion_directories = copy.deepcopy(no_lions)
+
+    @property
+    def model_function(self) -> Callable:
+        """
+        Get the model function.
+        """
+        return self.__model_function
+
+    @model_function.setter
+    def model_function(self, func: Callable):
+        """
+        Set the model function.
+        """
+        self.__model_function = func

@@ -2,14 +2,14 @@
 The light model.
 """
 
-import keras  # type: ignore
-
-from pumaguard.presets import (
-    Presets,
+from typing import (
+    Tuple,
 )
 
+import keras  # type: ignore
 
-def light_model(presets: Presets) -> keras.src.Model:
+
+def light_model(image_dimensions: Tuple[int, int]) -> keras.src.Model:
     """
     Define the "light model" which is loosely based on the Xception model and
     constructs a CNN.
@@ -18,7 +18,7 @@ def light_model(presets: Presets) -> keras.src.Model:
     function results in `nan` after only one epoch. It does work on GPU
     runtimes though.
     """
-    inputs = keras.Input(shape=(*presets.image_dimensions, 1))
+    inputs = keras.Input(shape=(*image_dimensions, 1))
 
     # Entry block
     x = keras.layers.Rescaling(1.0 / 255)(inputs)

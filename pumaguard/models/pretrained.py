@@ -2,14 +2,14 @@
 The pre-trained model.
 """
 
-import keras  # type: ignore
-
-from pumaguard.presets import (
-    Presets,
+from typing import (
+    Tuple,
 )
 
+import keras  # type: ignore
 
-def pre_trained_model(presets: Presets) -> keras.src.Model:
+
+def pre_trained_model(image_dimensions: Tuple[int, int]) -> keras.src.Model:
     """
     The pre-trained model (Xception).
 
@@ -19,7 +19,7 @@ def pre_trained_model(presets: Presets) -> keras.src.Model:
     base_model = keras.applications.Xception(
         weights='imagenet',
         include_top=False,
-        input_shape=(*presets.image_dimensions, 3),
+        input_shape=(*image_dimensions, 3),
     )
 
     print(f'Number of layers in the base model: {len(base_model.layers)}')

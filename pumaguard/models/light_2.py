@@ -2,14 +2,14 @@
 The light-2 model.
 """
 
-import keras  # type: ignore
-
-from pumaguard.presets import (
-    Presets,
+from typing import (
+    Tuple,
 )
 
+import keras  # type: ignore
 
-def light_model_2(presets: Presets) -> keras.src.Model:
+
+def light_model_2(image_dimensions: Tuple[int, int]) -> keras.src.Model:
     """
     Another attempt at a light model.
     """
@@ -18,7 +18,7 @@ def light_model_2(presets: Presets) -> keras.src.Model:
             32,
             (3, 3),
             activation='relu',
-            input_shape=(*presets.image_dimensions, 1),
+            input_shape=(*image_dimensions, 1),
         ),
         keras.layers.MaxPooling2D(2, 2),
         keras.layers.Conv2D(64, (3, 3), activation='relu'),
