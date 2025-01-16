@@ -7,8 +7,8 @@ import unittest
 
 from pumaguard.presets import (
     BasePreset,
-    Presets,
     Preset01,
+    Presets,
 )
 
 
