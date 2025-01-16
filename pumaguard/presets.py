@@ -35,6 +35,12 @@ class BasePreset():
     __lion_directories: list[str] = []
     __no_lion_directories: list[str] = []
 
+    def __init__(self):
+        self.base_data_directory = os.path.join(
+            os.path.dirname(__file__), '../data')
+        self.base_output_directory = os.path.join(
+            os.path.dirname(__file__), '../models')
+
     @property
     def notebook_number(self) -> int:
         """
@@ -242,6 +248,27 @@ class Preset01(BasePreset):
     """
     Preset 01
     """
+
+    def __init__(self):
+        super().__init__()
+        self.notebook_number = 1
+
+        self.epochs = 2_400
+        self.image_dimensions = (128, 128)  # height, width
+        self.with_augmentation = False
+        self.batch_size = 16
+        self.model_version = "light"
+        self.model_function = light.light_model
+        self.color_mode = 'grayscale'
+        self.alpha = 1e-5
+        self.lion_directories = [
+            # 'lion_1',
+            'lion',
+        ]
+        self.no_lion_directories = [
+            # 'no_lion_1',
+            'no_lion',
+        ]
 
 
 class Presets():
