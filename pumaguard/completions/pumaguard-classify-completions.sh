@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [[ -z "$( declare -f _filedir 2> /dev/null )" ]]; then
+    echo "sourcing (SNAP = ${SNAP})"
+    source ${SNAP}/usr/share/bash-completion/bash_completion
+fi
+
 _pumaguard_classify_completions() {
     local cur prev opts
 
@@ -34,14 +39,7 @@ _pumaguard_classify_completions() {
             return 0
             ;;
         *)
-            # Suggest files, but avoid the trailing space for directories
-            if [[ "${cur}" == */ ]]; then
-                # Only suggest directories if the input ends with a slash
-                COMPREPLY=( $(compgen -d -- "${cur}") )
-            else
-                # Suggest files and directories without a trailing space
-                COMPREPLY=( $(compgen -f -- "${cur}") )
-            fi
+            _filedir
             return 0
             ;;
     esac

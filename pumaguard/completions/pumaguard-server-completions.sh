@@ -1,13 +1,25 @@
 #!/bin/bash
 
+if [[ -z "$( declare -f _comp_compgen 2> /dev/null )" ]]; then
+  echo "sourcing"
+  source ${SNAP}/usr/share/bash-completion/bash_completion
+fi
+
 _pumaguard_server_completions() {
     local cur prev opts
 
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
-    opts="-h --help --debug --notebook --watch-method \
-        --model-path --completion"
+    opts=(
+        -h
+        --help
+        --completion
+        --debug
+        --model-path
+        --notebook
+        --watch-method
+    )
 
     if [[ ${cur} == -* ]]; then
         COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
@@ -33,7 +45,7 @@ _pumaguard_server_completions() {
             return 0
             ;;
         *)
-            COMPREPLY=( $(compgen -d -- "${cur}") )
+            _comp_compgen -a filedir -d
             return 0
             ;;
     esac

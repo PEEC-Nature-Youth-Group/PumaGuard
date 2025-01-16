@@ -70,6 +70,7 @@ parts:
         install --mode 0755 pumaguard/completions/pumaguard-${script}-completions.sh ${CRAFT_PART_INSTALL}/bin/${script}-bash-completions.sh
       done
     stage-packages:
+      # - bash-completion
       - inotify-tools
 
   ftp:

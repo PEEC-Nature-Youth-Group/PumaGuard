@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [[ -z "$( declare -f _comp_compgen 2> /dev/null )" ]]; then
+  echo "sourcing"
+  source ${SNAP}/usr/share/bash-completion/bash_completion
+fi
+
 _pumaguard_train_completions() {
     local cur prev opts
 
@@ -38,7 +43,7 @@ _pumaguard_train_completions() {
             return 0
             ;;
         *)
-            COMPREPLY=( $(compgen -f -- "${cur}") )
+            _comp_compgen -a filedir
             return 0
             ;;
     esac
