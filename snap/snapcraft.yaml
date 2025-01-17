@@ -7,6 +7,7 @@ source-code: https://github.com/PEEC-Nature-Youth-Group/PumaGuard
 website: https://pumaguard.rtfd.io/
 grade: stable
 confinement: strict
+contact: nicolasbock@gmail.com
 
 summary: PumaGuard is a machine-learning based Puma mitigation solution
 description: |
@@ -16,7 +17,7 @@ description: |
   labeled dataset and validated using a separate set of images.
 
 environment:
-  TF_CPP_MIN_LOG_LEVEL: 3  # or any {'0', '1', '2'}
+  TF_CPP_MIN_LOG_LEVEL: 3  # or any of {'0', '1', '2'}
   # TF_ENABLE_ONEDNN_OPTS: 0
   PUMAGUARD_MODEL_PATH: $SNAP/models
 
