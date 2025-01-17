@@ -3,6 +3,8 @@ icon: pumaguard-logo.png
 base: core22 # We need Python <= 3.10 to match the colab environment
 adopt-info: pumaguard
 license: Apache-2.0
+source-code: https://github.com/PEEC-Nature-Youth-Group/PumaGuard
+website: https://pumaguard.rtfd.io/
 grade: stable
 confinement: strict
 
