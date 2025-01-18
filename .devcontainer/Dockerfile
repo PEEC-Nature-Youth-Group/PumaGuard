@@ -19,8 +19,11 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends --yes
     bash-completion \
     command-not-found \
     curl \
+    fzf \
     gh \
     git \
+    gpg \
+    gpg-agent \
     inotify-tools \
     iproute2 \
     less \
@@ -48,4 +51,17 @@ RUN pip install poetry
 
 USER ${USERNAME}
 
-RUN echo "source <(gh completion --shell bash)" | tee --append ~/.bashrc
+RUN cat <<EOF | tee --append ~/.bashrc
+export GPG_TTY=$(tty)
+source <(gh completion --shell bash)
+if [[ -d /usr/share/doc/fzf/examples ]]; then
+    source /usr/share/doc/fzf/examples/key-bindings.bash
+    if [[ -f /usr/share/bash-completion/completions/fzf ]]; then
+        source /usr/share/bash-completion/completions/fzf
+    elif [[ -f /usr/share/doc/fzf/examples/completion.bash ]]; then
+        source /usr/share/doc/fzf/examples/completion.bash
+    fi
+    export FZF_TMUX_OPTS='-p80%,60%'
+    export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
+fi
+EOF
