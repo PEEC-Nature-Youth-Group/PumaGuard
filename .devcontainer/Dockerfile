@@ -52,7 +52,7 @@ RUN pip install poetry
 USER ${USERNAME}
 
 RUN cat <<EOF | tee --append ~/.bashrc
-export GPG_TTY=$(tty)
+export GPG_TTY=\$(tty)
 source <(gh completion --shell bash)
 if [[ -d /usr/share/doc/fzf/examples ]]; then
     source /usr/share/doc/fzf/examples/key-bindings.bash
