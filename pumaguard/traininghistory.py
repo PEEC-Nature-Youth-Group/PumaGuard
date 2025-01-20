@@ -14,6 +14,7 @@ from pumaguard.presets import (
 
 logger = logging.getLogger('PumaGuard')
 
+
 class TrainingHistory(keras.callbacks.Callback):
     """
     This class stores the training history

@@ -162,6 +162,28 @@ def parse_commandline() -> argparse.Namespace:
     return options
 
 
+def print_training_stats(full_history: TrainingHistory):
+    """
+    Print some stats of training.
+    """
+    print(f'Total time {sum(full_history.history["duration"])} for '
+          f'{len(full_history.history["accuracy"])} epochs')
+
+    best_accuracy, best_val_accuracy, best_loss, best_val_loss, \
+        best_epoch = full_history.get_best_epoch('accuracy')
+    print(f'Best accuracy - epoch {best_epoch} - accuracy: '
+          f'{best_accuracy:.4f} - val_accuracy: {best_val_accuracy:.4f} - '
+          f'loss: {best_loss:.4f} - val_loss: {best_val_loss:.4f}')
+
+    best_accuracy, best_val_accuracy, best_loss, best_val_loss, \
+        best_epoch = full_history.get_best_epoch('val_accuracy')
+    print(f'Best val_accuracy - epoch {best_epoch} - accuracy: '
+          f'{best_accuracy:.4f} - val_accuracy: {best_val_accuracy:.4f} '
+          f'- loss: {best_loss:.4f} - val_loss: {best_val_loss:.4f}')
+
+    plot_training_progress('training-progress.png', full_history=full_history)
+
+
 def main():
     """
     The main entry point.
@@ -236,21 +258,4 @@ def main():
                 presets=presets,
                 full_history=full_history)
 
-    # Print some stats of training so far
-
-    print(f'Total time {sum(full_history.history["duration"])} for '
-          f'{len(full_history.history["accuracy"])} epochs')
-
-    best_accuracy, best_val_accuracy, best_loss, best_val_loss, \
-        best_epoch = full_history.get_best_epoch('accuracy')
-    print(f'Best accuracy - epoch {best_epoch} - accuracy: '
-          f'{best_accuracy:.4f} - val_accuracy: {best_val_accuracy:.4f} - '
-          f'loss: {best_loss:.4f} - val_loss: {best_val_loss:.4f}')
-
-    best_accuracy, best_val_accuracy, best_loss, best_val_loss, \
-        best_epoch = full_history.get_best_epoch('val_accuracy')
-    print(f'Best val_accuracy - epoch {best_epoch} - accuracy: '
-          f'{best_accuracy:.4f} - val_accuracy: {best_val_accuracy:.4f} '
-          f'- loss: {best_loss:.4f} - val_loss: {best_val_loss:.4f}')
-
-    plot_training_progress('training-progress.png', full_history=full_history)
+    print_training_stats(full_history)
