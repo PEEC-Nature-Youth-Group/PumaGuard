@@ -106,7 +106,8 @@ prepare-central prepare-trailcam prepare-output: prepare-%:
 
 .PHONY: release
 release:
-	export NEW_RELEASE=$(shell git tag | sort | tail -n1 | awk -F v '{print $$2 + 1}') && \
+	export NEW_RELEASE=$(shell git tag | sed --expression 's/^v//' | \
+	    sort --numeric-sort | tail --lines 1 | awk '{print $$1 + 1}') && \
 	  git tag -a -m "Release v$${NEW_RELEASE}" v$${NEW_RELEASE}
 
 .PHONY: configure-pi-zero
