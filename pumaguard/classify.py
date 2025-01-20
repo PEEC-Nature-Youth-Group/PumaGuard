@@ -45,6 +45,11 @@ def parse_commandline() -> argparse.Namespace:
         default=1,
     )
     parser.add_argument(
+        '--settings',
+        help='Load presets from file',
+        type=str,
+    )
+    parser.add_argument(
         '--model-path',
         help='Where the models are stored',
     )

@@ -17,6 +17,7 @@ _pumaguard_train_completions() {
         --model-path
         --no-load-previous-session
         --notebook
+        --settings
     )
 
     if [[ ${cur} == -* ]]; then

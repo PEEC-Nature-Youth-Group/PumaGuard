@@ -13,6 +13,7 @@ _pumaguard_classify_completions() {
         --debug
         --model-path
         --notebook
+        --settings
     )
 
     if [[ ${cur} == -* ]]; then
