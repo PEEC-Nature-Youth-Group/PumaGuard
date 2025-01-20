@@ -12,6 +12,7 @@ import tempfile
 
 import keras  # type: ignore
 import matplotlib.pyplot as plt
+import yaml
 
 from pumaguard.presets import (
     Presets,
@@ -147,6 +148,11 @@ def parse_commandline() -> argparse.Namespace:
         action='store_true',
     )
     parser.add_argument(
+        '--dump-settings',
+        help='Print current settings to standard output',
+        action='store_true',
+    )
+    parser.add_argument(
         '--notebook',
         help='The notebook number',
         type=int,
@@ -233,6 +239,10 @@ def main():
         except FileNotFoundError:
             logger.warning('unable to find previous model; ignoring')
         presets.base_output_directory = options.model_output
+
+    if options.dump_settings:
+        print(yaml.dump(presets))
+        sys.exit(0)
 
     work_directory = tempfile.mkdtemp(prefix='pumaguard-work-')
     organize_data(presets=presets, work_directory=work_directory)

@@ -69,6 +69,7 @@ parts:
       poetry version "${VERSION}"
       craftctl default
       cp --recursive models ${CRAFT_PART_INSTALL}/models
+      cp --recursive settings ${CRAFT_PART_INSTALL}/settings
       for script in classify train server; do
         install --mode 0755 pumaguard/completions/pumaguard-${script}-completions.sh ${CRAFT_PART_INSTALL}/bin/${script}-bash-completions.sh
       done
