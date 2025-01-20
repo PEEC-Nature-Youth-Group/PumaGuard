@@ -252,7 +252,6 @@ class Preset01(BasePreset):
     def __init__(self):
         super().__init__()
         self.notebook_number = 1
-
         self.epochs = 2_400
         self.image_dimensions = (128, 128)  # height, width
         self.with_augmentation = False
@@ -262,11 +261,9 @@ class Preset01(BasePreset):
         self.color_mode = 'grayscale'
         self.alpha = 1e-5
         self.lion_directories = [
-            # 'lion_1',
             'lion',
         ]
         self.no_lion_directories = [
-            # 'no_lion_1',
             'no_lion',
         ]
 
@@ -309,11 +306,9 @@ class Presets():
             self.color_mode = 'grayscale'
             self.alpha = 1e-5
             self.lion_directories = [
-                # 'lion_1',
                 'lion',
             ]
             self.no_lion_directories = [
-                # 'no_lion_1',
                 'no_lion',
             ]
         elif self.notebook_number == 2:
