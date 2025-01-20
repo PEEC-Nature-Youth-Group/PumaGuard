@@ -12,6 +12,7 @@ flask = "^3.0.3"
 matplotlib = "^3.9.2"
 pillow = "^10.4.0"
 python = ">=3.10,<3.12"
+pyyaml = "^6.0.2"
 tensorflow = "2.15.0"
 
 [tool.poetry.group.dev.dependencies]
