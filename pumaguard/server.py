@@ -42,7 +42,7 @@ from pumaguard.utils import (
     print_bash_completion,
 )
 
-logger = logging.getLogger('PumaGuard-Server')
+logger = logging.getLogger('PumaGuard')
 
 
 def parse_commandline() -> argparse.Namespace:

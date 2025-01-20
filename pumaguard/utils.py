@@ -32,7 +32,7 @@ from pumaguard.presets import (
     Presets,
 )
 
-logger = logging.getLogger('PumaGuard-Server')
+logger = logging.getLogger('PumaGuard')
 
 
 def initialize_tensorflow() -> tf.distribute.Strategy:
