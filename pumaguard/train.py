@@ -152,6 +152,11 @@ def parse_commandline() -> argparse.Namespace:
         type=int,
         default=1,
     )
+    parser.add_argument(
+        '--settings',
+        help='Load presets from file',
+        type=str,
+    )
     options = parser.parse_args()
     if options.completion:
         if options.completion == 'bash':
