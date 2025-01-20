@@ -81,6 +81,12 @@ class BasePreset():
         self.batch_size = settings.get('batch-size', 1)
         self.alpha = float(settings.get('alpha', 1e-5))
 
+    def save(self):
+        """
+        Write presets to standard output.
+        """
+        yaml.dump(self)
+
     @property
     def notebook_number(self) -> int:
         """

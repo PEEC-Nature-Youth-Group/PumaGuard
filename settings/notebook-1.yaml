@@ -1,0 +1,18 @@
+base-data-directory: /workspaces/PumaGuard/pumaguard/../data
+base-output-directory: /workspaces/PumaGuard/pumaguard/../models
+color-mode: grayscale
+epochs: 2400
+lion-directories:
+  - lion
+load-history-from-file: true
+load-model-from-file: true
+no-lion-directories:
+  - no-lion
+notebook-number: 1
+alpha: 1.0e-05
+batch-size: 16
+image-dimensions:
+  - 128
+  - 128
+model-version: light
+with-augmentation: false
