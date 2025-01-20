@@ -9,6 +9,8 @@ from typing import (
     Tuple,
 )
 
+import yaml
+
 from pumaguard.models import (
     light,
     light_2,
@@ -22,24 +24,62 @@ class BasePreset():
     Base class for Presets
     """
 
-    __notebook_number = -1
-    __model_version = 'undefined'
-    __color_mode: str = 'undefined'
-    __image_dimension: Tuple[int, int] = (128, 128)
-    __load_model_from_file = True
-    __load_history_from_file = True
-    __epochs = 300
-    __model_function: Callable
+    __alpha = 1e-4
     __base_data_directory: str = 'undefined'
     __base_output_directory: str = 'undefined'
+    __batch_size = 16
+    __color_mode: str = 'undefined'
+    __epochs = 300
+    __image_dimension: Tuple[int, int] = (128, 128)
     __lion_directories: list[str] = []
+    __load_history_from_file = True
+    __load_model_from_file = True
+    __model_function: Callable
+    __model_version = 'undefined'
     __no_lion_directories: list[str] = []
+    __notebook_number = -1
+    __with_augmentation = False
 
     def __init__(self):
         self.base_data_directory = os.path.join(
             os.path.dirname(__file__), '../data')
         self.base_output_directory = os.path.join(
             os.path.dirname(__file__), '../models')
+
+    def load(self, filename: str):
+        """
+        Load settings from YAML file.
+        """
+        with open(filename, encoding='utf-8') as fd:
+            settings = yaml.safe_load(fd)
+        self.notebook_number = settings.get('notebook-number', 1)
+        self.epochs = settings.get('epochs', 1)
+        dimensions = settings.get('image-dimensions', [0, 0])
+        if not isinstance(dimensions, list) or \
+            len(dimensions) != 2 or \
+                not all(isinstance(d, int) for d in dimensions):
+            raise ValueError(
+                'expected image-dimensions to be a list of two integers')
+        self.image_dimensions = tuple(dimensions)
+        self.model_version = settings.get('model-version', 'undefined')
+        self.base_data_directory = settings.get(
+            'base-data-directory', 'undefined')
+        self.base_output_directory = settings.get(
+            'base-output-directory', 'undefined')
+        lions = settings.get('lion-directories', ['undefined'])
+        if not isinstance(lions, list) or \
+                not all(isinstance(p, str) for p in lions):
+            raise ValueError('expected lion-directories to be a list of paths')
+        self.lion_directories = lions
+        no_lions = settings.get('no-lion-directories', ['undefined'])
+        if not isinstance(no_lions, list) or \
+                not all(isinstance(p, str) for p in no_lions):
+            raise ValueError(
+                'expected no-lion-directories to be a list of paths')
+        self.no_lion_directories = no_lions
+        self.with_augmentation = settings.get('with-augmentation', False)
+        self.batch_size = settings.get('batch-size', 1)
+        self.alpha = float(settings.get('alpha', 1e-5))
 
     @property
     def notebook_number(self) -> int:
@@ -242,6 +282,52 @@ class BasePreset():
         Set the model function.
         """
         self.__model_function = func
+
+    @property
+    def with_augmentation(self) -> bool:
+        """
+        Get whether to augment training data.
+        """
+        return self.__with_augmentation
+
+    @with_augmentation.setter
+    def with_augmentation(self, with_augmentation: bool):
+        """
+        Set whether to use augment training data.
+        """
+        self.__with_augmentation = with_augmentation
+
+    @property
+    def batch_size(self) -> int:
+        """
+        Get the batch size.
+        """
+        return self.__batch_size
+
+    @batch_size.setter
+    def batch_size(self, batch_size: int):
+        """
+        Set the batch size.
+        """
+        if batch_size <= 0:
+            raise ValueError('the batch-size needs to be a positive number')
+        self.__batch_size = batch_size
+
+    @property
+    def alpha(self) -> float:
+        """
+        Get the stepsize alpha.
+        """
+        return self.__alpha
+
+    @alpha.setter
+    def alpha(self, alpha: float):
+        """
+        Set the stepsize alpha.
+        """
+        if alpha <= 0:
+            raise ValueError('the stepsize needs to be positive')
+        self.__alpha = alpha
 
 
 class Preset01(BasePreset):
