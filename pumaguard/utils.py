@@ -330,8 +330,8 @@ def classify_image(presets: Presets, model: keras.Model,
         The color mode being used, the image being classified, and the time
         taken for classification.
     """
-    logger.debug('Using color_mode "%s"', presets.color_mode)
-    logger.debug('Classifying image %s', image_path)
+    logger.debug('using color_mode "%s"', presets.color_mode)
+    logger.debug('classifying image %s', image_path)
 
     try:
         if presets.color_mode == 'rgb':
@@ -342,7 +342,9 @@ def classify_image(presets: Presets, model: keras.Model,
             raise ValueError(f'unknown color mode {presets.color_mode}')
     except FileNotFoundError as e:
         logger.error('file not found: %s', e)
-        return -1
+        raise
+
+    logger.debug('image loaded, classifying now...')
 
     start_time = datetime.datetime.now()
 
@@ -360,7 +362,7 @@ def classify_image(presets: Presets, model: keras.Model,
 
     logger.debug('Classification took %.2f seconds',
                  get_duration(start_time, end_time))
-
+    logger.debug('predicted label %.2f', prediction[0][0])
     return prediction[0][0]
 
 
