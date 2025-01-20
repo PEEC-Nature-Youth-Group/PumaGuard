@@ -12,7 +12,7 @@ from pumaguard.presets import (
     Presets,
 )
 
-logger = logging.getLogger('PumaGuard-Server')
+logger = logging.getLogger('PumaGuard')
 
 class TrainingHistory(keras.callbacks.Callback):
     """
