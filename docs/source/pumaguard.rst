@@ -20,6 +20,14 @@ pumaguard.classify module
    :undoc-members:
    :show-inheritance:
 
+pumaguard.main module
+---------------------
+
+.. automodule:: pumaguard.main
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 pumaguard.presets module
 ------------------------
 

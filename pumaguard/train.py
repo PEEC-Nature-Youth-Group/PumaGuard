@@ -25,7 +25,6 @@ from pumaguard.utils import (
     create_model,
     initialize_tensorflow,
     organize_data,
-    print_bash_completion,
 )
 
 logger = logging.getLogger('PumaGuard')
@@ -108,11 +107,10 @@ def train_model(training_dataset,
           f'for {len(full_history.history["accuracy"])} epochs')
 
 
-def parse_commandline() -> argparse.Namespace:
+def configure_subparser(parser: argparse.ArgumentParser):
     """
-    Parse the command line.
+    Return Parser the command line.
     """
-    parser = argparse.ArgumentParser()
     parser.add_argument(
         '--completion',
         choices=['bash'],
@@ -163,14 +161,6 @@ def parse_commandline() -> argparse.Namespace:
         help='Load presets from file',
         type=str,
     )
-    options = parser.parse_args()
-    if options.completion:
-        if options.completion == 'bash':
-            print_bash_completion('pumaguard-train-completions.sh')
-            sys.exit(0)
-        else:
-            raise ValueError(f'unknown completion {options.completion}')
-    return options
 
 
 def print_training_stats(full_history: TrainingHistory):
@@ -195,13 +185,11 @@ def print_training_stats(full_history: TrainingHistory):
     plot_training_progress('training-progress.png', full_history=full_history)
 
 
-def main():
+def main(options: argparse.Namespace):
     """
     The main entry point.
     """
-    logging.basicConfig(level=logging.INFO)
 
-    options = parse_commandline()
     if options.debug:
         logger.setLevel(logging.DEBUG)
 

@@ -72,11 +72,8 @@ def parse_commandline() -> argparse.Namespace:
     )
     options = parser.parse_args()
     if options.completion:
-        if options.completion == 'bash':
-            print_bash_completion('pumaguard-classify-completions.sh')
-            sys.exit(0)
-        else:
-            raise ValueError(f'unknown completion {options.completion}')
+        print_bash_completion(command='classify', shell=options.completion)
+        sys.exit(0)
     if not options.image and not options.verify:
         raise ValueError('missing FILE argument')
     return options
