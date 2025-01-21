@@ -97,11 +97,8 @@ def parse_commandline() -> argparse.Namespace:
     )
     options = parser.parse_args()
     if options.completion:
-        if options.completion == 'bash':
-            print_bash_completion('pumaguard-server-completions.sh')
-            sys.exit(0)
-        else:
-            raise ValueError(f'unknown completion {options.completion}')
+        print_bash_completion(command='server', shell=options.completion)
+        sys.exit(0)
     if not options.FOLDER:
         raise ValueError('missing FOLDER argument')
     return options

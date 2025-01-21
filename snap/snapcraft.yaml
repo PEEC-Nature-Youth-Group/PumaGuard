@@ -17,11 +17,17 @@ description: |
   labeled dataset and validated using a separate set of images.
 
 environment:
-  TF_CPP_MIN_LOG_LEVEL: 3  # or any of {'0', '1', '2'}
+  TF_CPP_MIN_LOG_LEVEL: 3 # or any of {'0', '1', '2'}
   # TF_ENABLE_ONEDNN_OPTS: 0
   PUMAGUARD_MODEL_PATH: $SNAP/models
 
 apps:
+  pumaguard:
+    command: bin/snapcraft-preload $SNAP/bin/python3 $SNAP/bin/pumaguard
+    completer: bin/bash-completions.sh
+    plugs:
+      - home
+      - network
   pumaguard-server:
     command: bin/snapcraft-preload $SNAP/bin/python3 $SNAP/bin/pumaguard-server
     completer: bin/server-bash-completions.sh
@@ -31,12 +37,6 @@ apps:
   pumaguard-classify:
     command: bin/snapcraft-preload $SNAP/bin/python3 $SNAP/bin/pumaguard-classify
     completer: bin/classify-bash-completions.sh
-    plugs:
-      - home
-      - network
-  pumaguard-train:
-    command: bin/snapcraft-preload $SNAP/bin/python3 $SNAP/bin/pumaguard-train
-    completer: bin/train-bash-completions.sh
     plugs:
       - home
       - network
@@ -73,6 +73,7 @@ parts:
       for script in classify train server; do
         install --mode 0755 pumaguard/completions/pumaguard-${script}-completions.sh ${CRAFT_PART_INSTALL}/bin/${script}-bash-completions.sh
       done
+      install --mode 0755 pumaguard/completions/pumaguard-completions.sh ${CRAFT_PART_INSTALL}/bin/bash-completions.sh
     stage-packages:
       - inotify-tools
 

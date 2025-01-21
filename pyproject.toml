@@ -28,8 +28,8 @@ pytest-cov = "^6.0.0"
 
 [tool.poetry.scripts]
 pick-files = 'scripts.pick_files:main'
+pumaguard = 'pumaguard.main:main'
 pumaguard-classify = 'pumaguard.classify:main'
-pumaguard-train = 'pumaguard.train:main'
 pumaguard-server = 'pumaguard.server:main'
 
 [build-system]

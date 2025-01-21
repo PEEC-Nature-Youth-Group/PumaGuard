@@ -366,11 +366,20 @@ def classify_image(presets: Presets, model: keras.Model,
     return prediction[0][0]
 
 
-def print_bash_completion(completions_file: str):
+def print_bash_completion(command: str, shell: str):
     """
     Print bash completion script.
     """
+    command_string = ''
+    if command is not None:
+        command_string = f'{command}-'
+    shell_suffix = ''
+    if shell == 'bash':
+        shell_suffix = 'sh'
+    else:
+        raise ValueError(f'unknown shell {shell}')
     completions_file = os.path.join(os.path.dirname(
-        __file__), 'completions', completions_file)
+        __file__), 'completions',
+        f'pumaguard-{command_string}completions.{shell_suffix}')
     with open(completions_file, encoding='utf-8') as fd:
         print(fd.read())
