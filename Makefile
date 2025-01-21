@@ -113,3 +113,8 @@ release:
 .PHONY: configure-pi-zero
 configure-pi-zero:
 	ansible-playbook --inventory pi-zero, --ask-become-pass scripts/configure-pi.yaml
+
+.PHONY: verify
+verify:
+	pumaguard.pumaguard-classify --data-path data --verify --notebook 6 | tee verify.output
+	if [ "$$(awk '/accuracy/ {print $$3}' verify.output)" != 96.60% ]; then false; fi
