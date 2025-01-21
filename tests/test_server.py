@@ -2,8 +2,6 @@
 Test server.
 """
 
-import io
-import sys
 import unittest
 from unittest.mock import (
     MagicMock,
@@ -13,7 +11,6 @@ from unittest.mock import (
 from pumaguard.server import (
     FolderManager,
     FolderObserver,
-    parse_commandline,
 )
 from pumaguard.utils import (
     Presets,
@@ -60,13 +57,16 @@ class TestFolderObserver(unittest.TestCase):
         """
         Test stopping the observer.
         """
-        self.observer._stop_event = MagicMock()  # pylint: disable=protected-access
+        # pylint: disable=protected-access
+        self.observer._stop_event = MagicMock()
         self.observer.stop()
-        self.observer._stop_event.set.assert_called_once()  # pylint: disable=protected-access
+        self.observer._stop_event.set.assert_called_once()
+        # pylint: enable=protected-access
 
     @patch('pumaguard.server.classify_image', return_value=0.7)
     @patch('pumaguard.server.logger')
-    def test_handle_new_file_prediction(self, mock_logger, mock_classify):  # pylint: disable=unused-argument
+    def test_handle_new_file_prediction(self, mock_logger, mock_classify): \
+            # pylint: disable=unused-argument
         """
         Test that _handle_new_file logs the correct chance of puma
         when classify_image returns 0.7.
@@ -83,70 +83,6 @@ class TestFolderObserver(unittest.TestCase):
         self.assertAlmostEqual(prediction, 30, places=2)
 
 
-class TestParseCommandline(unittest.TestCase):
-    """
-    Unit tests for parse_commandline function
-    """
-
-    @patch.object(sys, 'argv', ['pumaguard-server', '--debug',
-                                '--notebook', '2',
-                                '--watch-method', 'inotify',
-                                'folder1', 'folder2'])
-    def test_parse_commandline_with_all_arguments(self):
-        """
-        Test with all arguments.
-        """
-        options = parse_commandline()
-        self.assertTrue(options.debug)
-        self.assertEqual(options.notebook, 2)
-        self.assertEqual(options.FOLDER, ['folder1', 'folder2'])
-        self.assertEqual(options.watch_method, 'inotify')
-
-    @patch.object(sys, 'argv', ['pumaguard-server', 'folder1'])
-    def test_parse_commandline_with_minimal_arguments(self):
-        """
-        Test with minimal arguments.
-        """
-        options = parse_commandline()
-        self.assertFalse(options.debug)
-        self.assertEqual(options.notebook, 1)
-        self.assertEqual(options.FOLDER, ['folder1'])
-        self.assertEqual(options.watch_method, 'os')
-
-    @patch.object(sys, 'argv', ['pumaguard-server', '--completion',
-                                'bash', 'FOLDER'])
-    @patch('sys.exit')
-    def test_parse_commandline_with_completion(self, mock_exit):
-        """
-        Test completions.
-        """
-        with patch('sys.stdout', new=io.StringIO()) as my_out:
-            parse_commandline()
-            result = my_out.getvalue()
-            self.assertIn('complete -F', result)
-        mock_exit.assert_called_once()
-
-    @patch.object(sys, 'argv', ['pumaguard-server', '--completion',
-                                'bash', 'FOLDER'])
-    @patch('sys.exit')
-    @patch('pumaguard.server.print_bash_completion')
-    def test_parse_commandline_with_completion_2(self, mock_print, mock_exit):
-        """
-        Test completions.
-        """
-        parse_commandline()
-        mock_exit.assert_called_once()
-        mock_print.assert_called_once()
-
-    @patch.object(sys, 'argv', ['pumaguard-server'])
-    def test_parse_commandline_missing_folder(self):
-        """
-        Test missing folder.
-        """
-        with self.assertRaises(ValueError):
-            parse_commandline()
-
-
 class TestFolderManager(unittest.TestCase):
     """
     Unit tests for FolderManager class
@@ -158,7 +94,8 @@ class TestFolderManager(unittest.TestCase):
         self.manager = FolderManager(self.presets)
 
     @patch('pumaguard.server.FolderObserver')
-    def test_register_folder(self, MockFolderObserver):  # pylint: disable=invalid-name
+    def test_register_folder(self, MockFolderObserver): \
+            # pylint: disable=invalid-name
         """
         Test register folder.
         """

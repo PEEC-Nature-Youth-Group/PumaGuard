@@ -10,9 +10,12 @@ import sys
 # pylint: disable=wrong-import-position
 sys.path.append(os.path.realpath(f'{os.path.dirname(__file__)}/..'))
 
-from pumaguard.classify import (
+from pumaguard.main import (
     main,
 )
 
 if __name__ == '__main__':
+    sys.argv = [
+        sys.argv[0], 'classify', *sys.argv[1:],
+    ]
     sys.exit(main())

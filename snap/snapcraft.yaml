@@ -28,18 +28,6 @@ apps:
     plugs:
       - home
       - network
-  pumaguard-server:
-    command: bin/snapcraft-preload $SNAP/bin/python3 $SNAP/bin/pumaguard-server
-    completer: bin/server-bash-completions.sh
-    plugs:
-      - home
-      - network
-  pumaguard-classify:
-    command: bin/snapcraft-preload $SNAP/bin/python3 $SNAP/bin/pumaguard-classify
-    completer: bin/classify-bash-completions.sh
-    plugs:
-      - home
-      - network
   vsftpd:
     command: usr/sbin/vsftpd $SNAP/etc/vsftpd.conf
     daemon: simple
@@ -56,6 +44,7 @@ parts:
       - on amd64:
           - gcc-multilib
           - g++-multilib
+
   pumaguard:
     plugin: python
     source: .

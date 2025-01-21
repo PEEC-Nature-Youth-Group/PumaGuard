@@ -7,47 +7,27 @@ This script classifies images.
 import argparse
 import logging
 import os
-import sys
 
 import keras  # type: ignore
 
-from pumaguard import (
-    __VERSION__,
-)
 from pumaguard.presets import (
     Presets,
 )
 from pumaguard.utils import (
     classify_image,
-    print_bash_completion,
 )
 
 logger = logging.getLogger('PumaGuard')
 
 
-def parse_commandline() -> argparse.Namespace:
+def configure_subparser(parser: argparse.ArgumentParser):
     """
     Parse the commandline
-
-    Returns:
-        argparse.NameSpace: The parsed options.
     """
-    parser = argparse.ArgumentParser()
     parser.add_argument(
         '--debug',
         help='Debug the application',
         action='store_true',
-    )
-    parser.add_argument(
-        '--notebook',
-        help='The notebook number',
-        type=int,
-        default=1,
-    )
-    parser.add_argument(
-        '--settings',
-        help='Load presets from file',
-        type=str,
     )
     parser.add_argument(
         '--model-path',
@@ -56,11 +36,6 @@ def parse_commandline() -> argparse.Namespace:
     parser.add_argument(
         '--data-path',
         help='Where the image data are stored',
-    )
-    parser.add_argument(
-        '--completion',
-        choices=['bash'],
-        help='Print out bash completion script.',
     )
     parser.add_argument(
         '--verify',
@@ -74,13 +49,6 @@ def parse_commandline() -> argparse.Namespace:
         nargs='*',
         type=str,
     )
-    options = parser.parse_args()
-    if options.completion:
-        print_bash_completion(command='classify', shell=options.completion)
-        sys.exit(0)
-    if not options.image and not options.verify:
-        raise ValueError('missing FILE argument')
-    return options
 
 
 def verify_model(presets: Presets, model: keras.Model):
@@ -130,14 +98,11 @@ def verify_model(presets: Presets, model: keras.Model):
     print(f'accuracy = {100 * accuracy:.2f}%')
 
 
-def main():
+def main(options: argparse.Namespace):
     """
     Main entry point
     """
 
-    logging.basicConfig(level=logging.INFO)
-    logger.info('PumaGuard Classify version %s', __VERSION__)
-    options = parse_commandline()
     if options.debug:
         logger.setLevel(logging.DEBUG)
 
