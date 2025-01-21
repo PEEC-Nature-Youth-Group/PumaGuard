@@ -24,21 +24,21 @@ class BasePreset():
     Base class for Presets
     """
 
-    __alpha = 1e-4
-    __base_data_directory: str = 'undefined'
-    __base_output_directory: str = 'undefined'
-    __batch_size = 16
-    __color_mode: str = 'undefined'
-    __epochs = 300
-    __image_dimension: Tuple[int, int] = (128, 128)
-    __lion_directories: list[str] = []
-    __load_history_from_file = True
-    __load_model_from_file = True
-    __model_function: Callable
-    __model_version = 'undefined'
-    __no_lion_directories: list[str] = []
-    __notebook_number = -1
-    __with_augmentation = False
+    _alpha = 1e-4
+    _base_data_directory: str = 'undefined'
+    _base_output_directory: str = 'undefined'
+    _batch_size = 16
+    _color_mode: str = 'undefined'
+    _epochs = 300
+    _image_dimension: Tuple[int, int] = (128, 128)
+    _lion_directories: list[str] = []
+    _load_history_from_file = True
+    _load_model_from_file = True
+    _model_function: Callable
+    _model_version = 'undefined'
+    _no_lion_directories: list[str] = []
+    _notebook_number = -1
+    _with_augmentation = False
 
     def __init__(self):
         self.base_data_directory = os.path.join(
@@ -92,7 +92,7 @@ class BasePreset():
         """
         Get notebook number.
         """
-        return self.__notebook_number
+        return self._notebook_number
 
     @notebook_number.setter
     def notebook_number(self, notebook: int):
@@ -102,21 +102,21 @@ class BasePreset():
         if notebook < 1:
             raise ValueError('notebook can not be zero '
                              f'or negative ({notebook})')
-        self.__notebook_number = notebook
+        self._notebook_number = notebook
 
     @property
     def model_version(self) -> str:
         """
         Get the model version name.
         """
-        return self.__model_version
+        return self._model_version
 
     @model_version.setter
     def model_version(self, model_version: str):
         """
         Set the model version name.
         """
-        self.__model_version = model_version
+        self._model_version = model_version
 
     @property
     def model_file(self):
@@ -143,7 +143,7 @@ class BasePreset():
         """
         Get the color_mode.
         """
-        return self.__color_mode
+        return self._color_mode
 
     @color_mode.setter
     def color_mode(self, mode: str):
@@ -152,14 +152,14 @@ class BasePreset():
         """
         if mode not in ['rgb', 'grayscale']:
             raise ValueError("color_mode must be either 'rgb' or 'grayscale'")
-        self.__color_mode = mode
+        self._color_mode = mode
 
     @property
     def image_dimensions(self) -> Tuple[int, int]:
         """
         Get the image dimensions.
         """
-        return self.__image_dimension
+        return self._image_dimension
 
     @image_dimensions.setter
     def image_dimensions(self, dimensions: Tuple[int, int]):
@@ -178,63 +178,63 @@ class BasePreset():
         """
         Get the base_data_directory.
         """
-        return self.__base_data_directory
+        return self._base_data_directory
 
     @base_data_directory.setter
     def base_data_directory(self, path: str):
         """
         Set the base_data_directory.
         """
-        self.__base_data_directory = path
+        self._base_data_directory = path
 
     @property
     def base_output_directory(self) -> str:
         """
         Get the base_output_directory.
         """
-        return self.__base_output_directory
+        return self._base_output_directory
 
     @base_output_directory.setter
     def base_output_directory(self, path: str):
         """
         Set the base_output_directory.
         """
-        self.__base_output_directory = path
+        self._base_output_directory = path
 
     @property
     def load_history_from_file(self) -> bool:
         """
         Load history from file.
         """
-        return self.__load_history_from_file
+        return self._load_history_from_file
 
     @load_history_from_file.setter
     def load_history_from_file(self, load_history: bool):
         """
         Load history from file.
         """
-        self.__load_history_from_file = load_history
+        self._load_history_from_file = load_history
 
     @property
     def load_model_from_file(self) -> bool:
         """
         Load model from file.
         """
-        return self.__load_model_from_file
+        return self._load_model_from_file
 
     @load_model_from_file.setter
     def load_model_from_file(self, load_model: bool):
         """
         Load model from file.
         """
-        self.__load_model_from_file = load_model
+        self._load_model_from_file = load_model
 
     @property
     def epochs(self) -> int:
         """
         The number of epochs.
         """
-        return self.__epochs
+        return self._epochs
 
     @epochs.setter
     def epochs(self, epochs: int):
@@ -243,7 +243,7 @@ class BasePreset():
         """
         if epochs < 1:
             raise ValueError('epochs needs to be a positive integer')
-        self.__epochs = epochs
+        self._epochs = epochs
 
     @property
     def lion_directories(self) -> list[str]:
@@ -251,14 +251,14 @@ class BasePreset():
         The directories containing lion images.
         """
         return [os.path.join(self.base_data_directory, lion)
-                for lion in self.__lion_directories]
+                for lion in self._lion_directories]
 
     @lion_directories.setter
     def lion_directories(self, lions: list[str]):
         """
         Set the lion directories.
         """
-        self.__lion_directories = copy.deepcopy(lions)
+        self._lion_directories = copy.deepcopy(lions)
 
     @property
     def no_lion_directories(self) -> list[str]:
@@ -266,49 +266,49 @@ class BasePreset():
         The directories containing no_lion images.
         """
         return [os.path.join(self.base_data_directory, no_lion)
-                for no_lion in self.__no_lion_directories]
+                for no_lion in self._no_lion_directories]
 
     @no_lion_directories.setter
     def no_lion_directories(self, no_lions: list[str]):
         """
         Set the no_lion directories.
         """
-        self.__no_lion_directories = copy.deepcopy(no_lions)
+        self._no_lion_directories = copy.deepcopy(no_lions)
 
     @property
     def model_function(self) -> Callable:
         """
         Get the model function.
         """
-        return self.__model_function
+        return self._model_function
 
     @model_function.setter
     def model_function(self, func: Callable):
         """
         Set the model function.
         """
-        self.__model_function = func
+        self._model_function = func
 
     @property
     def with_augmentation(self) -> bool:
         """
         Get whether to augment training data.
         """
-        return self.__with_augmentation
+        return self._with_augmentation
 
     @with_augmentation.setter
     def with_augmentation(self, with_augmentation: bool):
         """
         Set whether to use augment training data.
         """
-        self.__with_augmentation = with_augmentation
+        self._with_augmentation = with_augmentation
 
     @property
     def batch_size(self) -> int:
         """
         Get the batch size.
         """
-        return self.__batch_size
+        return self._batch_size
 
     @batch_size.setter
     def batch_size(self, batch_size: int):
@@ -317,14 +317,14 @@ class BasePreset():
         """
         if batch_size <= 0:
             raise ValueError('the batch-size needs to be a positive number')
-        self.__batch_size = batch_size
+        self._batch_size = batch_size
 
     @property
     def alpha(self) -> float:
         """
         Get the stepsize alpha.
         """
-        return self.__alpha
+        return self._alpha
 
     @alpha.setter
     def alpha(self, alpha: float):
@@ -333,7 +333,7 @@ class BasePreset():
         """
         if alpha <= 0:
             raise ValueError('the stepsize needs to be positive')
-        self.__alpha = alpha
+        self._alpha = alpha
 
 
 class Preset01(BasePreset):
@@ -365,16 +365,16 @@ class Presets():
     Presets for training.
     """
 
-    __notebook_number = -1
-    __color_mode: str = 'undefined'
-    __load_model_from_file = True
-    __load_history_from_file = True
-    __epochs = 300
-    __model_function: Callable
-    __base_data_directory: str = 'undefined'
-    __base_output_directory: str = 'undefined'
-    __lion_directories: list[str] = []
-    __no_lion_directories: list[str] = []
+    _notebook_number = -1
+    _color_mode: str = 'undefined'
+    _load_model_from_file = True
+    _load_history_from_file = True
+    _epochs = 300
+    _model_function: Callable
+    _base_data_directory: str = 'undefined'
+    _base_output_directory: str = 'undefined'
+    _lion_directories: list[str] = []
+    _no_lion_directories: list[str] = []
 
     def __init__(self, notebook_number: int = 1):
         self.base_data_directory = os.path.join(
@@ -543,7 +543,7 @@ class Presets():
         """
         Get notebook number.
         """
-        return self.__notebook_number
+        return self._notebook_number
 
     @notebook_number.setter
     def notebook_number(self, notebook: int):
@@ -553,7 +553,7 @@ class Presets():
         if notebook < 1:
             raise ValueError('notebook can not be zero '
                              f'or negative ({notebook})')
-        self.__notebook_number = notebook
+        self._notebook_number = notebook
 
     @property
     def model_file(self):
@@ -580,7 +580,7 @@ class Presets():
         """
         Get the color_mode.
         """
-        return self.__color_mode
+        return self._color_mode
 
     @color_mode.setter
     def color_mode(self, mode: str):
@@ -589,70 +589,70 @@ class Presets():
         """
         if mode not in ['rgb', 'grayscale']:
             raise ValueError("color_mode must be either 'rgb' or 'grayscale'")
-        self.__color_mode = mode
+        self._color_mode = mode
 
     @property
     def base_data_directory(self) -> str:
         """
         Get the base_data_directory.
         """
-        return self.__base_data_directory
+        return self._base_data_directory
 
     @base_data_directory.setter
     def base_data_directory(self, path: str):
         """
         Set the base_data_directory.
         """
-        self.__base_data_directory = path
+        self._base_data_directory = path
 
     @property
     def base_output_directory(self) -> str:
         """
         Get the base_output_directory.
         """
-        return self.__base_output_directory
+        return self._base_output_directory
 
     @base_output_directory.setter
     def base_output_directory(self, path: str):
         """
         Set the base_output_directory.
         """
-        self.__base_output_directory = path
+        self._base_output_directory = path
 
     @property
     def load_history_from_file(self) -> bool:
         """
         Load history from file.
         """
-        return self.__load_history_from_file
+        return self._load_history_from_file
 
     @load_history_from_file.setter
     def load_history_from_file(self, load_history: bool):
         """
         Load history from file.
         """
-        self.__load_history_from_file = load_history
+        self._load_history_from_file = load_history
 
     @property
     def load_model_from_file(self) -> bool:
         """
         Load model from file.
         """
-        return self.__load_model_from_file
+        return self._load_model_from_file
 
     @load_model_from_file.setter
     def load_model_from_file(self, load_model: bool):
         """
         Load model from file.
         """
-        self.__load_model_from_file = load_model
+        self._load_model_from_file = load_model
 
     @property
     def epochs(self) -> int:
         """
         The number of epochs.
         """
-        return self.__epochs
+        return self._epochs
 
     @epochs.setter
     def epochs(self, epochs: int):
@@ -661,7 +661,7 @@ class Presets():
         """
         if epochs < 1:
             raise ValueError('epochs needs to be a positive integer')
-        self.__epochs = epochs
+        self._epochs = epochs
 
     @property
     def lion_directories(self) -> list[str]:
@@ -669,14 +669,14 @@ class Presets():
         The directories containing lion images.
         """
         return [os.path.join(self.base_data_directory, lion)
-                for lion in self.__lion_directories]
+                for lion in self._lion_directories]
 
     @lion_directories.setter
     def lion_directories(self, lions: list[str]):
         """
         Set the lion directories.
         """
-        self.__lion_directories = copy.deepcopy(lions)
+        self._lion_directories = copy.deepcopy(lions)
 
     @property
     def no_lion_directories(self) -> list[str]:
@@ -684,25 +684,25 @@ class Presets():
         The directories containing no_lion images.
         """
         return [os.path.join(self.base_data_directory, no_lion)
-                for no_lion in self.__no_lion_directories]
+                for no_lion in self._no_lion_directories]
 
     @no_lion_directories.setter
     def no_lion_directories(self, no_lions: list[str]):
         """
         Set the no_lion directories.
         """
-        self.__no_lion_directories = copy.deepcopy(no_lions)
+        self._no_lion_directories = copy.deepcopy(no_lions)
 
     @property
     def model_function(self) -> Callable:
         """
         Get the model function.
         """
-        return self.__model_function
+        return self._model_function
 
     @model_function.setter
     def model_function(self, func: Callable):
         """
         Set the model function.
         """
-        self.__model_function = func
+        self._model_function = func
