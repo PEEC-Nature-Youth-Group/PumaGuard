@@ -112,11 +112,6 @@ def configure_subparser(parser: argparse.ArgumentParser):
     Return Parser the command line.
     """
     parser.add_argument(
-        '--completion',
-        choices=['bash'],
-        help='Print out bash completion script.',
-    )
-    parser.add_argument(
         '--data-directory',
         help='The base directory of the training data',
         type=str,
@@ -159,17 +154,6 @@ def configure_subparser(parser: argparse.ArgumentParser):
         '--dump-settings',
         help='Print current settings to standard output',
         action='store_true',
-    )
-    parser.add_argument(
-        '--notebook',
-        help='The notebook number',
-        type=int,
-        default=1,
-    )
-    parser.add_argument(
-        '--settings',
-        help='Load presets from file',
-        type=str,
     )
 
 

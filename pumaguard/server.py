@@ -28,47 +28,26 @@ import argparse
 import logging
 import os
 import subprocess
-import sys
 import threading
 import time
 
-from pumaguard import (
-    __VERSION__,
-)
 from pumaguard.utils import (
     Model,
     Presets,
     classify_image,
-    print_bash_completion,
 )
 
 logger = logging.getLogger('PumaGuard')
 
 
-def parse_commandline() -> argparse.Namespace:
+def configure_subparser(parser: argparse.ArgumentParser):
     """
     Parses the command line arguments provided to the script.
-
-    Returns:
-        argparse.Namespace: An object containing the parsed command line
-        arguments.
     """
-    parser = argparse.ArgumentParser()
     parser.add_argument(
         '--debug',
         help='Debug the application',
         action='store_true',
-    )
-    parser.add_argument(
-        '--notebook',
-        help='The notebook number',
-        type=int,
-        default=1,
-    )
-    parser.add_argument(
-        '--settings',
-        help='Load presets from file',
-        type=str,
     )
     parser.add_argument(
         '--model-path',
@@ -81,11 +60,6 @@ def parse_commandline() -> argparse.Namespace:
         nargs='*',
     )
     parser.add_argument(
-        '--completion',
-        choices=['bash'],
-        help='Print out bash completion script.',
-    )
-    parser.add_argument(
         '--watch-method',
         help='''What implementation (method) to use for watching
         the folder. Linux on baremetal supports both methods. Linux
@@ -95,13 +69,6 @@ def parse_commandline() -> argparse.Namespace:
         choices=['inotify', 'os'],
         default='os',
     )
-    options = parser.parse_args()
-    if options.completion:
-        print_bash_completion(command='server', shell=options.completion)
-        sys.exit(0)
-    if not options.FOLDER:
-        raise ValueError('missing FOLDER argument')
-    return options
 
 
 class FolderObserver:
@@ -218,14 +185,11 @@ class FolderManager:
             observer.stop()
 
 
-def main():
+def main(options: argparse.Namespace):
     """
     Main entry point.
     """
 
-    logging.basicConfig(level=logging.INFO)
-    logger.info('PumaGuard Server version %s', __VERSION__)
-    options = parse_commandline()
     if options.debug:
         logger.setLevel(logging.DEBUG)
 

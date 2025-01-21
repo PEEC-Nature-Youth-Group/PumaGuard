@@ -71,7 +71,7 @@ FUNCTIONAL_FILES = \
 
 .PHONY: run-functional
 run-functional:
-	$(EXE) --notebook 6 $(FUNCTIONAL_FILES) 2>&1 | tee functional-test.output
+	$(EXE) classify --notebook 6 $(FUNCTIONAL_FILES) | tee functional-test.output
 
 .PHONY: check-functional
 check-functional:
@@ -90,12 +90,12 @@ check-functional:
 
 .PHONY: functional-poetry
 functional-poetry: install
-	$(MAKE) EXE="poetry run pumaguard-classify" run-functional
+	$(MAKE) EXE="poetry run pumaguard" run-functional
 	$(MAKE) check-functional
 
 .PHONY: functional-snap
 functional-snap:
-	$(MAKE) EXE="pumaguard.pumaguard-classify" run-functional
+	$(MAKE) EXE="pumaguard" run-functional
 	$(MAKE) check-functional
 
 .PHONY: prepare-trailcam prepare-output prepare-central
@@ -116,5 +116,5 @@ configure-pi-zero:
 
 .PHONY: verify
 verify:
-	pumaguard.pumaguard-classify --data-path data --verify --notebook 6 | tee verify.output
+	pumaguard classify --data-path data --verify --notebook 6 | tee verify.output
 	if [ "$$(awk '/accuracy/ {print $$3}' verify.output)" != 96.60% ]; then false; fi
