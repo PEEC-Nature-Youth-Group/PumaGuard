@@ -120,8 +120,18 @@ def parse_commandline() -> argparse.Namespace:
     )
     parser.add_argument(
         '--data-directory',
-        help='The base directory of the trainin data',
+        help='The base directory of the training data',
         type=str,
+    )
+    parser.add_argument(
+        '--lions',
+        help='Directory with lion images',
+        nargs='+',
+    )
+    parser.add_argument(
+        '--no-lions',
+        help='Directory with images not showing lions',
+        nargs='+',
     )
     parser.add_argument(
         '--debug',
@@ -217,6 +227,17 @@ def main():
     if data_directory is not None:
         logger.debug('setting data directory to %s', data_directory)
         presets.base_data_directory = data_directory
+
+    lion_directories = options.lions if options.lions else []
+    if len(lion_directories) > 0:
+        presets.lion_directories = lion_directories
+
+    no_lion_directories = options.no_lions if options.no_lions else []
+    if len(no_lion_directories) > 0:
+        presets.no_lion_directories = no_lion_directories
+
+    logger.debug('getting lion images from    %s', presets.lion_directories)
+    logger.debug('getting no-lion images from %s', presets.no_lion_directories)
 
     if options.epochs:
         presets.epochs = options.epochs
