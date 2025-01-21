@@ -32,6 +32,7 @@
 				"ms-vscode-remote.remote-ssh",
 				"ms-vscode.makefile-tools",
 				"stkb.rewrap",
+				"tamasfe.even-better-toml",
 				"usernamehw.errorlens",
 				"yzhang.markdown-all-in-one"
 			]
