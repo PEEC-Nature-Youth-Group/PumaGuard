@@ -54,6 +54,10 @@ def parse_commandline() -> argparse.Namespace:
         help='Where the models are stored',
     )
     parser.add_argument(
+        '--data-path',
+        help='Where the image data are stored',
+    )
+    parser.add_argument(
         '--completion',
         choices=['bash'],
         help='Print out bash completion script.',
@@ -141,11 +145,18 @@ def main():
         logger.setLevel(logging.DEBUG)
 
     presets = Presets(options.notebook)
+
     model_path = options.model_path if options.model_path \
         else os.getenv('PUMAGUARD_MODEL_PATH', default=None)
     if model_path is not None:
         logger.debug('setting model path to %s', model_path)
         presets.base_output_directory = model_path
+
+    data_path = options.data_path if options.data_path \
+        else os.getenv('PUMAGUARD_DATA_PATH', default=None)
+    if data_path is not None:
+        logger.debug('setting data path to %s', data_path)
+        presets.base_data_directory = data_path
 
     try:
         os.stat(presets.model_file)
