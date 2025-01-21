@@ -228,8 +228,9 @@ def main():
         presets.load_history_from_file = True
         presets.load_model_from_file = True
 
-    logger.info('model file   %s', presets.model_file)
-    logger.info('history file %s', presets.history_file)
+    logger.info('model file    %s', presets.model_file)
+    logger.info('history file  %s', presets.history_file)
+    logger.info('settings file %s', presets.settings_file)
 
     if options.model_output:
         logger.debug('setting model output to %s', options.model_output)
@@ -241,7 +242,7 @@ def main():
         presets.base_output_directory = options.model_output
 
     if options.dump_settings:
-        print(yaml.dump(presets))
+        print(yaml.safe_dump(presets))
         sys.exit(0)
 
     work_directory = tempfile.mkdtemp(prefix='pumaguard-work-')

@@ -139,6 +139,16 @@ class BasePreset():
             f'_{self.image_dimensions[0]}_{self.image_dimensions[1]}.pickle')
 
     @property
+    def settings_file(self):
+        """
+        Get the settings file.
+        """
+        return os.path.realpath(
+            f'{self.base_output_directory}/'
+            f'model_settings_{self.notebook_number}_{self.model_version}'
+            f'_{self.image_dimensions[0]}_{self.image_dimensions[1]}.yaml')
+
+    @property
     def color_mode(self) -> str:
         """
         Get the color_mode.
@@ -574,6 +584,16 @@ class Presets():
             f'{self.base_output_directory}/'
             f'model_history_{self.notebook_number}_{self.model_version}'
             f'_{self.image_dimensions[0]}_{self.image_dimensions[1]}.pickle')
+
+    @property
+    def settings_file(self):
+        """
+        Get the settings file.
+        """
+        return os.path.realpath(
+            f'{self.base_output_directory}/'
+            f'model_settings_{self.notebook_number}_{self.model_version}'
+            f'_{self.image_dimensions[0]}_{self.image_dimensions[1]}.yaml')
 
     @property
     def color_mode(self) -> str:
