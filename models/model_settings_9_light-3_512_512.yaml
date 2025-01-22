@@ -13,7 +13,7 @@ lion-directories:
 - stable/angle 1/Lion
 - stable/angle 2/Lion
 - stable/angle 3/Lion
-- stable/angle 4/lion
+- stable/angle 4/Lion
 model-function: light_model_3
 model-version: light-3
 no-lion-directories:
@@ -22,6 +22,6 @@ no-lion-directories:
 - stable/angle 1/No Lion
 - stable/angle 2/No Lion
 - stable/angle 3/No Lion
-- stable/angle 4/no lion
+- stable/angle 4/No Lion
 notebook: 9
 with-augmentation: false
