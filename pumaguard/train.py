@@ -127,11 +127,6 @@ def configure_subparser(parser: argparse.ArgumentParser):
         nargs='+',
     )
     parser.add_argument(
-        '--debug',
-        help='Debug the application',
-        action='store_true',
-    )
-    parser.add_argument(
         '--epochs',
         help='How many epochs to train.',
         type=int,
