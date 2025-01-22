@@ -116,5 +116,5 @@ configure-pi-zero:
 
 .PHONY: verify
 verify:
-	pumaguard classify --data-path data --verify --notebook 6 | tee verify.output
+	pumaguard verify --data-path data --notebook 6 | tee verify.output
 	if [ "$$(awk '/accuracy/ {print $$3}' verify.output)" != 96.60% ]; then false; fi

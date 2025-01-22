@@ -68,6 +68,14 @@ pumaguard.utils module
    :undoc-members:
    :show-inheritance:
 
+pumaguard.verify module
+-----------------------
+
+.. automodule:: pumaguard.verify
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 
