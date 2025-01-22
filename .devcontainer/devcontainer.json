@@ -14,6 +14,9 @@
 	"mounts": [
 		"source=${localEnv:HOME}/.gnupg,target=/home/vscode/.gnupg,type=bind"
 	],
+	"containerEnv": {
+		"TF_CPP_MIN_LOG_LEVEL": "3"
+	},
 	"customizations": {
 		"vscode": {
 			"extensions": [
