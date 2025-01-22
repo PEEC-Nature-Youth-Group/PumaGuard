@@ -219,7 +219,10 @@ def create_model(presets: Presets,
             logger.debug('loaded model from file')
             logger.info('model version %s', get_md5(presets.model_file))
         else:
-            logger.info('could not find model; creating new model')
+            if not presets.load_model_from_file:
+                logger.info('not loading previous weights')
+            else:
+                logger.info('could not find model; creating new model')
             if presets.model_version == "pre-trained":
                 logger.debug('Creating new Xception model')
                 model = pre_trained_model(presets.image_dimensions)

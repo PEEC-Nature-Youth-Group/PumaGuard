@@ -206,6 +206,7 @@ def main(options: argparse.Namespace):
         presets.epochs = options.epochs
 
     if options.no_load_previous_session:
+        logger.info('will not load previous weights and history')
         presets.load_history_from_file = False
         presets.load_model_from_file = False
     else:
