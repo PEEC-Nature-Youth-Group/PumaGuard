@@ -103,6 +103,7 @@ def main(options: argparse.Namespace):
         presets.base_data_directory = data_path
 
     try:
+        logger.info('loading model from %s', presets.model_file)
         os.stat(presets.model_file)
     except FileNotFoundError:
         logger.error('could not open model file %s', presets.model_file)
