@@ -24,10 +24,6 @@ class BasePreset():
     Base class for Presets
     """
 
-    _alpha = 1e-4
-    _base_data_directory: str = 'undefined'
-    _base_output_directory: str = 'undefined'
-    _batch_size = 16
     _color_mode: str = 'undefined'
     _epochs = 300
     _image_dimension: Tuple[int, int] = (128, 128)
@@ -41,6 +37,8 @@ class BasePreset():
     _with_augmentation = False
 
     def __init__(self):
+        self.alpha = 1e-4
+        self.batch_size = 16
         self.base_data_directory = os.path.join(
             os.path.dirname(__file__), '../data')
         self.base_output_directory = os.path.join(
@@ -325,6 +323,8 @@ class BasePreset():
         """
         Set the batch size.
         """
+        if not isinstance(batch_size, int):
+            raise TypeError('batch_size must be int')
         if batch_size <= 0:
             raise ValueError('the batch-size needs to be a positive number')
         self._batch_size = batch_size
@@ -341,6 +341,8 @@ class BasePreset():
         """
         Set the stepsize alpha.
         """
+        if not isinstance(alpha, float):
+            raise TypeError('alpha needs to be a floating point number')
         if alpha <= 0:
             raise ValueError('the stepsize needs to be positive')
         self._alpha = alpha
