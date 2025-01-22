@@ -4,6 +4,7 @@ PumaGuard
 
 import argparse
 import logging
+import os
 import sys
 
 from pumaguard import (
@@ -22,6 +23,9 @@ def create_global_parser() -> argparse.ArgumentParser:
     """
     Shared arguments.
     """
+    data_path = os.getenv('PUMAGUARD_DATA_PATH', default=None)
+    model_path = os.getenv('PUMAGUARD_MODEL_PATH', default=None)
+
     global_parser = argparse.ArgumentParser(add_help=False)
     global_parser.add_argument(
         '--settings',
@@ -51,13 +55,18 @@ def create_global_parser() -> argparse.ArgumentParser:
     )
     global_parser.add_argument(
         '--model-path',
-        help='Where the models are stored',
+        help='Where the models are stored (default = %(default)s)',
         type=str,
+        default=model_path if model_path is not None else os.path.join(
+            os.path.dirname(__file__), '../models'),
     )
     global_parser.add_argument(
         '--data-path',
-        help='Where the image data are stored',
+        help=('Where the image data for training are '
+              'stored (default = %(default)s)'),
         type=str,
+        default=data_path if data_path is not None else os.path.join(
+            os.path.dirname(__file__), '../data'),
     )
     return global_parser
 

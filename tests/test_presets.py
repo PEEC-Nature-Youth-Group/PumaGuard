@@ -28,8 +28,9 @@ class TestPresets(unittest.TestCase):
         """
         Test the default lion_directories for a known notebook_number.
         """
-        self.assertIn(os.path.join(self.presets.base_data_directory, 'lion'),
-                      self.presets.lion_directories)
+        self.assertIn(os.path.realpath(os.path.join(
+            self.presets.base_data_directory, 'lion')),
+            self.presets.lion_directories)
 
     def test_lion_directories_getter_base(self):
         """
