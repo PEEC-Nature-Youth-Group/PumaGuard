@@ -11,6 +11,7 @@ from pumaguard import (
     classify,
     server,
     train,
+    verify,
 )
 from pumaguard.utils import (
     print_bash_completion,
@@ -69,18 +70,27 @@ def main():
     train.configure_subparser(subparsers.add_parser(
         'train',
         help='Train a model',
-        description='Train a model',
+        description='Train a model and get the model weights.',
         parents=[global_args_parser],
     ))
     classify.configure_subparser(subparsers.add_parser(
         'classify',
         help='Classify images',
-        description='Classify images using a particular model',
+        description='Classify images using a particular model.',
         parents=[global_args_parser],
     ))
     server.configure_subparser(subparsers.add_parser(
         'server',
         help='Run the classification server',
+        description='''Run the classification server. The server will monitor
+                    folders and classify any new image added to those
+                    folders.''',
+        parents=[global_args_parser],
+    ))
+    verify.configure_subparser(subparsers.add_parser(
+        'verify',
+        help='Verify a model',
+        description='Verifies a model using a standard set of images.',
         parents=[global_args_parser],
     ))
 
@@ -96,5 +106,7 @@ def main():
         server.main(args)
     elif args.command == 'classify':
         classify.main(args)
+    elif args.command == 'verify':
+        verify.main(args)
     else:
         parser.print_help()
