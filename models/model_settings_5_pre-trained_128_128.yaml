@@ -1,3 +1,4 @@
+# PumaGuard settings
 alpha: 1.0e-05
 base-data-directory: /workspaces/PumaGuard/pumaguard/../data
 batch-size: 16

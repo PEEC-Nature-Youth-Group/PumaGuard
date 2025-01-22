@@ -393,8 +393,9 @@ class Presets():
     _no_lion_directories: list[str] = []
 
     def __init__(self, notebook_number: int = 1):
-        self.base_data_directory = os.path.join(
-            os.path.dirname(__file__), '../data')
+        self.base_data_directory = os.path.realpath(
+            os.path.join(
+                os.path.dirname(__file__), '../data'))
         self.base_output_directory = os.path.join(
             os.path.dirname(__file__), '../models')
 
@@ -702,8 +703,9 @@ class Presets():
         """
         The directories containing lion images.
         """
-        return [os.path.join(self.base_data_directory, lion)
-                for lion in self._lion_directories]
+        return [os.path.realpath(os.path.join(
+            self.base_data_directory, lion))
+            for lion in self._lion_directories]
 
     @lion_directories.setter
     def lion_directories(self, lions: list[str]):

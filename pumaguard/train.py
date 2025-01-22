@@ -112,11 +112,6 @@ def configure_subparser(parser: argparse.ArgumentParser):
     Return Parser the command line.
     """
     parser.add_argument(
-        '--data-directory',
-        help='The base directory of the training data',
-        type=str,
-    )
-    parser.add_argument(
         '--lions',
         help='Directory with lion images',
         nargs='+',
@@ -179,25 +174,36 @@ def main(options: argparse.Namespace):
         logger.setLevel(logging.DEBUG)
 
     presets = Presets(options.notebook)
+
     model_path = options.model_path if options.model_path \
         else os.getenv('PUMAGUARD_MODEL_PATH', default=None)
     if model_path is not None:
         logger.debug('setting model path to %s', model_path)
         presets.base_output_directory = model_path
 
-    data_directory = options.data_directory if options.data_directory \
+    data_path = options.data_path if options.data_path \
         else os.getenv('PUMAGUARD_DATA_DIRECTORY', default=None)
-    if data_directory is not None:
-        logger.debug('setting data directory to %s', data_directory)
-        presets.base_data_directory = data_directory
+    if data_path is not None:
+        logger.debug('setting data path to %s', data_path)
+        presets.base_data_directory = data_path
+        logger.warning('data path was specified, not using '
+                       'lion/no_lion paths from presets')
+        presets.lion_directories = []
+        presets.no_lion_directories = []
 
     lion_directories = options.lions if options.lions else []
     if len(lion_directories) > 0:
-        presets.lion_directories = lion_directories
+        presets.lion_directories = [
+            os.path.relpath(path, presets.base_data_directory)
+            for path in lion_directories
+        ]
 
     no_lion_directories = options.no_lions if options.no_lions else []
     if len(no_lion_directories) > 0:
-        presets.no_lion_directories = no_lion_directories
+        presets.no_lion_directories = [
+            os.path.relpath(path, presets.base_data_directory)
+            for path in no_lion_directories
+        ]
 
     logger.debug('getting lion images from    %s', presets.lion_directories)
     logger.debug('getting no-lion images from %s', presets.no_lion_directories)
@@ -236,6 +242,7 @@ def main(options: argparse.Namespace):
         sys.exit(0)
 
     with open(presets.settings_file, 'w', encoding='utf-8') as fd:
+        fd.write('# PumaGuard settings\n')
         fd.write(yaml.safe_dump(dict(presets)))
 
     work_directory = tempfile.mkdtemp(prefix='pumaguard-work-')
