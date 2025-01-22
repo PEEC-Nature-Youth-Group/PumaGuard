@@ -29,6 +29,11 @@ def create_global_parser() -> argparse.ArgumentParser:
         type=str,
     )
     global_parser.add_argument(
+        '--debug',
+        help='Debug the application',
+        action='store_true',
+    )
+    global_parser.add_argument(
         '--version',
         action='version',
         version=__VERSION__,
