@@ -118,3 +118,6 @@ configure-pi-zero:
 verify:
 	pumaguard verify --data-path data --notebook 6 | tee verify.output
 	if [ "$$(awk '/accuracy/ {print $$3}' verify.output)" != 96.60% ]; then false; fi
+
+.PHONY: pre-commit
+pre-commit: lint docs test
