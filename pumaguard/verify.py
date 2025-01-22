@@ -25,10 +25,6 @@ def configure_subparser(parser: argparse.ArgumentParser):
     Parse the commandline
     """
     parser.add_argument(
-        '--model-path',
-        help='Where the models are stored',
-    )
-    parser.add_argument(
         '--data-path',
         help='Where the image data are stored',
     )
