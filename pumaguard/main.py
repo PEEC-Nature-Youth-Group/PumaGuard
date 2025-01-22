@@ -54,6 +54,11 @@ def create_global_parser() -> argparse.ArgumentParser:
         help='Where the models are stored',
         type=str,
     )
+    global_parser.add_argument(
+        '--data-path',
+        help='Where the image data are stored',
+        type=str,
+    )
     return global_parser
 
 
