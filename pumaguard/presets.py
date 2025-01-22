@@ -504,7 +504,7 @@ class Presets():
                 'stable/angle 1/Lion',
                 'stable/angle 2/Lion',
                 'stable/angle 3/Lion',
-                'stable/angle 4/lion',
+                'stable/angle 4/Lion',
             ]
             self.no_lion_directories = [
                 'no_lion',
@@ -512,7 +512,7 @@ class Presets():
                 'stable/angle 1/No Lion',
                 'stable/angle 2/No Lion',
                 'stable/angle 3/No Lion',
-                'stable/angle 4/no lion',
+                'stable/angle 4/No Lion',
             ]
         elif self.notebook_number == 8:
             self.image_dimensions = (512, 512)  # height, width
@@ -542,7 +542,7 @@ class Presets():
                 'stable/angle 1/Lion',
                 'stable/angle 2/Lion',
                 'stable/angle 3/Lion',
-                'stable/angle 4/lion',
+                'stable/angle 4/Lion',
             ]
             self.no_lion_directories = [
                 'no_lion',
@@ -550,7 +550,7 @@ class Presets():
                 'stable/angle 1/No Lion',
                 'stable/angle 2/No Lion',
                 'stable/angle 3/No Lion',
-                'stable/angle 4/no lion',
+                'stable/angle 4/No Lion',
             ]
         else:
             raise ValueError(f'unknown notebook {self.notebook_number}')
