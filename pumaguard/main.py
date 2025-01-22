@@ -49,6 +49,11 @@ def create_global_parser() -> argparse.ArgumentParser:
         type=int,
         default=1,
     )
+    global_parser.add_argument(
+        '--model-path',
+        help='Where the models are stored',
+        type=str,
+    )
     return global_parser
 
 

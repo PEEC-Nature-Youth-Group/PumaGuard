@@ -137,10 +137,6 @@ def configure_subparser(parser: argparse.ArgumentParser):
         type=str,
     )
     parser.add_argument(
-        '--model-path',
-        help='Where to load models from.',
-    )
-    parser.add_argument(
         '--no-load-previous-session',
         help='Do not load previous training session from file',
         action='store_true',

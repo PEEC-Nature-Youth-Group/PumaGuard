@@ -45,11 +45,6 @@ def configure_subparser(parser: argparse.ArgumentParser):
     Parses the command line arguments provided to the script.
     """
     parser.add_argument(
-        '--model-path',
-        help='Where the models are stored',
-        type=str,
-    )
-    parser.add_argument(
         'FOLDER',
         help='The folder(s) to watch. Can be used multiple times.',
         nargs='*',
