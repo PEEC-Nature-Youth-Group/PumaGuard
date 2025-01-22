@@ -25,10 +25,6 @@ def configure_subparser(parser: argparse.ArgumentParser):
     Parse the commandline
     """
     parser.add_argument(
-        '--data-path',
-        help='Where the image data are stored',
-    )
-    parser.add_argument(
         'image',
         metavar='FILE',
         help='An image to classify.',
