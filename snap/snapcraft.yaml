@@ -74,6 +74,7 @@ parts:
       chroot_local_user=YES
       listen=YES
       listen_ipv6=NO
+      chroot_local_user=YES
       EOF
       install --mode 0644 vsftpd.conf ${CRAFT_PART_INSTALL}/etc/vsftpd.conf
     stage-packages:
