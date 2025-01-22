@@ -24,8 +24,6 @@ class BasePreset():
     Base class for Presets
     """
 
-    _color_mode: str = 'undefined'
-    _epochs = 300
     _image_dimension: Tuple[int, int] = (128, 128)
     _lion_directories: list[str] = []
     _load_history_from_file = True
@@ -39,6 +37,8 @@ class BasePreset():
     def __init__(self):
         self.alpha = 1e-4
         self.batch_size = 16
+        self.color_mode = 'rgb'
+        self.epochs = 300
         self.base_data_directory = os.path.join(
             os.path.dirname(__file__), '../data')
         self.base_output_directory = os.path.join(
@@ -158,6 +158,8 @@ class BasePreset():
         """
         Set the color_mode.
         """
+        if not isinstance(mode, str):
+            raise TypeError('mode must be a string')
         if mode not in ['rgb', 'grayscale']:
             raise ValueError("color_mode must be either 'rgb' or 'grayscale'")
         self._color_mode = mode
@@ -249,6 +251,8 @@ class BasePreset():
         """
         Set the number of epochs.
         """
+        if not isinstance(epochs, int):
+            raise TypeError('epochs must be int')
         if epochs < 1:
             raise ValueError('epochs needs to be a positive integer')
         self._epochs = epochs
