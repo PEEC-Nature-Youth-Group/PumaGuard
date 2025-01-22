@@ -689,6 +689,14 @@ class Presets():
             raise ValueError('epochs needs to be a positive integer')
         self._epochs = epochs
 
+    def relative_paths(self, base: str, paths: list[str]) -> list[str]:
+        """
+        The directories relative to a base path.
+        """
+        return [
+            os.path.relpath(path, start=base)for path in paths
+        ]
+
     @property
     def lion_directories(self) -> list[str]:
         """
@@ -732,3 +740,26 @@ class Presets():
         Set the model function.
         """
         self._model_function = func
+
+    def __iter__(self):
+        """
+        Serialize this class.
+        """
+        yield from {
+            'alpha': self.alpha,
+            'base-data-directory': self.base_data_directory,
+            'batch-size': self.batch_size,
+            'color-mode': self.color_mode,
+            'epochs': self.epochs,
+            'image-dimensions': self.image_dimensions,
+            'lion-directories': self.relative_paths(
+                self.base_data_directory,
+                self.lion_directories),
+            'model-function-name': self.model_function.__name__,
+            'model-version': self.model_version,
+            'no-lion-directories': self.relative_paths(
+                self.base_data_directory,
+                self.no_lion_directories),
+            'notebook': self.notebook_number,
+            'with-augmentation': self.with_augmentation,
+        }.items()

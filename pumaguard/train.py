@@ -226,14 +226,22 @@ def main(options: argparse.Namespace):
         presets.base_output_directory = options.model_output
 
     if options.dump_settings:
-        print(yaml.safe_dump(presets))
+        print('# PumaGuard settings')
+        print(yaml.safe_dump(
+            dict(presets),
+            # default_style='|',
+            # canonical=False,
+            indent=2,
+        ))
         sys.exit(0)
+
+    with open(presets.settings_file, 'w', encoding='utf-8') as fd:
+        fd.write(yaml.safe_dump(dict(presets)))
 
     work_directory = tempfile.mkdtemp(prefix='pumaguard-work-')
     organize_data(presets=presets, work_directory=work_directory)
 
     logger.info('using color_mode %s', presets.color_mode)
-
     logger.info('image dimensions %s', presets.image_dimensions)
 
     training_dataset, validation_dataset = create_datasets(
