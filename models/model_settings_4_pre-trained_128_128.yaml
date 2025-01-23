@@ -9,7 +9,7 @@ image-dimensions:
 - 128
 lion-directories:
 - lion_1
-model-function: pre_trained_model
+model-function: pretrained
 model-version: pre-trained
 no-lion-directories:
 - no_lion_1

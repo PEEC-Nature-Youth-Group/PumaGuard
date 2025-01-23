@@ -7,6 +7,9 @@ import os
 import tempfile
 import unittest
 
+from pumaguard.presets import (
+    BasePreset,
+)
 from pumaguard.utils import (
     Model,
     get_md5,
@@ -57,6 +60,8 @@ class TestModel(unittest.TestCase):
         """
         Test singleton property.
         """
-        m1 = Model(1)
-        m2 = Model(2)
+        presets = BasePreset()
+        presets.notebook_number = 1
+        m1 = Model(presets)
+        m2 = Model(presets)
         self.assertEqual(m1, m2)

@@ -14,7 +14,7 @@ lion-directories:
 - stable/angle 2/Lion
 - stable/angle 3/Lion
 - stable/angle 4/Lion
-model-function: pre_trained_model
+model-function: pretrained
 model-version: pre-trained
 no-lion-directories:
 - no_lion

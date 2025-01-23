@@ -46,7 +46,7 @@ isort:
 
 .PHONY: mypy
 mypy: install
-	poetry run mypy --install-types --non-interactive pumaguard
+	poetry run mypy --install-types --non-interactive --check-untyped-defs pumaguard
 
 .PHONY: bashate
 bashate: install
@@ -71,7 +71,7 @@ FUNCTIONAL_FILES = \
 
 .PHONY: run-functional
 run-functional:
-	$(EXE) classify --notebook 6 $(FUNCTIONAL_FILES) | tee functional-test.output
+	$(EXE) classify --settings models/model_settings_6_pre-trained_512_512.yaml $(FUNCTIONAL_FILES) | tee functional-test.output
 
 .PHONY: check-functional
 check-functional:
@@ -121,7 +121,7 @@ verify:
 
 .PHONY: train
 train:
-	pumaguard train --epochs 1 --model-output . --notebook 9 --data-path data --lions data/stable/angle\ 1/Lion --no-lions data/stable/angle\ 1/No\ lion/
+	pumaguard train --epochs 1 --model-output . --settings models/model_settings_9_light-3_512_512.yaml --data-path data --lions data/stable/angle\ 1/Lion --no-lions data/stable/angle\ 1/No\ lion/
 
 .PHONY: pre-commit
 pre-commit: lint docs test

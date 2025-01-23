@@ -13,7 +13,7 @@ from pumaguard.server import (
     FolderObserver,
 )
 from pumaguard.utils import (
-    Presets,
+    BasePreset,
 )
 
 
@@ -25,7 +25,8 @@ class TestFolderObserver(unittest.TestCase):
     def setUp(self):
         self.folder = 'test_folder'
         self.notebook = 1
-        self.presets = Presets(self.notebook)
+        self.presets = BasePreset()
+        self.presets.notebook_number = self.notebook
         self.observer = FolderObserver(self.folder, 'inotify', self.presets)
 
     @patch('pumaguard.server.subprocess.Popen')
@@ -90,7 +91,8 @@ class TestFolderManager(unittest.TestCase):
 
     def setUp(self):
         self.notebook = 1
-        self.presets = Presets(self.notebook)
+        self.presets = BasePreset()
+        self.presets.notebook_number = self.notebook
         self.manager = FolderManager(self.presets)
 
     @patch('pumaguard.server.FolderObserver')

@@ -3,6 +3,7 @@ The presets for each model.
 """
 
 import copy
+import logging
 import os
 from typing import (
     Callable,
@@ -12,45 +13,44 @@ from typing import (
 import yaml
 
 from pumaguard.models import (
-    light,
-    light_2,
-    light_3,
-    pretrained,
+    __MODEL_FUNCTIONS__,
 )
 
+logger = logging.getLogger('PumaGuard')
 
+
+# pylint: disable=too-many-public-methods
 class BasePreset():
     """
     Base class for Presets
     """
 
-    _image_dimension: Tuple[int, int] = (128, 128)
-    _lion_directories: list[str] = []
-    _load_history_from_file = True
-    _load_model_from_file = True
-    _model_function: Callable
-    _model_version = 'undefined'
-    _no_lion_directories: list[str] = []
-    _notebook_number = -1
-    _with_augmentation = False
-
     def __init__(self):
-        self.alpha = 1e-4
-        self.batch_size = 16
-        self.color_mode = 'rgb'
-        self.epochs = 300
+        self.alpha = 1e-5
         self.base_data_directory = os.path.join(
             os.path.dirname(__file__), '../data')
         self.base_output_directory = os.path.join(
             os.path.dirname(__file__), '../models')
+        self.batch_size = 16
+        self.color_mode = 'rgb'
+        self.epochs = 300
+        self.image_dimensions: tuple[int, int] = (128, 128)
+        self.lion_directories: list[str] = []
+        self.load_history_from_file = True
+        self.load_model_from_file = True
+        self.model_function_name = 'pretrained'
+        self.model_version = 'undefined'
+        self.no_lion_directories: list[str] = []
+        self.with_augmentation = False
 
     def load(self, filename: str):
         """
         Load settings from YAML file.
         """
+        logger.info('loading settings from %s', filename)
         with open(filename, encoding='utf-8') as fd:
             settings = yaml.safe_load(fd)
-        self.notebook_number = settings.get('notebook-number', 1)
+        self.notebook_number = settings.get('notebook', 1)
         self.epochs = settings.get('epochs', 1)
         dimensions = settings.get('image-dimensions', [0, 0])
         if not isinstance(dimensions, list) or \
@@ -60,6 +60,8 @@ class BasePreset():
                 'expected image-dimensions to be a list of two integers')
         self.image_dimensions = tuple(dimensions)
         self.model_version = settings.get('model-version', 'undefined')
+        self.model_function_name = settings.get(
+            'model-function', 'undefined')
         self.base_data_directory = settings.get(
             'base-data-directory', 'undefined')
         self.base_output_directory = settings.get(
@@ -78,12 +80,44 @@ class BasePreset():
         self.with_augmentation = settings.get('with-augmentation', False)
         self.batch_size = settings.get('batch-size', 1)
         self.alpha = float(settings.get('alpha', 1e-5))
+        self.color_mode = settings.get('color-mode', 'rgb')
 
     def save(self):
         """
         Write presets to standard output.
         """
         yaml.dump(self)
+
+    def __iter__(self):
+        """
+        Serialize this class.
+        """
+        yield from {
+            'alpha': self.alpha,
+            'base-data-directory': self.base_data_directory,
+            'batch-size': self.batch_size,
+            'color-mode': self.color_mode,
+            'epochs': self.epochs,
+            'image-dimensions': self.image_dimensions,
+            'lion-directories': self.relative_paths(
+                self.base_data_directory,
+                self.lion_directories),
+            'model-function': self.model_function_name,
+            'model-version': self.model_version,
+            'no-lion-directories': self.relative_paths(
+                self.base_data_directory,
+                self.no_lion_directories),
+            'notebook': self.notebook_number,
+            'with-augmentation': self.with_augmentation,
+        }.items()
+
+    def relative_paths(self, base: str, paths: list[str]) -> list[str]:
+        """
+        The directories relative to a base path.
+        """
+        return [
+            os.path.relpath(path, start=base)for path in paths
+        ]
 
     @property
     def notebook_number(self) -> int:
@@ -169,7 +203,7 @@ class BasePreset():
         """
         Get the image dimensions.
         """
-        return self._image_dimension
+        return self._image_dimensions
 
     @image_dimensions.setter
     def image_dimensions(self, dimensions: Tuple[int, int]):
@@ -182,6 +216,7 @@ class BasePreset():
             raise TypeError('image dimensions needs to be a tuple')
         if not all(x > 0 for x in dimensions):
             raise ValueError('image dimensions need to be positive')
+        self._image_dimensions = copy.deepcopy(dimensions)
 
     @property
     def base_data_directory(self) -> str:
@@ -292,6 +327,8 @@ class BasePreset():
         """
         Get the model function.
         """
+        if not hasattr(self, '_model_function'):
+            raise ValueError('missing model_function')
         return self._model_function
 
     @model_function.setter
@@ -300,6 +337,23 @@ class BasePreset():
         Set the model function.
         """
         self._model_function = func
+
+    @property
+    def model_function_name(self) -> str:
+        """
+        Get the model function name.
+        """
+        return self._model_function_name
+
+    @model_function_name.setter
+    def model_function_name(self, name: str):
+        """
+        Set the model function name.
+        """
+        if name not in __MODEL_FUNCTIONS__:
+            raise ValueError(f'unknown model function name {name}')
+        self._model_function_name = name
+        self._model_function = __MODEL_FUNCTIONS__[name]
 
     @property
     def with_augmentation(self) -> bool:
@@ -350,418 +404,3 @@ class BasePreset():
         if alpha <= 0:
             raise ValueError('the stepsize needs to be positive')
         self._alpha = alpha
-
-
-class Preset01(BasePreset):
-    """
-    Preset 01
-    """
-
-    def __init__(self):
-        super().__init__()
-        self.notebook_number = 1
-        self.epochs = 2_400
-        self.image_dimensions = (128, 128)  # height, width
-        self.with_augmentation = False
-        self.batch_size = 16
-        self.model_version = "light"
-        self.model_function = light.light_model
-        self.color_mode = 'grayscale'
-        self.alpha = 1e-5
-        self.lion_directories = [
-            'lion',
-        ]
-        self.no_lion_directories = [
-            'no_lion',
-        ]
-
-
-class Presets():
-    """
-    Presets for training.
-    """
-
-    _notebook_number = -1
-    _color_mode: str = 'undefined'
-    _load_model_from_file = True
-    _load_history_from_file = True
-    _epochs = 300
-    _model_function: Callable
-    _base_data_directory: str = 'undefined'
-    _base_output_directory: str = 'undefined'
-    _lion_directories: list[str] = []
-    _no_lion_directories: list[str] = []
-
-    def __init__(self, notebook_number: int = 1):
-        self.base_data_directory = os.path.realpath(
-            os.path.join(
-                os.path.dirname(__file__), '../data'))
-        self.base_output_directory = os.path.join(
-            os.path.dirname(__file__), '../models')
-
-        self.notebook_number = notebook_number
-
-        # Default step size.
-        self.alpha = 1e-5
-
-        # No changes below this line.
-        if self.notebook_number == 1:
-            self.epochs = 2_400
-            self.image_dimensions = (128, 128)  # height, width
-            self.with_augmentation = False
-            self.batch_size = 16
-            self.model_version = "light"
-            self.model_function = light.light_model
-            self.color_mode = 'grayscale'
-            self.alpha = 1e-5
-            self.lion_directories = [
-                'lion',
-            ]
-            self.no_lion_directories = [
-                'no_lion',
-            ]
-        elif self.notebook_number == 2:
-            self.epochs = 1_200
-            self.image_dimensions = (256, 256)  # height, width
-            self.with_augmentation = False
-            self.batch_size = 32
-            self.model_version = "light"
-            self.model_function = light.light_model
-            self.color_mode = 'grayscale'
-            self.lion_directories = [
-                # f'{base_data_directory}/lion_1',
-                'lion',
-            ]
-            self.no_lion_directories = [
-                # f'{base_data_directory}/no_lion_1',
-                'no_lion',
-            ]
-        elif self.notebook_number == 3:
-            self.epochs = 900
-            self.image_dimensions = (256, 256)  # height, width
-            self.with_augmentation = True
-            self.batch_size = 32
-            self.model_version = "light"
-            self.model_function = light.light_model
-            self.color_mode = 'grayscale'
-            self.lion_directories = [
-                'lion',
-            ]
-            self.no_lion_directories = [
-                'no_lion',
-            ]
-        elif self.notebook_number == 4:
-            self.image_dimensions = (128, 128)  # height, width
-            self.with_augmentation = False
-            self.batch_size = 16
-            self.model_version = "pre-trained"
-            self.model_function = pretrained.pre_trained_model
-            self.color_mode = 'rgb'
-            self.lion_directories = [
-                'lion_1',
-            ]
-            self.no_lion_directories = [
-                'no_lion_1',
-            ]
-        elif self.notebook_number == 5:
-            self.image_dimensions = (128, 128)  # height, width
-            self.with_augmentation = False
-            self.batch_size = 16
-            self.model_version = "pre-trained"
-            self.model_function = pretrained.pre_trained_model
-            self.color_mode = 'rgb'
-            self.lion_directories = [
-                'lion',
-            ]
-            self.no_lion_directories = [
-                'no_lion',
-            ]
-        elif self.notebook_number == 6:
-            self.image_dimensions = (512, 512)  # height, width
-            self.with_augmentation = False
-            self.batch_size = 16
-            self.model_version = "pre-trained"
-            self.model_function = pretrained.pre_trained_model
-            self.color_mode = 'rgb'
-            self.lion_directories = [
-                'lion',
-                'cougar',
-            ]
-            self.no_lion_directories = [
-                'no_lion',
-                'nocougar',
-            ]
-        elif notebook_number == 7:
-            self.image_dimensions = (512, 512)  # height, width
-            self.with_augmentation = False
-            self.batch_size = 16
-            self.model_version = "pre-trained"
-            self.model_function = pretrained.pre_trained_model
-            self.color_mode = 'rgb'
-            self.lion_directories = [
-                'lion',
-                'cougar',
-                'stable/angle 1/Lion',
-                'stable/angle 2/Lion',
-                'stable/angle 3/Lion',
-                'stable/angle 4/Lion',
-            ]
-            self.no_lion_directories = [
-                'no_lion',
-                'nocougar',
-                'stable/angle 1/No Lion',
-                'stable/angle 2/No Lion',
-                'stable/angle 3/No Lion',
-                'stable/angle 4/No Lion',
-            ]
-        elif self.notebook_number == 8:
-            self.image_dimensions = (512, 512)  # height, width
-            self.with_augmentation = False
-            self.batch_size = 16
-            self.model_version = "light-2"
-            self.model_function = light_2.light_model_2
-            self.color_mode = 'grayscale'
-            self.lion_directories = [
-                'lion',
-                'cougar',
-            ]
-            self.no_lion_directories = [
-                'no_lion',
-                'nocougar',
-            ]
-        elif self.notebook_number == 9:
-            self.image_dimensions = (512, 512)  # height, width
-            self.with_augmentation = False
-            self.batch_size = 16
-            self.model_version = "light-3"
-            self.model_function = light_3.light_model_3
-            self.color_mode = 'rgb'
-            self.lion_directories = [
-                'lion',
-                'cougar',
-                'stable/angle 1/Lion',
-                'stable/angle 2/Lion',
-                'stable/angle 3/Lion',
-                'stable/angle 4/Lion',
-            ]
-            self.no_lion_directories = [
-                'no_lion',
-                'nocougar',
-                'stable/angle 1/No Lion',
-                'stable/angle 2/No Lion',
-                'stable/angle 3/No Lion',
-                'stable/angle 4/No Lion',
-            ]
-        else:
-            raise ValueError(f'unknown notebook {self.notebook_number}')
-
-    @property
-    def notebook_number(self) -> int:
-        """
-        Get notebook number.
-        """
-        return self._notebook_number
-
-    @notebook_number.setter
-    def notebook_number(self, notebook: int):
-        """
-        Set the notebook number.
-        """
-        if notebook < 1:
-            raise ValueError('notebook can not be zero '
-                             f'or negative ({notebook})')
-        self._notebook_number = notebook
-
-    @property
-    def model_file(self):
-        """
-        Get the location of the model file.
-        """
-        return os.path.realpath(
-            f'{self.base_output_directory}/'
-            f'model_weights_{self.notebook_number}_{self.model_version}'
-            f'_{self.image_dimensions[0]}_{self.image_dimensions[1]}.keras')
-
-    @property
-    def history_file(self):
-        """
-        Get the history file.
-        """
-        return os.path.realpath(
-            f'{self.base_output_directory}/'
-            f'model_history_{self.notebook_number}_{self.model_version}'
-            f'_{self.image_dimensions[0]}_{self.image_dimensions[1]}.pickle')
-
-    @property
-    def settings_file(self):
-        """
-        Get the settings file.
-        """
-        return os.path.realpath(
-            f'{self.base_output_directory}/'
-            f'model_settings_{self.notebook_number}_{self.model_version}'
-            f'_{self.image_dimensions[0]}_{self.image_dimensions[1]}.yaml')
-
-    @property
-    def color_mode(self) -> str:
-        """
-        Get the color_mode.
-        """
-        return self._color_mode
-
-    @color_mode.setter
-    def color_mode(self, mode: str):
-        """
-        Set the color_mode.
-        """
-        if mode not in ['rgb', 'grayscale']:
-            raise ValueError("color_mode must be either 'rgb' or 'grayscale'")
-        self._color_mode = mode
-
-    @property
-    def base_data_directory(self) -> str:
-        """
-        Get the base_data_directory.
-        """
-        return self._base_data_directory
-
-    @base_data_directory.setter
-    def base_data_directory(self, path: str):
-        """
-        Set the base_data_directory.
-        """
-        self._base_data_directory = path
-
-    @property
-    def base_output_directory(self) -> str:
-        """
-        Get the base_output_directory.
-        """
-        return self._base_output_directory
-
-    @base_output_directory.setter
-    def base_output_directory(self, path: str):
-        """
-        Set the base_output_directory.
-        """
-        self._base_output_directory = path
-
-    @property
-    def load_history_from_file(self) -> bool:
-        """
-        Load history from file.
-        """
-        return self._load_history_from_file
-
-    @load_history_from_file.setter
-    def load_history_from_file(self, load_history: bool):
-        """
-        Load history from file.
-        """
-        self._load_history_from_file = load_history
-
-    @property
-    def load_model_from_file(self) -> bool:
-        """
-        Load model from file.
-        """
-        return self._load_model_from_file
-
-    @load_model_from_file.setter
-    def load_model_from_file(self, load_model: bool):
-        """
-        Load model from file.
-        """
-        self._load_model_from_file = load_model
-
-    @property
-    def epochs(self) -> int:
-        """
-        The number of epochs.
-        """
-        return self._epochs
-
-    @epochs.setter
-    def epochs(self, epochs: int):
-        """
-        Set the number of epochs.
-        """
-        if epochs < 1:
-            raise ValueError('epochs needs to be a positive integer')
-        self._epochs = epochs
-
-    def relative_paths(self, base: str, paths: list[str]) -> list[str]:
-        """
-        The directories relative to a base path.
-        """
-        return [
-            os.path.relpath(path, start=base)for path in paths
-        ]
-
-    @property
-    def lion_directories(self) -> list[str]:
-        """
-        The directories containing lion images.
-        """
-        return [os.path.realpath(os.path.join(
-            self.base_data_directory, lion))
-            for lion in self._lion_directories]
-
-    @lion_directories.setter
-    def lion_directories(self, lions: list[str]):
-        """
-        Set the lion directories.
-        """
-        self._lion_directories = copy.deepcopy(lions)
-
-    @property
-    def no_lion_directories(self) -> list[str]:
-        """
-        The directories containing no_lion images.
-        """
-        return [os.path.join(self.base_data_directory, no_lion)
-                for no_lion in self._no_lion_directories]
-
-    @no_lion_directories.setter
-    def no_lion_directories(self, no_lions: list[str]):
-        """
-        Set the no_lion directories.
-        """
-        self._no_lion_directories = copy.deepcopy(no_lions)
-
-    @property
-    def model_function(self) -> Callable:
-        """
-        Get the model function.
-        """
-        return self._model_function
-
-    @model_function.setter
-    def model_function(self, func: Callable):
-        """
-        Set the model function.
-        """
-        self._model_function = func
-
-    def __iter__(self):
-        """
-        Serialize this class.
-        """
-        yield from {
-            'alpha': self.alpha,
-            'base-data-directory': self.base_data_directory,
-            'batch-size': self.batch_size,
-            'color-mode': self.color_mode,
-            'epochs': self.epochs,
-            'image-dimensions': self.image_dimensions,
-            'lion-directories': self.relative_paths(
-                self.base_data_directory,
-                self.lion_directories),
-            'model-function-name': self.model_function.__name__,
-            'model-version': self.model_version,
-            'no-lion-directories': self.relative_paths(
-                self.base_data_directory,
-                self.no_lion_directories),
-            'notebook': self.notebook_number,
-            'with-augmentation': self.with_augmentation,
-        }.items()
