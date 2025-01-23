@@ -38,9 +38,6 @@ def main(options: argparse.Namespace):
     Main entry point
     """
 
-    if options.debug:
-        logger.setLevel(logging.DEBUG)
-
     presets = Presets(options.notebook)
 
     model_path = options.model_path if options.model_path \

@@ -76,6 +76,7 @@ def main():
     Main entry point.
     """
     logging.basicConfig(level=logging.INFO)
+    logger = logging.getLogger('PumaGuard')
 
     global_args_parser = create_global_parser()
     parser = argparse.ArgumentParser(
@@ -119,6 +120,9 @@ def main():
     ))
 
     args = parser.parse_args()
+
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
 
     if args.completion:
         print_bash_completion(command=args.command, shell=args.completion)
