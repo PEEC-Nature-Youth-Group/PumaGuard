@@ -14,6 +14,9 @@ from pumaguard import (
     train,
     verify,
 )
+from pumaguard.presets import (
+    Presets,
+)
 from pumaguard.utils import (
     print_bash_completion,
 )
@@ -23,8 +26,12 @@ def create_global_parser() -> argparse.ArgumentParser:
     """
     Shared arguments.
     """
-    data_path = os.getenv('PUMAGUARD_DATA_PATH', default=None)
-    model_path = os.getenv('PUMAGUARD_MODEL_PATH', default=None)
+    data_path = os.getenv(
+        'PUMAGUARD_DATA_PATH',
+        default=os.path.join(os.path.dirname(__file__), '../data'))
+    model_path = os.getenv(
+        'PUMAGUARD_MODEL_PATH',
+        default=os.path.join(os.path.dirname(__file__), '../models'))
 
     global_parser = argparse.ArgumentParser(add_help=False)
     global_parser.add_argument(
@@ -57,16 +64,14 @@ def create_global_parser() -> argparse.ArgumentParser:
         '--model-path',
         help='Where the models are stored (default = %(default)s)',
         type=str,
-        default=model_path if model_path is not None else os.path.join(
-            os.path.dirname(__file__), '../models'),
+        default=model_path,
     )
     global_parser.add_argument(
         '--data-path',
         help=('Where the image data for training are '
               'stored (default = %(default)s)'),
         type=str,
-        default=data_path if data_path is not None else os.path.join(
-            os.path.dirname(__file__), '../data'),
+        default=data_path,
     )
     return global_parser
 
@@ -128,13 +133,34 @@ def main():
         print_bash_completion(command=args.command, shell=args.completion)
         sys.exit(0)
 
+    presets = Presets(args.notebook)
+
+    model_path = args.model_path if args.model_path \
+        else os.getenv('PUMAGUARD_MODEL_PATH', default=None)
+    if model_path is not None:
+        logger.debug('setting model path to %s', model_path)
+        presets.base_output_directory = model_path
+
+    data_path = args.data_path if args.data_path \
+        else os.getenv('PUMAGUARD_DATA_DIRECTORY', default=None)
+    if data_path is not None:
+        logger.debug('setting data path to %s', data_path)
+        presets.base_data_directory = data_path
+
+    try:
+        logger.info('loading model from %s', presets.model_file)
+        os.stat(presets.model_file)
+    except FileNotFoundError:
+        logger.error('could not open model file %s', presets.model_file)
+        raise
+
     if args.command == 'train':
-        train.main(args)
+        train.main(args, presets)
     elif args.command == 'server':
-        server.main(args)
+        server.main(args, presets)
     elif args.command == 'classify':
-        classify.main(args)
+        classify.main(args, presets)
     elif args.command == 'verify':
-        verify.main(args)
+        verify.main(presets)
     else:
         parser.print_help()

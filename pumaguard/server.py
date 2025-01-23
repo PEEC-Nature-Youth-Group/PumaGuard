@@ -175,17 +175,10 @@ class FolderManager:
             observer.stop()
 
 
-def main(options: argparse.Namespace):
+def main(options: argparse.Namespace, presets: Presets):
     """
     Main entry point.
     """
-
-    presets = Presets(options.notebook)
-    model_path = options.model_path if options.model_path \
-        else os.getenv('PUMAGUARD_MODEL_PATH', default=None)
-    if model_path is not None:
-        logger.debug('setting model path to %s', model_path)
-        presets.base_output_directory = model_path
 
     manager = FolderManager(presets)
     for folder in options.FOLDER:

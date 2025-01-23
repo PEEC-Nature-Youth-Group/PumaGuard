@@ -119,5 +119,9 @@ verify:
 	pumaguard verify --data-path data --notebook 6 | tee verify.output
 	if [ "$$(awk '/accuracy/ {print $$3}' verify.output)" != 96.60% ]; then false; fi
 
+.PHONY: train
+train:
+	pumaguard train --epochs 1 --model-output . --notebook 9 --data-path data --lions data/stable/angle\ 1/Lion --no-lions data/stable/angle\ 1/No\ lion/
+
 .PHONY: pre-commit
 pre-commit: lint docs test
