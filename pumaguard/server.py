@@ -1,28 +1,7 @@
 """
 Pumaguard server watches folders for new images and returns the probability
 that the new images show pumas.
-
-.. code-block:: shell
-
-    usage: pumaguard-server [-h] [--debug] [--notebook NOTEBOOK] [--model-path MODEL_PATH] [--completion {bash}] [--watch-method {inotify,os}] [FOLDER ...]
-
-    positional arguments:
-      FOLDER                The folder(s) to watch. Can be used multiple times.
-
-    options:
-      -h, --help            show this help message and exit
-      --debug               Debug the application
-      --notebook NOTEBOOK   The notebook number
-      --model-path MODEL_PATH
-                            Where the models are stored
-      --completion {bash}   Print out bash completion script.
-      --watch-method {inotify,os}
-                            What implementation (method) to use for watching
-                            the folder. Linux on baremetal supports both
-                            methods. Linux in WSL supports inotify on folders
-                            using ext4 but only os on folders that are mounted
-                            from the Windows host. Defaults to "os"
-"""  # pylint: disable=line-too-long
+"""
 
 import argparse
 import logging
@@ -31,9 +10,11 @@ import subprocess
 import threading
 import time
 
+from pumaguard.presets import (
+    BasePreset,
+)
 from pumaguard.utils import (
     Model,
-    Presets,
     classify_image,
 )
 
@@ -66,7 +47,7 @@ class FolderObserver:
     FolderObserver watches a folder for new files.
     """
 
-    def __init__(self, folder: str, method: str, presets: Presets):
+    def __init__(self, folder: str, method: str, presets: BasePreset):
         self.folder = folder
         self.method = method
         self.presets = presets
@@ -99,6 +80,9 @@ class FolderObserver:
                 encoding='utf-8',
                 text=True,
             ) as process:
+                if process.stdout is None:
+                    raise ValueError("Failed to initialize process.stdout")
+
                 for line in process.stdout:
                     if self._stop_event.is_set():
                         process.terminate()
@@ -143,7 +127,7 @@ class FolderManager:
     FolderManager manages the folders to observe.
     """
 
-    def __init__(self, presets: Presets):
+    def __init__(self, presets: BasePreset):
         self.presets = presets
         self.observers: list[FolderObserver] = []
 
@@ -175,7 +159,7 @@ class FolderManager:
             observer.stop()
 
 
-def main(options: argparse.Namespace, presets: Presets):
+def main(options: argparse.Namespace, presets: BasePreset):
     """
     Main entry point.
     """

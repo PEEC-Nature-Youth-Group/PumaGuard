@@ -9,7 +9,7 @@ image-dimensions:
 - 128
 lion-directories:
 - lion
-model-function: light_model
+model-function: light-model
 model-version: light
 no-lion-directories:
 - no_lion

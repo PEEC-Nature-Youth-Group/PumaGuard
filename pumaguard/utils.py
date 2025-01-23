@@ -16,20 +16,8 @@ from PIL import (
     Image,
 )
 
-from pumaguard.models.light import (
-    light_model,
-)
-from pumaguard.models.light_2 import (
-    light_model_2,
-)
-from pumaguard.models.light_3 import (
-    light_model_3,
-)
-from pumaguard.models.pretrained import (
-    pre_trained_model,
-)
 from pumaguard.presets import (
-    Presets,
+    BasePreset,
 )
 
 logger = logging.getLogger('PumaGuard')
@@ -93,7 +81,7 @@ def copy_images(work_directory, lion_images, no_lion_images):
     print('Copied all images')
 
 
-def organize_data(presets: Presets, work_directory: str):
+def organize_data(presets: BasePreset, work_directory: str):
     """
     Organizes the data and splits it into training and validation datasets.
     """
@@ -131,7 +119,7 @@ def image_augmentation(image, with_augmentation: bool, augmentation_layers):
     return image
 
 
-def create_datasets(presets: Presets, work_directory: str, color_mode: str):
+def create_datasets(presets: BasePreset, work_directory: str, color_mode: str):
     """
     Create the training and validation datasets.
     """
@@ -203,7 +191,7 @@ def get_sha256(filepath: str) -> str:
     return hasher.hexdigest()
 
 
-def create_model(presets: Presets,
+def create_model(presets: BasePreset,
                  distribution_strategy: tf.distribute.Strategy) \
         -> keras.src.Model:
     """
@@ -223,21 +211,8 @@ def create_model(presets: Presets,
                 logger.info('not loading previous weights')
             else:
                 logger.info('could not find model; creating new model')
-            if presets.model_version == "pre-trained":
-                logger.debug('Creating new Xception model')
-                model = pre_trained_model(presets.image_dimensions)
-            elif presets.model_version == "light":
-                logger.info('Creating new light model')
-                model = light_model(presets.image_dimensions)
-            elif presets.model_version == 'light-2':
-                logger.debug('Creating new light-2 model')
-                model = light_model_2(presets.image_dimensions)
-            elif presets.model_version == 'light-3':
-                logger.debug('Creating new light-3 model')
-                model = light_model_3(presets.image_dimensions)
-            else:
-                raise ValueError(
-                    f'unknown model version {presets.model_version}')
+            logger.debug('creating new %s model', presets.model_function_name)
+            model = presets.model_function(presets.image_dimensions)
 
         logger.debug('Compiling model')
         model.compile(
@@ -259,7 +234,7 @@ class Model():
     _instance = None
     _initialized = False
 
-    def __new__(cls, presets: Presets):
+    def __new__(cls, presets: BasePreset):
         """
         Create a new model.
         """
@@ -267,7 +242,7 @@ class Model():
             cls._instance = super(Model, cls).__new__(cls)
         return cls._instance
 
-    def __init__(self, presets: Presets):
+    def __init__(self, presets: BasePreset):
         if not self._initialized:
             self._presets = presets
             self._distribution_strategy = initialize_tensorflow()
@@ -282,44 +257,14 @@ class Model():
         return self._model
 
 
-def classify_directory(notebook: int, workdir: str) -> list[float]:
-    """
-    Classify images in a workdir and return the probabilities.
-    """
-    presets = Presets(notebook)
-    model = Model(presets).get_model()
-    if presets.model_version == 'pre-trained':
-        color_model = 'rgb'
-    else:
-        color_model = 'grayscale'
-    try:
-        logger.info('creating dataset')
-        verification_dataset = \
-            keras.preprocessing.image_dataset_from_directory(
-                workdir,
-                label_mode=None,
-                batch_size=presets.batch_size,
-                image_size=presets.image_dimensions,
-                color_mode=color_model,
-            )
-        logger.info('classifying images')
-        for images in verification_dataset:
-            logger.info('working on batch')
-            predictions = model.predict(images)
-        return predictions[0].tolist()
-    except ValueError as e:
-        logger.error('unable to process file: %s', e)
-    return []
-
-
-def classify_image(presets: Presets, model: keras.Model,
+def classify_image(presets: BasePreset, model: keras.Model,
                    image_path: str) -> float:
     """
     Classify the image and print out the result.
 
     Args:
-        presets (Presets): An instance of the Presets class containing image
-        processing settings.
+        presets (BasePreset): An instance of the BasePreset class containing
+        image processing settings.
 
         model (keras.Model): A pre-trained Keras model used for image
         classification.

@@ -14,7 +14,7 @@ lion-directories:
 - stable/angle 2/Lion
 - stable/angle 3/Lion
 - stable/angle 4/Lion
-model-function: light_model_3
+model-function: light-3-model
 model-version: light-3
 no-lion-directories:
 - no_lion

@@ -15,7 +15,7 @@ from pumaguard import (
     verify,
 )
 from pumaguard.presets import (
-    Presets,
+    BasePreset,
 )
 from pumaguard.utils import (
     print_bash_completion,
@@ -53,12 +53,6 @@ def create_global_parser() -> argparse.ArgumentParser:
         '--completion',
         choices=['bash'],
         help='Print out bash completion script.',
-    )
-    global_parser.add_argument(
-        '--notebook',
-        help='The notebook number',
-        type=int,
-        default=1,
     )
     global_parser.add_argument(
         '--model-path',
@@ -133,7 +127,8 @@ def main():
         print_bash_completion(command=args.command, shell=args.completion)
         sys.exit(0)
 
-    presets = Presets(args.notebook)
+    presets = BasePreset()
+    presets.load(args.settings)
 
     model_path = args.model_path if args.model_path \
         else os.getenv('PUMAGUARD_MODEL_PATH', default=None)
