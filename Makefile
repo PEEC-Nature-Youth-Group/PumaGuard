@@ -116,7 +116,7 @@ configure-pi-zero:
 
 .PHONY: verify
 verify:
-	pumaguard verify --data-path data --notebook 6 | tee verify.output
+	pumaguard verify --data-path data --settings models/model_settings_6_pre-trained_512_512.yaml | tee verify.output
 	if [ "$$(awk '/accuracy/ {print $$3}' verify.output)" != 96.60% ]; then false; fi
 
 .PHONY: train
