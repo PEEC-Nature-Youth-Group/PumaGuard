@@ -7,12 +7,11 @@ This script classifies images.
 import argparse
 import logging
 
-import keras  # type: ignore
-
 from pumaguard.presets import (
     BasePreset,
 )
 from pumaguard.utils import (
+    Model,
     classify_image,
 )
 
@@ -38,7 +37,7 @@ def main(options: argparse.Namespace, presets: BasePreset):
     """
 
     logger.debug('loading model from %s', presets.model_file)
-    model = keras.models.load_model(presets.model_file)
+    model = Model(presets).get_model()
 
     for image in options.image:
         prediction = classify_image(presets, model, image)

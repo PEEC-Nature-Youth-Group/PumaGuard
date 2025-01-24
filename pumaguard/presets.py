@@ -10,7 +10,11 @@ from typing import (
     Tuple,
 )
 
+import tensorflow as tf  # type: ignore
 import yaml
+from packaging import (
+    version,
+)
 
 from pumaguard.models import (
     __MODEL_FUNCTIONS__,
@@ -42,6 +46,10 @@ class BasePreset():
         self.model_version = 'undefined'
         self.no_lion_directories: list[str] = []
         self.with_augmentation = False
+        if version.parse(tf.__version__) < version.parse('2.17'):
+            self.tf_compat = '2.15'
+        else:
+            self.tf_compat = '2.17'
 
     def load(self, filename: str):
         """
@@ -94,7 +102,9 @@ class BasePreset():
         """
         yield from {
             'alpha': self.alpha,
-            'base-data-directory': self.base_data_directory,
+            'base-data-directory': os.path.relpath(
+                self.base_data_directory,
+                os.path.dirname(__file__)),
             'batch-size': self.batch_size,
             'color-mode': self.color_mode,
             'epochs': self.epochs,
@@ -157,8 +167,12 @@ class BasePreset():
         """
         return os.path.realpath(
             f'{self.base_output_directory}/'
-            f'model_weights_{self.notebook_number}_{self.model_version}'
-            f'_{self.image_dimensions[0]}_{self.image_dimensions[1]}.keras')
+            f'model_weights_{self.notebook_number}'
+            f'_{self.model_version}'
+            f'_tf{self.tf_compat}'
+            f'_{self.image_dimensions[0]}'
+            f'_{self.image_dimensions[1]}'
+            '.keras')
 
     @property
     def history_file(self):
@@ -167,8 +181,12 @@ class BasePreset():
         """
         return os.path.realpath(
             f'{self.base_output_directory}/'
-            f'model_history_{self.notebook_number}_{self.model_version}'
-            f'_{self.image_dimensions[0]}_{self.image_dimensions[1]}.pickle')
+            f'model_history_{self.notebook_number}'
+            f'_{self.model_version}'
+            f'_tf{self.tf_compat}'
+            f'_{self.image_dimensions[0]}'
+            f'_{self.image_dimensions[1]}'
+            '.pickle')
 
     @property
     def settings_file(self):
@@ -404,3 +422,28 @@ class BasePreset():
         if alpha <= 0:
             raise ValueError('the stepsize needs to be positive')
         self._alpha = alpha
+
+    @property
+    def tf_compat(self) -> str:
+        """
+        Get the tensorflow compatibility version.
+
+        Tensorflow changed their keras model file format from 2.15 to 2.17.
+        Model files produced with tensorflow >= 2.15 to < 2.17 cannot be read
+        with tensorflow >= 2.17. Model files therefore will be either in '2.15'
+        or in '2.17' format.
+        """
+        return self._tf_compat
+
+    @tf_compat.setter
+    def tf_compat(self, compat: str):
+        """
+        Set the tensorflow compatibility version.
+
+        This is either '2.15' or '2.17'.
+        """
+        if not isinstance(compat, str):
+            raise TypeError('tf compat needs to be a string')
+        if compat not in ['2.15', '2.17']:
+            raise ValueError('tf compat needs to be in [2.15, 2.17]')
+        self._tf_compat = compat

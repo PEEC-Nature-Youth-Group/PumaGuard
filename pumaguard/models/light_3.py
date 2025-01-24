@@ -14,11 +14,11 @@ def light_model_3(image_dimensions: Tuple[int, int]) -> keras.src.Model:
     Ultra-light CNN model for binary image classification (<10k params).
     """
     return keras.Sequential([
+        keras.Input(shape=(*image_dimensions, 3)),
         keras.layers.Conv2D(
             8,
             (3, 3),
             activation='relu',
-            input_shape=(*image_dimensions, 3),
             padding='same',
             strides=(2, 2)),
         keras.layers.MaxPooling2D((2, 2)),

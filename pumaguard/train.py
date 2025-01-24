@@ -21,9 +21,8 @@ from pumaguard.traininghistory import (
     TrainingHistory,
 )
 from pumaguard.utils import (
+    Model,
     create_datasets,
-    create_model,
-    initialize_tensorflow,
     organize_data,
 )
 
@@ -74,7 +73,7 @@ def train_model(training_dataset,
     reduce_learning_rate = keras.callbacks.ReduceLROnPlateau(
         monitor='val_loss',
         factor=0.75,  # New lr = lr * factor.
-        patience=50,
+        patience=25,
         verbose=1,
         mode='min',
         min_lr=1e-8,  # Lower bound on the learning rate.
@@ -251,8 +250,7 @@ def main(options: argparse.Namespace, presets: BasePreset):
                 '- loss: %.4f - val_loss: %.4f', best_epoch, best_accuracy,
                 best_val_accuracy, best_loss, best_val_loss)
 
-    distribution_strategy = initialize_tensorflow()
-    model = create_model(presets, distribution_strategy)
+    model = Model(presets).get_model()
     train_model(training_dataset=training_dataset,
                 validation_dataset=validation_dataset,
                 model=model,

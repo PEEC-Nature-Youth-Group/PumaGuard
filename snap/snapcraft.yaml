@@ -1,6 +1,6 @@
 name: pumaguard
 icon: pumaguard-logo.png
-base: core22 # We need Python <= 3.10 to match the colab environment
+base: core22
 adopt-info: pumaguard
 license: Apache-2.0
 source-code: https://github.com/PEEC-Nature-Youth-Group/PumaGuard

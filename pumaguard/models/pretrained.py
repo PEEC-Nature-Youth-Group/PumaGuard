@@ -22,9 +22,6 @@ def pre_trained_model(image_dimensions: Tuple[int, int]) -> keras.src.Model:
         input_shape=(*image_dimensions, 3),
     )
 
-    print(f'Number of layers in the base model: {len(base_model.layers)}')
-    print(f'shape of output layer: {base_model.layers[-1].output_shape}')
-
     # We do not want to change the weights in the Xception model (imagenet
     # weights are frozen)
     base_model.trainable = False
