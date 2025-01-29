@@ -10,11 +10,13 @@ import os
 
 import keras  # type: ignore
 
+from pumaguard.model import (
+    Model,
+)
 from pumaguard.presets import (
     BasePreset,
 )
 from pumaguard.utils import (
-    Model,
     classify_image,
 )
 

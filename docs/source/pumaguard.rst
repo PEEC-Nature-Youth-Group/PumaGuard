@@ -28,6 +28,14 @@ pumaguard.main module
    :undoc-members:
    :show-inheritance:
 
+pumaguard.model module
+----------------------
+
+.. automodule:: pumaguard.model
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 pumaguard.presets module
 ------------------------
 

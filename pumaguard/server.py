@@ -10,11 +10,13 @@ import subprocess
 import threading
 import time
 
+from pumaguard.model import (
+    Model,
+)
 from pumaguard.presets import (
     BasePreset,
 )
 from pumaguard.utils import (
-    Model,
     classify_image,
 )
 

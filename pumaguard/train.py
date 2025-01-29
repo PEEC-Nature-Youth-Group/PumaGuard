@@ -14,6 +14,9 @@ import keras  # type: ignore
 import matplotlib.pyplot as plt
 import yaml
 
+from pumaguard.model import (
+    Model,
+)
 from pumaguard.presets import (
     BasePreset,
 )
@@ -21,7 +24,6 @@ from pumaguard.traininghistory import (
     TrainingHistory,
 )
 from pumaguard.utils import (
-    Model,
     create_datasets,
     organize_data,
 )
