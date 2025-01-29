@@ -9,7 +9,7 @@ import pickle
 import keras  # type: ignore
 
 from pumaguard.presets import (
-    BasePreset,
+    Preset,
 )
 
 logger = logging.getLogger('PumaGuard')
@@ -20,7 +20,7 @@ class TrainingHistory(keras.callbacks.Callback):
     This class stores the training history
     """
 
-    def __init__(self, presets: BasePreset):
+    def __init__(self, presets: Preset):
         super().__init__()
         self.presets = presets
         self.history = {}

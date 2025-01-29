@@ -15,7 +15,7 @@ from pumaguard import (
     verify,
 )
 from pumaguard.presets import (
-    BasePreset,
+    Preset,
 )
 from pumaguard.utils import (
     print_bash_completion,
@@ -127,7 +127,7 @@ def main():
         print_bash_completion(command=args.command, shell=args.completion)
         sys.exit(0)
 
-    presets = BasePreset()
+    presets = Preset()
     presets.load(args.settings)
 
     model_path = args.model_path if args.model_path \

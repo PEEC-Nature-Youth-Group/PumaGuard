@@ -18,7 +18,7 @@ from pumaguard.model import (
     Model,
 )
 from pumaguard.presets import (
-    BasePreset,
+    Preset,
 )
 from pumaguard.traininghistory import (
     TrainingHistory,
@@ -59,7 +59,7 @@ def plot_training_progress(filename, full_history):
 def train_model(training_dataset,
                 validation_dataset,
                 full_history,
-                presets: BasePreset,
+                presets: Preset,
                 model: keras.src.Model):
     """
     Train the model.
@@ -171,7 +171,7 @@ def print_training_stats(full_history: TrainingHistory):
     plot_training_progress('training-progress.png', full_history=full_history)
 
 
-def main(options: argparse.Namespace, presets: BasePreset):
+def main(options: argparse.Namespace, presets: Preset):
     """
     The main entry point.
     """

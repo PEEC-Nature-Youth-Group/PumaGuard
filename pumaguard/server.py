@@ -14,7 +14,7 @@ from pumaguard.model import (
     Model,
 )
 from pumaguard.presets import (
-    BasePreset,
+    Preset,
 )
 from pumaguard.utils import (
     classify_image,
@@ -49,7 +49,7 @@ class FolderObserver:
     FolderObserver watches a folder for new files.
     """
 
-    def __init__(self, folder: str, method: str, presets: BasePreset):
+    def __init__(self, folder: str, method: str, presets: Preset):
         self.folder = folder
         self.method = method
         self.presets = presets
@@ -129,7 +129,7 @@ class FolderManager:
     FolderManager manages the folders to observe.
     """
 
-    def __init__(self, presets: BasePreset):
+    def __init__(self, presets: Preset):
         self.presets = presets
         self.observers: list[FolderObserver] = []
 
@@ -161,7 +161,7 @@ class FolderManager:
             observer.stop()
 
 
-def main(options: argparse.Namespace, presets: BasePreset):
+def main(options: argparse.Namespace, presets: Preset):
     """
     Main entry point.
     """
