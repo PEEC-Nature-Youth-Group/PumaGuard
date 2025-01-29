@@ -1,8 +1,6 @@
 cloud-sptheme
-flask
-keras<3.0.0
 matplotlib
 pillow
 sphinx_new_tab_link
 sphinxcontrib-mermaid
-tensorflow==2.15.0
+tensorflow

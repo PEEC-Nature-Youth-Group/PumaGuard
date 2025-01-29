@@ -7,11 +7,13 @@ This script classifies images.
 import argparse
 import logging
 
+from pumaguard.model import (
+    Model,
+)
 from pumaguard.presets import (
     BasePreset,
 )
 from pumaguard.utils import (
-    Model,
     classify_image,
 )
 

@@ -7,11 +7,13 @@ import os
 import tempfile
 import unittest
 
+from pumaguard.model import (
+    Model,
+)
 from pumaguard.presets import (
     BasePreset,
 )
 from pumaguard.utils import (
-    Model,
     get_md5,
     get_sha256,
 )
