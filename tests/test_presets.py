@@ -76,3 +76,17 @@ no-lion-directories:
         self.assertEqual(self.base_preset.batch_size, 2)
         self.assertEqual(self.base_preset.alpha, 1e-3)
         self.assertEqual(self.base_preset.model_function_name, 'pretrained')
+
+    def test_tf_compat(self):
+        """
+        Test tf compatiblity.
+        """
+        self.base_preset.tf_compat = '2.15'
+        self.assertEqual(self.base_preset.tf_compat, '2.15')
+        with self.assertRaises(TypeError) as e:
+            self.base_preset.tf_compat = 1
+        self.assertEqual(str(e.exception), 'tf compat needs to be a string')
+        with self.assertRaises(ValueError) as e:
+            self.base_preset.tf_compat = '2.16'
+        self.assertEqual(str(e.exception),
+                         'tf compat needs to be in [2.15, 2.17]')

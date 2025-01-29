@@ -34,21 +34,23 @@ def initialize_tensorflow() -> tf.distribute.Strategy:
         tf.distribute.Strategy: The distribution strategy object after
         initialization.
     """
-    print("Tensorflow version " + tf.__version__)
+    logger.info("Tensorflow version %s", tf.__version__)
+    logger.info('Trying to connect to a TPU')
     try:
         tpu = tf.distribute.cluster_resolver.TPUClusterResolver()
         tf.config.experimental_connect_to_cluster(tpu)
         tf.tpu.experimental.initialize_tpu_system(tpu)
-        print(f'Running on a TPU w/{tpu.num_accelerators()["TPU"]} cores')
+        logger.info(
+            'Running on a TPU with %d cores', tpu.num_accelerators()["TPU"])
         return tf.distribute.TPUStrategy(tpu)
     except ValueError:
-        print("WARNING: Not connected to a TPU runtime; Will try GPU")
+        logger.warning("WARNING: Not connected to a TPU runtime; Will try GPU")
         if tf.config.list_physical_devices('GPU'):
-            print('Running on '
-                  f'{len(tf.config.list_physical_devices("GPU"))} GPUs')
+            logger.info('Running on %d GPUs', len(
+                tf.config.list_physical_devices("GPU")))
             return tf.distribute.MirroredStrategy()
-        print('WARNING: Not connected to TPU or GPU runtime; '
-              'Will use CPU context')
+        logger.warning('WARNING: Not connected to TPU or GPU runtime; '
+                       'Will use CPU context')
         return tf.distribute.get_strategy()
 
 

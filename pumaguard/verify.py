@@ -14,6 +14,7 @@ from pumaguard.presets import (
     BasePreset,
 )
 from pumaguard.utils import (
+    Model,
     classify_image,
 )
 
@@ -86,6 +87,6 @@ def main(presets: BasePreset):
     """
 
     logger.debug('loading model from %s', presets.model_file)
-    model = keras.models.load_model(presets.model_file)
+    model = Model(presets).get_model()
 
     verify_model(presets, model)

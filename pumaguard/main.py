@@ -137,17 +137,10 @@ def main():
         presets.base_output_directory = model_path
 
     data_path = args.data_path if args.data_path \
-        else os.getenv('PUMAGUARD_DATA_DIRECTORY', default=None)
+        else os.getenv('PUMAGUARD_DATA_PATH', default=None)
     if data_path is not None:
         logger.debug('setting data path to %s', data_path)
         presets.base_data_directory = data_path
-
-    try:
-        logger.info('loading model from %s', presets.model_file)
-        os.stat(presets.model_file)
-    except FileNotFoundError:
-        logger.error('could not open model file %s', presets.model_file)
-        raise
 
     if args.command == 'train':
         train.main(args, presets)

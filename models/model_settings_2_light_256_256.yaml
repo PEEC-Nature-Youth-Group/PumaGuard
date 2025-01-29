@@ -1,9 +1,9 @@
 # PumaGuard settings
 alpha: 1.0e-05
-base-data-directory: /workspaces/PumaGuard/pumaguard/../data
+base-data-directory: ../data
 batch-size: 32
 color-mode: grayscale
-epochs: 1
+epochs: 1200
 image-dimensions:
 - 256
 - 256
