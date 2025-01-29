@@ -140,6 +140,11 @@ def configure_subparser(parser: argparse.ArgumentParser):
         help='Print current settings to standard output',
         action='store_true',
     )
+    parser.add_argument(
+        '--alpha',
+        help='Initial learning rate for the Adam optimizer',
+        type=float,
+    )
 
 
 def print_training_stats(full_history: TrainingHistory):
@@ -216,19 +221,17 @@ def main(options: argparse.Namespace, presets: BasePreset):
             logger.warning('unable to find previous model; ignoring')
         presets.base_output_directory = options.model_output
 
+    if options.alpha:
+        presets.alpha = options.alpha
+
     if options.dump_settings:
         print('# PumaGuard settings')
-        print(yaml.safe_dump(
-            dict(presets),
-            # default_style='|',
-            # canonical=False,
-            indent=2,
-        ))
+        print(yaml.safe_dump(dict(presets), indent=2))
         sys.exit(0)
 
     with open(presets.settings_file, 'w', encoding='utf-8') as fd:
         fd.write('# PumaGuard settings\n')
-        fd.write(yaml.safe_dump(dict(presets)))
+        fd.write(yaml.safe_dump(dict(presets), indent=2))
 
     work_directory = tempfile.mkdtemp(prefix='pumaguard-work-')
     organize_data(presets=presets, work_directory=work_directory)
