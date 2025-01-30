@@ -62,7 +62,7 @@ def create_global_parser() -> argparse.ArgumentParser:
     )
     global_parser.add_argument(
         '--data-path',
-        help=('Where the image data for training are '
+        help=('Where the image data for training and classification are '
               'stored (default = %(default)s)'),
         type=str,
         default=data_path,
