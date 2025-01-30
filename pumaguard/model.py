@@ -9,7 +9,7 @@ import keras  # type: ignore
 import tensorflow as tf  # type: ignore
 
 from pumaguard.presets import (
-    BasePreset,
+    Preset,
 )
 from pumaguard.utils import (
     get_md5,
@@ -26,7 +26,7 @@ class Model():
     _instance = None
     _initialized = False
 
-    def __new__(cls, presets: BasePreset):
+    def __new__(cls, presets: Preset):
         """
         Create a new model.
         """
@@ -34,7 +34,7 @@ class Model():
             cls._instance = super(Model, cls).__new__(cls)
         return cls._instance
 
-    def __init__(self, presets: BasePreset):
+    def __init__(self, presets: Preset):
         if not self._initialized:
             self._presets = presets
             self._distribution_strategy = self.initialize_tensorflow()
@@ -80,7 +80,7 @@ class Model():
                            'Will use CPU context')
             return tf.distribute.get_strategy()
 
-    def create_model(self, presets: BasePreset,
+    def create_model(self, presets: Preset,
                      distribution_strategy: tf.distribute.Strategy) \
             -> keras.src.Model:
         """

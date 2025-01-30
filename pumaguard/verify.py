@@ -14,7 +14,7 @@ from pumaguard.model import (
     Model,
 )
 from pumaguard.presets import (
-    BasePreset,
+    Preset,
 )
 from pumaguard.utils import (
     classify_image,
@@ -36,7 +36,7 @@ def configure_subparser(parser: argparse.ArgumentParser):
     )
 
 
-def verify_model(presets: BasePreset, model: keras.Model):
+def verify_model(presets: Preset, model: keras.Model):
     """
     Verify a model by calculating its accuracy across a standard set of images.
     """
@@ -83,7 +83,7 @@ def verify_model(presets: BasePreset, model: keras.Model):
     print(f'accuracy = {100 * accuracy:.2f}%')
 
 
-def main(presets: BasePreset):
+def main(presets: Preset):
     """
     Main entry point
     """

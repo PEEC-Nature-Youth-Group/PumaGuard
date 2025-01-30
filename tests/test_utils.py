@@ -11,7 +11,7 @@ from pumaguard.model import (
     Model,
 )
 from pumaguard.presets import (
-    BasePreset,
+    Preset,
 )
 from pumaguard.utils import (
     get_md5,
@@ -62,7 +62,7 @@ class TestModel(unittest.TestCase):
         """
         Test singleton property.
         """
-        presets = BasePreset()
+        presets = Preset()
         presets.notebook_number = 1
         m1 = Model(presets)
         m2 = Model(presets)

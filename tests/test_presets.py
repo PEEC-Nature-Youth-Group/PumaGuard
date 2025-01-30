@@ -9,7 +9,7 @@ from unittest.mock import (
 )
 
 from pumaguard.presets import (
-    BasePreset,
+    Preset,
 )
 
 
@@ -19,7 +19,7 @@ class TestBasePreset(unittest.TestCase):
     """
 
     def setUp(self):
-        self.base_preset = BasePreset()
+        self.base_preset = Preset()
 
     def test_image_dimensions_default(self):
         """

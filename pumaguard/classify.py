@@ -11,7 +11,7 @@ from pumaguard.model import (
     Model,
 )
 from pumaguard.presets import (
-    BasePreset,
+    Preset,
 )
 from pumaguard.utils import (
     classify_image,
@@ -33,7 +33,7 @@ def configure_subparser(parser: argparse.ArgumentParser):
     )
 
 
-def main(options: argparse.Namespace, presets: BasePreset):
+def main(options: argparse.Namespace, presets: Preset):
     """
     Main entry point
     """

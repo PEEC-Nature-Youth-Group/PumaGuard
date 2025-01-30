@@ -24,7 +24,7 @@ logger = logging.getLogger('PumaGuard')
 
 
 # pylint: disable=too-many-public-methods
-class BasePreset():
+class Preset():
     """
     Base class for Presets
     """

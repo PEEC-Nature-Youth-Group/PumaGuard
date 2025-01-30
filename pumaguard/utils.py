@@ -17,7 +17,7 @@ from PIL import (
 )
 
 from pumaguard.presets import (
-    BasePreset,
+    Preset,
 )
 
 logger = logging.getLogger('PumaGuard')
@@ -52,7 +52,7 @@ def copy_images(work_directory, lion_images, no_lion_images):
     print('Copied all images')
 
 
-def organize_data(presets: BasePreset, work_directory: str):
+def organize_data(presets: Preset, work_directory: str):
     """
     Organizes the data and splits it into training and validation datasets.
     """
@@ -90,7 +90,7 @@ def image_augmentation(image, with_augmentation: bool, augmentation_layers):
     return image
 
 
-def create_datasets(presets: BasePreset, work_directory: str, color_mode: str):
+def create_datasets(presets: Preset, work_directory: str, color_mode: str):
     """
     Create the training and validation datasets.
     """
@@ -162,7 +162,7 @@ def get_sha256(filepath: str) -> str:
     return hasher.hexdigest()
 
 
-def classify_image(presets: BasePreset, model: keras.Model,
+def classify_image(presets: Preset, model: keras.Model,
                    image_path: str) -> float:
     """
     Classify the image and print out the result.
