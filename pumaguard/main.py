@@ -26,13 +26,6 @@ def create_global_parser() -> argparse.ArgumentParser:
     """
     Shared arguments.
     """
-    data_path = os.getenv(
-        'PUMAGUARD_DATA_PATH',
-        default=os.path.join(os.path.dirname(__file__), '../data'))
-    model_path = os.getenv(
-        'PUMAGUARD_MODEL_PATH',
-        default=os.path.join(os.path.dirname(__file__), '../models'))
-
     global_parser = argparse.ArgumentParser(add_help=False)
     global_parser.add_argument(
         '--settings',
@@ -58,14 +51,9 @@ def create_global_parser() -> argparse.ArgumentParser:
         '--model-path',
         help='Where the models are stored (default = %(default)s)',
         type=str,
-        default=model_path,
-    )
-    global_parser.add_argument(
-        '--data-path',
-        help=('Where the image data for training and classification are '
-              'stored (default = %(default)s)'),
-        type=str,
-        default=data_path,
+        default=os.getenv(
+            'PUMAGUARD_MODEL_PATH',
+            default=os.path.join(os.path.dirname(__file__), '../models')),
     )
     return global_parser
 
@@ -130,13 +118,15 @@ def main():
     presets = Preset()
     presets.load(args.settings)
 
-    model_path = args.model_path if args.model_path \
+    model_path = args.model_path if hasattr(args, 'model_path') \
+        and args.model_path \
         else os.getenv('PUMAGUARD_MODEL_PATH', default=None)
     if model_path is not None:
         logger.debug('setting model path to %s', model_path)
         presets.base_output_directory = model_path
 
-    data_path = args.data_path if args.data_path \
+    data_path = args.data_path if hasattr(args, 'data_path') \
+        and args.data_path \
         else os.getenv('PUMAGUARD_DATA_PATH', default=None)
     if data_path is not None:
         logger.debug('setting data path to %s', data_path)
