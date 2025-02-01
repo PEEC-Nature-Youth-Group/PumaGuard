@@ -10,6 +10,8 @@ import sys
 # pylint: disable=wrong-import-position
 sys.path.append(os.path.realpath(f'{os.path.dirname(__file__)}/..'))
 
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' # or any of {'0', '1', '2'}
+
 from pumaguard.main import (
     main,
 )
