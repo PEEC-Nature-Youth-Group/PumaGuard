@@ -24,10 +24,10 @@ def get_git_version():
 
 
 project = 'PumaGuard'
-copyright = '2024, Pajarito Environmental Education Center Nature Youth Group'
+copyright = '2025, Pajarito Environmental Education Center Nature Youth Group'
 author = 'Pajarito Environmental Education Center Nature Youth Group'
 version = get_git_version()
-release = '2024'
+release = '2025'
 
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-numfig
 numfig = True
