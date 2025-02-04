@@ -9,7 +9,7 @@ from typing import (
 import keras  # type: ignore
 
 
-def light_model(image_dimensions: Tuple[int, int]) -> keras.src.Model:
+def light_model(image_dimensions: Tuple[int, int]) -> keras.Model:
     """
     Define the "light model" which is loosely based on the Xception model and
     constructs a CNN.

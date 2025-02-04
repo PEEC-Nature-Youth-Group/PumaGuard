@@ -53,7 +53,7 @@ class FolderObserver:
         self.folder = folder
         self.method = method
         self.presets = presets
-        self.model = Model(presets).get_model()
+        self.model = Model(presets).model
         self._stop_event = threading.Event()
 
     def start(self):

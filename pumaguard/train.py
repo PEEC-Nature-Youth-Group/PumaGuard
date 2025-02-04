@@ -60,7 +60,7 @@ def train_model(training_dataset,
                 validation_dataset,
                 full_history,
                 presets: Preset,
-                model: keras.src.Model):
+                model: keras.Model):
     """
     Train the model.
     """
@@ -264,7 +264,7 @@ def main(options: argparse.Namespace, presets: Preset):
                 '- loss: %.4f - val_loss: %.4f', best_epoch, best_accuracy,
                 best_val_accuracy, best_loss, best_val_loss)
 
-    model = Model(presets).get_model()
+    model = Model(presets).model
     train_model(training_dataset=training_dataset,
                 validation_dataset=validation_dataset,
                 model=model,

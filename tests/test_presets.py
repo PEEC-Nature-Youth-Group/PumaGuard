@@ -32,13 +32,13 @@ class TestBasePreset(unittest.TestCase):
         """
         Test various failures of image dimensions.
         """
-        with self.assertRaises(TypeError) as e:
-            self.base_preset.image_dimensions = 1
-        self.assertEqual(str(e.exception),
+        with self.assertRaises(TypeError) as type_error:
+            self.base_preset.image_dimensions = 1  # type: ignore
+        self.assertEqual(str(type_error.exception),
                          'image dimensions needs to be a tuple')
-        with self.assertRaises(ValueError) as e:
+        with self.assertRaises(ValueError) as value_error:
             self.base_preset.image_dimensions = (-1, 2)
-        self.assertEqual(str(e.exception),
+        self.assertEqual(str(value_error.exception),
                          'image dimensions need to be positive')
 
     @patch('builtins.open', new_callable=mock_open, read_data='''

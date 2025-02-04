@@ -39,7 +39,7 @@ def main(options: argparse.Namespace, presets: Preset):
     """
 
     logger.debug('loading model from %s', presets.model_file)
-    model = Model(presets).get_model()
+    model = Model(presets).model
 
     for image in options.image:
         prediction = classify_image(presets, model, image)

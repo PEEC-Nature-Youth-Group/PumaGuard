@@ -9,7 +9,7 @@ from typing import (
 import keras  # type: ignore
 
 
-def light_model_2(image_dimensions: Tuple[int, int]) -> keras.src.Model:
+def light_model_2(image_dimensions: Tuple[int, int]) -> keras.Model:
     """
     Another attempt at a light model.
     """

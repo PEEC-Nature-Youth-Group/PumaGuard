@@ -4,6 +4,9 @@ The Model class.
 
 import logging
 import os
+from typing import (
+    Any,
+)
 
 import keras  # type: ignore
 import tensorflow as tf  # type: ignore
@@ -23,7 +26,7 @@ class Model():
     The Model used.
     """
 
-    _instance = None
+    _instance: Any = None
     _initialized = False
 
     def __new__(cls, presets: Preset):
@@ -37,18 +40,19 @@ class Model():
     def __init__(self, presets: Preset):
         if not self._initialized:
             self._presets = presets
-            self._distribution_strategy = self.initialize_tensorflow()
-            self._model = self.create_model(
+            self._distribution_strategy = self._initialize_tensorflow()
+            self._model = self._create_model(
                 self._presets, self._distribution_strategy)
             self._initialized = True
 
-    def get_model(self) -> keras.src.Model:
+    @property
+    def model(self) -> keras.Model:
         """
         Get the model.
         """
         return self._model
 
-    def initialize_tensorflow(self) -> tf.distribute.Strategy:
+    def _initialize_tensorflow(self) -> tf.distribute.Strategy:
         """
         Initialize Tensorflow on available hardware.
 
@@ -80,9 +84,9 @@ class Model():
                            'Will use CPU context')
             return tf.distribute.get_strategy()
 
-    def create_model(self, presets: Preset,
-                     distribution_strategy: tf.distribute.Strategy) \
-            -> keras.src.Model:
+    def _create_model(self, presets: Preset,
+                      distribution_strategy: tf.distribute.Strategy) \
+            -> keras.Model:
         """
         Create the model.
         """

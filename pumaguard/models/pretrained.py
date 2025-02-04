@@ -9,7 +9,7 @@ from typing import (
 import keras  # type: ignore
 
 
-def pre_trained_model(image_dimensions: Tuple[int, int]) -> keras.src.Model:
+def pre_trained_model(image_dimensions: Tuple[int, int]) -> keras.Model:
     """
     The pre-trained model (Xception).
 
