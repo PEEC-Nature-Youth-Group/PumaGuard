@@ -28,6 +28,10 @@ class Preset():
     Base class for Presets
     """
 
+    _alpha: float = 0
+    _base_data_directory: str = ''
+    _base_output_directory: str = ''
+
     def __init__(self):
         self.alpha = 1e-5
         self.base_data_directory = os.path.join(
@@ -95,6 +99,14 @@ class Preset():
         """
         yaml.dump(self)
 
+    def _relative_paths(self, base: str, paths: list[str]) -> list[str]:
+        """
+        The directories relative to a base path.
+        """
+        return [
+            os.path.relpath(path, start=base)for path in paths
+        ]
+
     def __iter__(self):
         """
         Serialize this class.
@@ -108,25 +120,63 @@ class Preset():
             'color-mode': self.color_mode,
             'epochs': self.epochs,
             'image-dimensions': self.image_dimensions,
-            'lion-directories': self.relative_paths(
+            'lion-directories': self._relative_paths(
                 self.base_data_directory,
                 self.lion_directories),
             'model-function': self.model_function_name,
             'model-version': self.model_version,
-            'no-lion-directories': self.relative_paths(
+            'no-lion-directories': self._relative_paths(
                 self.base_data_directory,
                 self.no_lion_directories),
             'notebook': self.notebook_number,
             'with-augmentation': self.with_augmentation,
         }.items()
 
-    def relative_paths(self, base: str, paths: list[str]) -> list[str]:
+    @property
+    def alpha(self) -> float:
         """
-        The directories relative to a base path.
+        Get the stepsize alpha.
         """
-        return [
-            os.path.relpath(path, start=base)for path in paths
-        ]
+        return self._alpha
+
+    @alpha.setter
+    def alpha(self, alpha: float):
+        """
+        Set the stepsize alpha.
+        """
+        if not isinstance(alpha, float):
+            raise TypeError('alpha needs to be a floating point number')
+        if alpha <= 0:
+            raise ValueError('the stepsize needs to be positive')
+        self._alpha = alpha
+
+    @property
+    def base_data_directory(self) -> str:
+        """
+        Get the base_data_directory.
+        """
+        return self._base_data_directory
+
+    @base_data_directory.setter
+    def base_data_directory(self, path: str):
+        """
+        Set the base_data_directory.
+        """
+        self._base_data_directory = path
+
+    @property
+    def base_output_directory(self) -> str:
+        """
+        Get the base_output_directory.
+        """
+        return self._base_output_directory
+
+    @base_output_directory.setter
+    def base_output_directory(self, path: str):
+        """
+        Set the base_output_directory.
+        """
+        self._base_output_directory = path
 
     @property
     def notebook_number(self) -> int:
@@ -234,34 +284,6 @@ class Preset():
         if not all(x > 0 for x in dimensions):
             raise ValueError('image dimensions need to be positive')
         self._image_dimensions = copy.deepcopy(dimensions)
-
-    @property
-    def base_data_directory(self) -> str:
-        """
-        Get the base_data_directory.
-        """
-        return self._base_data_directory
-
-    @base_data_directory.setter
-    def base_data_directory(self, path: str):
-        """
-        Set the base_data_directory.
-        """
-        self._base_data_directory = path
-
-    @property
-    def base_output_directory(self) -> str:
-        """
-        Get the base_output_directory.
-        """
-        return self._base_output_directory
-
-    @base_output_directory.setter
-    def base_output_directory(self, path: str):
-        """
-        Set the base_output_directory.
-        """
-        self._base_output_directory = path
 
     @property
     def load_history_from_file(self) -> bool:
@@ -386,24 +408,6 @@ class Preset():
         if batch_size <= 0:
             raise ValueError('the batch-size needs to be a positive number')
         self._batch_size = batch_size
-
-    @property
-    def alpha(self) -> float:
-        """
-        Get the stepsize alpha.
-        """
-        return self._alpha
-
-    @alpha.setter
-    def alpha(self, alpha: float):
-        """
-        Set the stepsize alpha.
-        """
-        if not isinstance(alpha, float):
-            raise TypeError('alpha needs to be a floating point number')
-        if alpha <= 0:
-            raise ValueError('the stepsize needs to be positive')
-        self._alpha = alpha
 
     @property
     def tf_compat(self) -> str:
