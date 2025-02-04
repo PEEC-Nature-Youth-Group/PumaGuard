@@ -6,7 +6,6 @@ import copy
 import logging
 import os
 from typing import (
-    Callable,
     Tuple,
 )
 
@@ -341,22 +340,6 @@ class Preset():
         self._no_lion_directories = copy.deepcopy(no_lions)
 
     @property
-    def model_function(self) -> Callable:
-        """
-        Get the model function.
-        """
-        if not hasattr(self, '_model_function'):
-            raise ValueError('missing model_function')
-        return self._model_function
-
-    @model_function.setter
-    def model_function(self, func: Callable):
-        """
-        Set the model function.
-        """
-        self._model_function = func
-
-    @property
     def model_function_name(self) -> str:
         """
         Get the model function name.
@@ -371,7 +354,6 @@ class Preset():
         if name not in __MODEL_FUNCTIONS__:
             raise ValueError(f'unknown model function name {name}')
         self._model_function_name = name
-        self._model_function = __MODEL_FUNCTIONS__[name]
 
     @property
     def with_augmentation(self) -> bool:
