@@ -21,10 +21,10 @@ class LightModel01(Model):
 
     color_mode = 'grayscale'
 
-    def raw_model(image_dimensions: Tuple[int, int]) -> keras.Model:
+    def raw_model(self, image_dimensions: Tuple[int, int]) -> keras.Model:
         """
-        Define the "light model" which is loosely based on the Xception model and
-        constructs a CNN.
+        Define the "light model" which is loosely based on the Xception model
+        and constructs a CNN.
 
         Note, the light model does not run properly on a TPU runtime. The loss
         function results in `nan` after only one epoch. It does work on GPU

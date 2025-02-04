@@ -215,7 +215,7 @@ def classify_image(presets: Preset, model: Type[Model],
     if presets.color_mode == 'grayscale':
         img_array = np.expand_dims(img_array, axis=-1)
 
-    prediction = model.predict(img_array)
+    prediction = model.model.predict(img_array)
 
     end_time = datetime.datetime.now()
 

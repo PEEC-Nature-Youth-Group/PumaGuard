@@ -11,7 +11,6 @@ from abc import (
 from typing import (
     Any,
     Tuple,
-    Type,
 )
 
 import keras  # type: ignore
@@ -28,15 +27,6 @@ from pumaguard.utils import (
 )
 
 logger = logging.getLogger('PumaGuard')
-
-
-def model_factory(presets: Preset) -> Type[Model]:
-    """
-    Get an instance of a model.
-    """
-    if presets.model_function_name not in __MODELS__:
-        raise ValueError(f'unknown model {presets.model_function_name}')
-    return __MODELS__[presets.model_function_name]
 
 
 class Model(ABC):

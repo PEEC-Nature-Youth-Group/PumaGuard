@@ -84,7 +84,7 @@ no-lion-directories:
         self.base_preset.tf_compat = '2.15'
         self.assertEqual(self.base_preset.tf_compat, '2.15')
         with self.assertRaises(TypeError) as e:
-            self.base_preset.tf_compat = 1
+            self.base_preset.tf_compat = 1  # type: ignore
         self.assertEqual(str(e.exception), 'tf compat needs to be a string')
         with self.assertRaises(ValueError) as e:
             self.base_preset.tf_compat = '2.16'

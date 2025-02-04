@@ -7,11 +7,13 @@ This script verifies models against a standard set of images.
 import argparse
 import logging
 import os
-
-import keras  # type: ignore
+from typing import (
+    Type,
+)
 
 from pumaguard.model import (
     Model,
+    model_factory,
 )
 from pumaguard.presets import (
     Preset,
@@ -45,7 +47,7 @@ def configure_subparser(parser: argparse.ArgumentParser):
     )
 
 
-def verify_model(presets: Preset, model: keras.Model):
+def verify_model(presets: Preset, model: Type[Model]):
     """
     Verify a model by calculating its accuracy across a standard set of images.
     """
@@ -98,6 +100,6 @@ def main(presets: Preset):
     """
 
     logger.debug('loading model from %s', presets.model_file)
-    model = Model(presets).model
+    model = model_factory(presets)
 
     verify_model(presets, model)

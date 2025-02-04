@@ -88,7 +88,7 @@ def train_model(training_dataset,
     print(f'Training for {presets.epochs} epochs')
     start_time = datetime.datetime.now()
     print(start_time)
-    model.fit(
+    model.model.fit(
         training_dataset,
         epochs=presets.epochs,
         validation_data=validation_dataset,

@@ -7,7 +7,7 @@ import os
 import tempfile
 import unittest
 
-from pumaguard.model import (
+from pumaguard.model_factory import (
     model_factory,
 )
 from pumaguard.presets import (
