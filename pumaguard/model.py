@@ -11,6 +11,9 @@ from typing import (
 import keras  # type: ignore
 import tensorflow as tf  # type: ignore
 
+from pumaguard.models import (
+    __MODEL_FUNCTIONS__,
+)
 from pumaguard.presets import (
     Preset,
 )
@@ -106,7 +109,11 @@ class Model():
                     logger.info('could not find model; creating new model')
                 logger.debug('creating new %s model',
                              presets.model_function_name)
-                model = presets.model_function(presets.image_dimensions)
+                if presets.model_function_name not in __MODEL_FUNCTIONS__:
+                    raise ValueError('unknown model function '
+                                     f'{presets.model_function_name}')
+                model = __MODEL_FUNCTIONS__[presets.model_function_name](
+                    presets.image_dimensions)
 
             logger.debug('Compiling model')
             model.compile(
