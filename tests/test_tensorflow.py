@@ -6,7 +6,7 @@ import logging
 import os
 import unittest
 
-import tensorflow as tf
+import tensorflow as tf  # type:ignore
 
 
 class TestTensorFlow(unittest.TestCase):

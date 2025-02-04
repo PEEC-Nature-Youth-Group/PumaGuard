@@ -98,6 +98,6 @@ def main(presets: Preset):
     """
 
     logger.debug('loading model from %s', presets.model_file)
-    model = Model(presets).get_model()
+    model = Model(presets).model
 
     verify_model(presets, model)
