@@ -9,9 +9,9 @@ from pumaguard.models import (
     pretrained,
 )
 
-__MODEL_FUNCTIONS__ = {
-    'pretrained': pretrained.pre_trained_model,
-    'light-model': light.light_model,
-    'light-2-model': light_2.light_model_2,
-    'light-3-model': light_3.light_model_3,
+__MODELS__ = {
+    'pretrained': pretrained.PretrainedModel,
+    'light-model': light.LightModel01,
+    'light-2-model': light_2.LightModel02,
+    'light-3-model': light_3.LightModel03,
 }

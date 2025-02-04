@@ -9,6 +9,9 @@ import os
 import shutil
 import sys
 import tempfile
+from typing import (
+    Type,
+)
 
 import keras  # type: ignore
 import matplotlib.pyplot as plt
@@ -16,6 +19,7 @@ import yaml
 
 from pumaguard.model import (
     Model,
+    model_factory,
 )
 from pumaguard.presets import (
     Preset,
@@ -60,7 +64,7 @@ def train_model(training_dataset,
                 validation_dataset,
                 full_history,
                 presets: Preset,
-                model: keras.Model):
+                model: Type[Model]):
     """
     Train the model.
     """
@@ -264,7 +268,7 @@ def main(options: argparse.Namespace, presets: Preset):
                 '- loss: %.4f - val_loss: %.4f', best_epoch, best_accuracy,
                 best_val_accuracy, best_loss, best_val_loss)
 
-    model = Model(presets).model
+    model = model_factory(presets)
     train_model(training_dataset=training_dataset,
                 validation_dataset=validation_dataset,
                 model=model,

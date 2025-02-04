@@ -16,7 +16,7 @@ from packaging import (
 )
 
 from pumaguard.models import (
-    __MODEL_FUNCTIONS__,
+    __MODELS__,
 )
 
 logger = logging.getLogger('PumaGuard')
@@ -31,6 +31,7 @@ class Preset():
     _alpha: float = 0
     _base_data_directory: str = ''
     _base_output_directory: str = ''
+    _batch_size: int = 0
 
     def __init__(self):
         self.alpha = 1e-5
@@ -177,6 +178,24 @@ class Preset():
         Set the base_output_directory.
         """
         self._base_output_directory = path
+
+    @property
+    def batch_size(self) -> int:
+        """
+        Get the batch size.
+        """
+        return self._batch_size
+
+    @batch_size.setter
+    def batch_size(self, batch_size: int):
+        """
+        Set the batch size.
+        """
+        if not isinstance(batch_size, int):
+            raise TypeError('batch_size must be int')
+        if batch_size <= 0:
+            raise ValueError('the batch-size needs to be a positive number')
+        self._batch_size = batch_size
 
     @property
     def notebook_number(self) -> int:
@@ -373,7 +392,7 @@ class Preset():
         """
         Set the model function name.
         """
-        if name not in __MODEL_FUNCTIONS__:
+        if name not in __MODELS__:
             raise ValueError(f'unknown model function name {name}')
         self._model_function_name = name
 
@@ -390,24 +409,6 @@ class Preset():
         Set whether to use augment training data.
         """
         self._with_augmentation = with_augmentation
-
-    @property
-    def batch_size(self) -> int:
-        """
-        Get the batch size.
-        """
-        return self._batch_size
-
-    @batch_size.setter
-    def batch_size(self, batch_size: int):
-        """
-        Set the batch size.
-        """
-        if not isinstance(batch_size, int):
-            raise TypeError('batch_size must be int')
-        if batch_size <= 0:
-            raise ValueError('the batch-size needs to be a positive number')
-        self._batch_size = batch_size
 
     @property
     def tf_compat(self) -> str:

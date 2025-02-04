@@ -8,6 +8,9 @@ import hashlib
 import logging
 import os
 import shutil
+from typing import (
+    Type,
+)
 
 import keras  # type: ignore
 import numpy as np
@@ -16,6 +19,9 @@ from PIL import (
     Image,
 )
 
+from pumaguard.model import (
+    Model,
+)
 from pumaguard.presets import (
     Preset,
 )
@@ -162,7 +168,7 @@ def get_sha256(filepath: str) -> str:
     return hasher.hexdigest()
 
 
-def classify_image(presets: Preset, model: keras.Model,
+def classify_image(presets: Preset, model: Type[Model],
                    image_path: str) -> float:
     """
     Classify the image and print out the result.

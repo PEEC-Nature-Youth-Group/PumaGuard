@@ -4,15 +4,21 @@ The Model class.
 
 import logging
 import os
+from abc import (
+    ABC,
+    abstractmethod,
+)
 from typing import (
     Any,
+    Tuple,
+    Type,
 )
 
 import keras  # type: ignore
 import tensorflow as tf  # type: ignore
 
 from pumaguard.models import (
-    __MODEL_FUNCTIONS__,
+    __MODELS__,
 )
 from pumaguard.presets import (
     Preset,
@@ -24,7 +30,16 @@ from pumaguard.utils import (
 logger = logging.getLogger('PumaGuard')
 
 
-class Model():
+def model_factory(presets: Preset) -> Type[Model]:
+    """
+    Get an instance of a model.
+    """
+    if presets.model_function_name not in __MODELS__:
+        raise ValueError(f'unknown model {presets.model_function_name}')
+    return __MODELS__[presets.model_function_name]
+
+
+class Model(ABC):
     """
     The Model used.
     """
@@ -44,16 +59,22 @@ class Model():
         if not self._initialized:
             self._presets = presets
             self._distribution_strategy = self._initialize_tensorflow()
-            self._model = self._create_model(
+            self._model = self._compile_model(
                 self._presets, self._distribution_strategy)
             self._initialized = True
 
+    @abstractmethod
+    def raw_model(self, image_dimensions: Tuple[int, int]) -> keras.Model:
+        """
+        The model defined as layers (before it is compiled).
+        """
+
     @property
-    def model(self) -> keras.Model:
+    @abstractmethod
+    def color_mode(self) -> str:
         """
-        Get the model.
+        The color mode (rgb or grayscale) of the model.
         """
-        return self._model
 
     def _initialize_tensorflow(self) -> tf.distribute.Strategy:
         """
@@ -87,8 +108,8 @@ class Model():
                            'Will use CPU context')
             return tf.distribute.get_strategy()
 
-    def _create_model(self, presets: Preset,
-                      distribution_strategy: tf.distribute.Strategy) \
+    def _compile_model(self, presets: Preset,
+                       distribution_strategy: tf.distribute.Strategy) \
             -> keras.Model:
         """
         Create the model.
@@ -109,11 +130,10 @@ class Model():
                     logger.info('could not find model; creating new model')
                 logger.debug('creating new %s model',
                              presets.model_function_name)
-                if presets.model_function_name not in __MODEL_FUNCTIONS__:
+                if presets.model_function_name not in __MODELS__:
                     raise ValueError('unknown model function '
                                      f'{presets.model_function_name}')
-                model = __MODEL_FUNCTIONS__[presets.model_function_name](
-                    presets.image_dimensions)
+                model = self.raw_model(presets.image_dimensions)
 
             logger.debug('Compiling model')
             model.compile(
