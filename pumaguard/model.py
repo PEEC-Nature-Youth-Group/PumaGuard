@@ -44,7 +44,7 @@ class Model():
         if not self._initialized:
             self._presets = presets
             self._distribution_strategy = self._initialize_tensorflow()
-            self._model = self._create_model(
+            self._model = self._compile_model(
                 self._presets, self._distribution_strategy)
             self._initialized = True
 
@@ -87,28 +87,36 @@ class Model():
                            'Will use CPU context')
             return tf.distribute.get_strategy()
 
-    def _create_model(self, presets: Preset,
-                      distribution_strategy: tf.distribute.Strategy) \
+    def _load_model(self, filename: str) -> keras.Model:
+        """
+        Load a model from file.
+        """
+        os.stat(filename)
+        logger.debug('loading model from file %s', filename)
+        model = keras.models.load_model(filename)
+        logger.debug('loaded model from file')
+        logger.info('loaded model version %s', get_md5(filename))
+        return model
+
+    def _compile_model(self, presets: Preset,
+                       distribution_strategy: tf.distribute.Strategy) \
             -> keras.Model:
         """
         Create the model.
         """
         with distribution_strategy.scope():
-            logger.info('looking for model at %s', presets.model_file)
-            model_file_exists = os.path.isfile(presets.model_file)
-            if presets.load_model_from_file and model_file_exists:
-                os.stat(presets.model_file)
-                logger.debug('loading model from file %s', presets.model_file)
-                model = keras.models.load_model(presets.model_file)
-                logger.debug('loaded model from file')
-                logger.info('model version %s', get_md5(presets.model_file))
-            else:
-                if not presets.load_model_from_file:
-                    logger.info('not loading previous weights')
+            if presets.load_model_from_file:
+                logger.info('looking for model at %s', presets.model_file)
+                model_file_exists = os.path.isfile(presets.model_file)
+                if model_file_exists:
+                    model = self._load_model(presets.model_file)
                 else:
-                    logger.info('could not find model; creating new model')
-                logger.debug('creating new %s model',
-                             presets.model_function_name)
+                    raise FileNotFoundError(
+                        f'could not find model {presets.model_file}')
+            else:
+                logger.debug('not loading previous weights')
+                logger.info('creating new %s model',
+                            presets.model_function_name)
                 if presets.model_function_name not in __MODEL_FUNCTIONS__:
                     raise ValueError('unknown model function '
                                      f'{presets.model_function_name}')

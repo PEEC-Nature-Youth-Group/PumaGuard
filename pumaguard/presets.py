@@ -15,10 +15,6 @@ from packaging import (
     version,
 )
 
-from pumaguard.models import (
-    __MODEL_FUNCTIONS__,
-)
-
 logger = logging.getLogger('PumaGuard')
 
 
@@ -373,8 +369,6 @@ class Preset():
         """
         Set the model function name.
         """
-        if name not in __MODEL_FUNCTIONS__:
-            raise ValueError(f'unknown model function name {name}')
         self._model_function_name = name
 
     @property
