@@ -24,9 +24,11 @@ class TestFolderObserver(unittest.TestCase):
 
     def setUp(self):
         self.folder = 'test_folder'
-        self.notebook = 1
+        self.notebook = 6
         self.presets = Preset()
         self.presets.notebook_number = self.notebook
+        self.presets.model_version = 'pre-trained'
+        self.presets.image_dimensions = (512, 512)
         self.observer = FolderObserver(self.folder, 'inotify', self.presets)
 
     @patch('pumaguard.server.subprocess.Popen')
@@ -90,9 +92,11 @@ class TestFolderManager(unittest.TestCase):
     """
 
     def setUp(self):
-        self.notebook = 1
+        self.notebook = 6
         self.presets = Preset()
         self.presets.notebook_number = self.notebook
+        self.presets.model_version = 'pre-trained'
+        self.presets.image_dimensions = (512, 512)
         self.manager = FolderManager(self.presets)
 
     @patch('pumaguard.server.FolderObserver')
