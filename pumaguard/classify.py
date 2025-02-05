@@ -7,8 +7,8 @@ This script classifies images.
 import argparse
 import logging
 
-from pumaguard.model import (
-    Model,
+from pumaguard.model_factory import (
+    model_factory,
 )
 from pumaguard.presets import (
     Preset,
@@ -39,7 +39,7 @@ def main(options: argparse.Namespace, presets: Preset):
     """
 
     logger.debug('loading model from %s', presets.model_file)
-    model = Model(presets).model
+    model = model_factory(presets).model
 
     for image in options.image:
         prediction = classify_image(presets, model, image)

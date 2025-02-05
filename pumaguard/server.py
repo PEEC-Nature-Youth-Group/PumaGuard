@@ -10,8 +10,8 @@ import subprocess
 import threading
 import time
 
-from pumaguard.model import (
-    Model,
+from pumaguard.model_factory import (
+    model_factory,
 )
 from pumaguard.presets import (
     Preset,
@@ -53,7 +53,7 @@ class FolderObserver:
         self.folder = folder
         self.method = method
         self.presets = presets
-        self.model = Model(presets).model
+        self.model = model_factory(presets).model
         self._stop_event = threading.Event()
 
     def start(self):

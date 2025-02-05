@@ -14,8 +14,8 @@ import keras  # type: ignore
 import matplotlib.pyplot as plt
 import yaml
 
-from pumaguard.model import (
-    Model,
+from pumaguard.model_factory import (
+    model_factory,
 )
 from pumaguard.presets import (
     Preset,
@@ -264,7 +264,7 @@ def main(options: argparse.Namespace, presets: Preset):
                 '- loss: %.4f - val_loss: %.4f', best_epoch, best_accuracy,
                 best_val_accuracy, best_loss, best_val_loss)
 
-    model = Model(presets).model
+    model = model_factory(presets).model
     train_model(training_dataset=training_dataset,
                 validation_dataset=validation_dataset,
                 model=model,

@@ -13,8 +13,9 @@
             "stopOnEntry": true,
             "justMyCode": false,
             "args": [
+                "${command:pickArgs}",
                 "--model-path", "/tmp",
-                "${command:pickArgs}"
+                "--settings", "models/model_settings_6_pre-trained_512_512.yaml"
             ]
         }
     ]
