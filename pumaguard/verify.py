@@ -10,8 +10,8 @@ import os
 
 import keras  # type: ignore
 
-from pumaguard.model import (
-    Model,
+from pumaguard.model_factory import (
+    model_factory,
 )
 from pumaguard.presets import (
     Preset,
@@ -98,6 +98,6 @@ def main(presets: Preset):
     """
 
     logger.debug('loading model from %s', presets.model_file)
-    model = Model(presets).model
+    model = model_factory(presets).model
 
     verify_model(presets, model)

@@ -7,8 +7,8 @@ import os
 import tempfile
 import unittest
 
-from pumaguard.model import (
-    Model,
+from pumaguard.model_factory import (
+    model_factory,
 )
 from pumaguard.presets import (
     Preset,
@@ -64,6 +64,6 @@ class TestModel(unittest.TestCase):
         """
         presets = Preset()
         presets.notebook_number = 1
-        m1 = Model(presets)
-        m2 = Model(presets)
+        m1 = model_factory(presets)
+        m2 = model_factory(presets)
         self.assertEqual(m1, m2)

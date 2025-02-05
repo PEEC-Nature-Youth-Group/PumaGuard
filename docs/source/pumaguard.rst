@@ -36,6 +36,14 @@ pumaguard.model module
    :undoc-members:
    :show-inheritance:
 
+pumaguard.model\_factory module
+-------------------------------
+
+.. automodule:: pumaguard.model_factory
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 pumaguard.presets module
 ------------------------
 
