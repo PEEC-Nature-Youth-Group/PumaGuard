@@ -260,6 +260,31 @@ class Preset():
         if mode not in ['rgb', 'grayscale']:
             raise ValueError("color_mode must be either 'rgb' or 'grayscale'")
         self._color_mode = mode
+        if mode == 'grayscale':
+            self._number_color_channels = 1
+        elif mode == 'rgb':
+            self._number_color_channels = 3
+
+    @property
+    def number_color_channels(self) -> int:
+        """
+        The number of color channels.
+        """
+        return self._number_color_channels
+
+    @number_color_channels.setter
+    def number_color_channels(self, channels: int):
+        """
+        Set the number of color channels.
+        """
+        if channels not in [1, 3]:
+            raise ValueError('illegal number of color '
+                             f'channels ({channels})')
+        self._number_color_channels = channels
+        if channels == 1:
+            self._color_mode = 'grayscale'
+        elif channels == 3:
+            self._color_mode = 'rgb'
 
     @property
     def image_dimensions(self) -> Tuple[int, int]:
