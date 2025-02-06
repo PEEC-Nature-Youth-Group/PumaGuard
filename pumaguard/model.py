@@ -88,6 +88,17 @@ class Model(ABC):
         """
 
     @property
+    @number_color_channels.setter
+    def number_color_channels(self, channels: int):
+        """
+        Set the number of color channels.
+        """
+        if channels not in [1, 3]:
+            raise ValueError('illegal number of color '
+                             f'channels ({channels})')
+        self.number_color_channels = channels
+
+    @property
     @abstractmethod
     def model_type(self) -> str:
         """
