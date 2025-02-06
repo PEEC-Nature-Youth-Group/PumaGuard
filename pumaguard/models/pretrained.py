@@ -26,11 +26,11 @@ class PretrainedModel(Model):
         return 'pretrained'
 
     @property
-    def color_mode(self) -> str:
+    def number_color_channels(self) -> int:
         """
-        Get the color mode.
+        The number of color channels.
         """
-        return 'rgb'
+        return 3
 
     @property
     def model_type(self) -> str:
@@ -46,7 +46,7 @@ class PretrainedModel(Model):
         base_model = keras.applications.Xception(
             weights='imagenet',
             include_top=False,
-            input_shape=(*image_dimensions, 3),
+            input_shape=(*image_dimensions, self.number_color_channels),
         )
 
         # We do not want to change the weights in the Xception model (imagenet
