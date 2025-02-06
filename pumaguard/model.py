@@ -69,10 +69,22 @@ class Model(ABC):
         """
 
     @property
-    @abstractmethod
     def color_mode(self) -> str:
         """
         Get the color mode of the model.
+        """
+        if self.number_color_channels == 1:
+            return 'grayscale'
+        if self.number_color_channels == 3:
+            return 'rgb'
+        raise ValueError('illegal number of color '
+                         f'channels ({self.number_color_channels})')
+
+    @property
+    @abstractmethod
+    def number_color_channels(self) -> int:
+        """
+        The number of color channels.
         """
 
     @property
@@ -132,7 +144,7 @@ class Model(ABC):
         logger.info('loaded model version %s', get_md5(filename))
         return model
 
-    def _compile_model(self,
+    def _compile_model(self,  # pylint: disable=too-many-arguments,too-many-positional-arguments
                        distribution_strategy: tf.distribute.Strategy,
                        load_model_from_file: bool = False,
                        model_file: str = '',

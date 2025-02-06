@@ -26,11 +26,11 @@ class LightModel3(Model):
         return 'light-3-model'
 
     @property
-    def color_mode(self) -> str:
+    def number_color_channels(self) -> int:
         """
-        Get the color mode.
+        The number of color channels.
         """
-        return 'rgb'
+        return 3
 
     @property
     def model_type(self) -> str:
@@ -44,7 +44,7 @@ class LightModel3(Model):
         Ultra-light CNN model for binary image classification (<10k params).
         """
         return keras.Sequential([
-            keras.Input(shape=(*image_dimensions, 3)),
+            keras.Input(shape=(*image_dimensions, self.number_color_channels)),
             keras.layers.Conv2D(
                 8,
                 (3, 3),

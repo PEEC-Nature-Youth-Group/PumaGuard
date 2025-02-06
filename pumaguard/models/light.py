@@ -26,11 +26,11 @@ class LightModel(Model):
         return 'light-model'
 
     @property
-    def color_mode(self) -> str:
+    def number_color_channels(self) -> int:
         """
-        Get the color mode.
+        The number of color channels.
         """
-        return 'grayscale'
+        return 1
 
     @property
     def model_type(self) -> str:
@@ -48,7 +48,8 @@ class LightModel(Model):
         function results in `nan` after only one epoch. It does work on GPU
         runtimes though.
         """
-        inputs = keras.Input(shape=(*image_dimensions, 1))
+        inputs = keras.Input(
+            shape=(*image_dimensions, self.number_color_channels))
 
         # Entry block
         x = keras.layers.Rescaling(1.0 / 255)(inputs)

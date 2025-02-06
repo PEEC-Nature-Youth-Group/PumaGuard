@@ -8,9 +8,6 @@ disable =
     R0915,
     W0511,
 
-max-args = 6
-max-positional-arguments = 6
-
 [FORMAT]
 max-line-length = 79
 
