@@ -46,17 +46,21 @@ class Model(ABC):
         if not self._initialized:
             self._presets = presets
             self._distribution_strategy = self._initialize_tensorflow()
+            logger.debug('initializing new model')
             self._model = self._compile_model(
                 distribution_strategy=self._distribution_strategy,
                 load_model_from_file=self._presets.load_model_from_file,
                 model_file=self._presets.model_file,
                 image_dimensions=self._presets.image_dimensions,
+                number_color_channels=self._presets.number_color_channels,
                 alpha=self._presets.alpha,
             )
             self._initialized = True
 
     @abstractmethod
-    def raw_model(self, image_dimensions: Tuple[int, int]) -> keras.Model:
+    def raw_model(self,
+                  image_dimensions: Tuple[int, int],
+                  number_color_channels: int) -> keras.Model:
         """
         The uncompiled Keras model.
         """
@@ -66,25 +70,6 @@ class Model(ABC):
     def model_name(self) -> str:
         """
         Get the model name.
-        """
-
-    @property
-    def color_mode(self) -> str:
-        """
-        Get the color mode of the model.
-        """
-        if self.number_color_channels == 1:
-            return 'grayscale'
-        if self.number_color_channels == 3:
-            return 'rgb'
-        raise ValueError('illegal number of color '
-                         f'channels ({self.number_color_channels})')
-
-    @property
-    @abstractmethod
-    def number_color_channels(self) -> int:
-        """
-        The number of color channels.
         """
 
     @property
@@ -149,6 +134,7 @@ class Model(ABC):
                        load_model_from_file: bool = False,
                        model_file: str = '',
                        image_dimensions: Tuple[int, int] = (128, 128),
+                       number_color_channels: int = 3,
                        alpha: float = 1e-5) -> keras.Model:
         """
         Create the model.
@@ -166,7 +152,9 @@ class Model(ABC):
                 logger.debug('not loading previous weights')
                 logger.info('creating new %s model',
                             self.model_name)
-                model = self.raw_model(image_dimensions)
+                model = self.raw_model(
+                    image_dimensions=image_dimensions,
+                    number_color_channels=number_color_channels)
 
             logger.debug('Compiling model')
             model.compile(

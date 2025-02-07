@@ -26,20 +26,15 @@ class LightModel(Model):
         return 'light-model'
 
     @property
-    def number_color_channels(self) -> int:
-        """
-        The number of color channels.
-        """
-        return 1
-
-    @property
     def model_type(self) -> str:
         """
         Get the model type.
         """
         return 'light'
 
-    def raw_model(self, image_dimensions: Tuple[int, int]) -> keras.Model:
+    def raw_model(self,
+                  image_dimensions: Tuple[int, int],
+                  number_color_channels: int) -> keras.Model:
         """
         Define the "light model" which is loosely based on the Xception model
         and constructs a CNN.
@@ -49,7 +44,7 @@ class LightModel(Model):
         runtimes though.
         """
         inputs = keras.Input(
-            shape=(*image_dimensions, self.number_color_channels))
+            shape=(*image_dimensions, number_color_channels))
 
         # Entry block
         x = keras.layers.Rescaling(1.0 / 255)(inputs)
