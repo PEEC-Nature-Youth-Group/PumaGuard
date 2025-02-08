@@ -26,6 +26,14 @@ class LightModel3(Model):
         return 'light-3-model'
 
     @property
+    def model_description(self) -> str:
+        """
+        Get a description of the model.
+        """
+        return ('Ultra-light CNN model for binary image '
+                'classification (<10k params).')
+
+    @property
     def model_type(self) -> str:
         """
         Get the model type.

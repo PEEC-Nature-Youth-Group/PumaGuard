@@ -26,6 +26,13 @@ class LightModel2(Model):
         return 'light-2-model'
 
     @property
+    def model_description(self) -> str:
+        """
+        Get a description of the model.
+        """
+        return 'Another attempt at a "light model".'
+
+    @property
     def model_type(self) -> str:
         """
         Get the model type.
