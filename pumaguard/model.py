@@ -31,12 +31,15 @@ class Model(ABC):
     The base class for Models.
     """
 
-    _instance: Any = None
+    _distribution_strategy = None
     _initialized = False
+    _instance: Any = None
+    _model = None
 
     def __new__(cls, presets: Preset):
         """
-        Create a new model.
+        Create a new model. Note that there will only be one instance of
+        this class.
         """
         if cls._instance is None:
             cls._instance = super(Model, cls).__new__(cls)
@@ -44,18 +47,23 @@ class Model(ABC):
 
     def __init__(self, presets: Preset):
         if not self._initialized:
-            self._presets = presets
-            self._distribution_strategy = self._initialize_tensorflow()
-            logger.debug('initializing new model')
-            self._model = self._compile_model(
-                distribution_strategy=self._distribution_strategy,
-                load_model_from_file=self._presets.load_model_from_file,
-                model_file=self._presets.model_file,
-                image_dimensions=self._presets.image_dimensions,
-                number_color_channels=self._presets.number_color_channels,
-                alpha=self._presets.alpha,
-            )
             self._initialized = True
+            self._presets = presets
+
+    def _initialize(self):
+        """
+        Initialize the model.
+        """
+        self._distribution_strategy = self._initialize_tensorflow()
+        logger.debug('initializing new model')
+        self._model = self._compile_model(
+            distribution_strategy=self._distribution_strategy,
+            load_model_from_file=self._presets.load_model_from_file,
+            model_file=self._presets.model_file,
+            image_dimensions=self._presets.image_dimensions,
+            number_color_channels=self._presets.number_color_channels,
+            alpha=self._presets.alpha,
+        )
 
     @abstractmethod
     def raw_model(self,
@@ -84,6 +92,8 @@ class Model(ABC):
         """
         Get the compiled model.
         """
+        if self._model is None:
+            self._initialize()
         return self._model
 
     def _initialize_tensorflow(self) -> tf.distribute.Strategy:
