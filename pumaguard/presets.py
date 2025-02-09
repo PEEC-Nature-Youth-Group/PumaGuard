@@ -34,6 +34,7 @@ class Preset():
             os.path.dirname(__file__), '../data')
         self.base_output_directory = os.path.join(
             os.path.dirname(__file__), '../models')
+        self.verification_path = 'verification'
         self.batch_size = 16
         self.color_mode = 'rgb'
         self.epochs = 300
@@ -73,6 +74,8 @@ class Preset():
             'base-data-directory', 'undefined')
         self.base_output_directory = settings.get(
             'base-output-directory', 'undefined')
+        self.verification_path = settings.get(
+            'verification-path', 'verification')
         lions = settings.get('lion-directories', ['undefined'])
         if not isinstance(lions, list) or \
                 not all(isinstance(p, str) for p in lions):
@@ -112,6 +115,7 @@ class Preset():
             'base-data-directory': os.path.relpath(
                 self.base_data_directory,
                 os.path.dirname(__file__)),
+            'verification-path': self.verification_path,
             'batch-size': self.batch_size,
             'color-mode': self.color_mode,
             'epochs': self.epochs,
@@ -173,6 +177,20 @@ class Preset():
         Set the base_output_directory.
         """
         self._base_output_directory = path
+
+    @property
+    def verification_path(self) -> str:
+        """
+        Get the verification path.
+        """
+        return self._verification_path
+
+    @verification_path.setter
+    def verification_path(self, path: str):
+        """
+        Set the verification path.
+        """
+        self._verification_path = path
 
     @property
     def notebook_number(self) -> int:
