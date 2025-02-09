@@ -82,6 +82,13 @@ class Model(ABC):
 
     @property
     @abstractmethod
+    def model_description(self) -> str:
+        """
+        Get a description of the model.
+        """
+
+    @property
+    @abstractmethod
     def model_type(self) -> str:
         """
         Get the model type.

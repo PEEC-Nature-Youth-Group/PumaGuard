@@ -26,6 +26,14 @@ class LightModel(Model):
         return 'light-model'
 
     @property
+    def model_description(self) -> str:
+        """
+        Get a description of the model.
+        """
+        return ('A "light model" which is loosely based on the '
+                'Xception model and constructs a CNN.')
+
+    @property
     def model_type(self) -> str:
         """
         Get the model type.

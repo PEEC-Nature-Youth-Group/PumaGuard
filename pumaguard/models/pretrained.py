@@ -27,6 +27,13 @@ class PretrainedModel(Model):
         return 'pretrained'
 
     @property
+    def model_description(self) -> str:
+        """
+        Get a description of the model.
+        """
+        return 'A pre-trained model based on the Xception model.'
+
+    @property
     def model_type(self) -> str:
         """
         Get the model type.

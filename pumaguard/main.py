@@ -14,6 +14,9 @@ from pumaguard import (
     train,
     verify,
 )
+from pumaguard.models import (
+    __MODELS__,
+)
 from pumaguard.presets import (
     Preset,
 )
@@ -45,7 +48,7 @@ def create_global_parser() -> argparse.ArgumentParser:
     global_parser.add_argument(
         '--completion',
         choices=['bash'],
-        help='Print out bash completion script.',
+        help='Print out bash completion script',
     )
     global_parser.add_argument(
         '--model-path',
@@ -54,6 +57,11 @@ def create_global_parser() -> argparse.ArgumentParser:
         default=os.getenv(
             'PUMAGUARD_MODEL_PATH',
             default=os.path.join(os.path.dirname(__file__), '../models')),
+    )
+    global_parser.add_argument(
+        '--list-models',
+        help='List the available models',
+        action='store_true',
     )
     return global_parser
 
@@ -116,7 +124,14 @@ def main():
         sys.exit(0)
 
     presets = Preset()
-    presets.load(args.settings)
+    if args.settings is not None:
+        presets.load(args.settings)
+
+    if args.list_models:
+        logger.info('available models:')
+        for name, model in __MODELS__.items():
+            logger.info('  %s: %s', name, model.model_description)
+        sys.exit(0)
 
     model_path = args.model_path if hasattr(args, 'model_path') \
         and args.model_path \
