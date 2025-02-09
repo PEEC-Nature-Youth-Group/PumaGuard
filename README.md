@@ -74,9 +74,18 @@ For reproducibility, training new models should be done via the train script
 and all necessary data, i.e. images, and the resulting weights and history
 should be committed to the repository.
 
-1. Create new model in pumaguard/models
-2. Add that model to pumaguard/presets.py
-3. Add images to data
-4. Add folders of new images to pumaguard/presets.py
-5. Train new model
-6. Add weights and history to models
+1. Get a TPU instance on Colab
+2. Open a terminal and run
+    ```console
+    $ git clone https://github.com/PEEC-Nature-Youth-Group/PumaGuard.git
+    $ cd PumaGuard
+    ```
+3. Get help on how to use the script
+    ```console
+    $ ./scripts/pumaguard --help
+    $ ./scripts/pumaguard train --help
+    ```
+3. Train the model from scratch
+    ```console
+    ./scripts/pumaguard train --no-load --settings models/model_settings_6_pre-trained_512_512.yaml
+    ```
