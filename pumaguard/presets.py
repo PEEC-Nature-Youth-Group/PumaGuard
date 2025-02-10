@@ -27,6 +27,7 @@ class Preset():
     _alpha: float = 0
     _base_data_directory: str = ''
     _base_output_directory: str = ''
+    _model_file: str = ''
 
     def __init__(self):
         self.alpha = 1e-5
@@ -228,6 +229,8 @@ class Preset():
         """
         Get the location of the model file.
         """
+        if self._model_file != '':
+            return self._model_file
         return os.path.realpath(
             f'{self.base_output_directory}/'
             f'model_weights_{self.notebook_number}'
@@ -236,6 +239,13 @@ class Preset():
             f'_{self.image_dimensions[0]}'
             f'_{self.image_dimensions[1]}'
             '.keras')
+
+    @model_file.setter
+    def model_file(self, filename: str):
+        """
+        Set the location of the model file.
+        """
+        self._model_file = filename
 
     @property
     def history_file(self):
