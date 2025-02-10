@@ -59,11 +59,54 @@ def create_global_parser() -> argparse.ArgumentParser:
             default=os.path.join(os.path.dirname(__file__), '../models')),
     )
     global_parser.add_argument(
+        '--model',
+        help='The model to load',
+        type=str,
+        default='',
+    )
+    global_parser.add_argument(
         '--list-models',
         help='List the available models',
         action='store_true',
     )
     return global_parser
+
+
+def configure_presets(args: argparse.Namespace, presets: Preset):
+    """
+    Configure the settings based on commandline arguments.
+    """
+    logger = logging.getLogger('PumaGuard')
+
+    if args.settings is not None:
+        presets.load(args.settings)
+
+    if args.list_models:
+        logger.info('available models:')
+        for name, model in __MODELS__.items():
+            logger.info('  %s: %s', name, model.model_description)
+        sys.exit(0)
+
+    model_path = args.model_path if hasattr(args, 'model_path') \
+        and args.model_path \
+        else os.getenv('PUMAGUARD_MODEL_PATH', default=None)
+    if model_path is not None:
+        logger.debug('setting model path to %s', model_path)
+        presets.base_output_directory = model_path
+
+    data_path = args.data_path if hasattr(args, 'data_path') \
+        and args.data_path \
+        else os.getenv('PUMAGUARD_DATA_PATH', default=None)
+    if data_path is not None:
+        logger.debug('setting data path to %s', data_path)
+        presets.base_data_directory = data_path
+
+    presets.verification_path = args.verification_path \
+        if hasattr(args, 'verification_path') \
+        else 'stable/stable_test'
+
+    if args.model != '':
+        presets.model_file = args.model
 
 
 def main():
@@ -126,32 +169,8 @@ def main():
         sys.exit(0)
 
     presets = Preset()
-    if args.settings is not None:
-        presets.load(args.settings)
 
-    if args.list_models:
-        logger.info('available models:')
-        for name, model in __MODELS__.items():
-            logger.info('  %s: %s', name, model.model_description)
-        sys.exit(0)
-
-    model_path = args.model_path if hasattr(args, 'model_path') \
-        and args.model_path \
-        else os.getenv('PUMAGUARD_MODEL_PATH', default=None)
-    if model_path is not None:
-        logger.debug('setting model path to %s', model_path)
-        presets.base_output_directory = model_path
-
-    data_path = args.data_path if hasattr(args, 'data_path') \
-        and args.data_path \
-        else os.getenv('PUMAGUARD_DATA_PATH', default=None)
-    if data_path is not None:
-        logger.debug('setting data path to %s', data_path)
-        presets.base_data_directory = data_path
-
-    presets.verification_path = args.verification_path \
-        if hasattr(args, 'verification_path') \
-        else 'stable/stable_test'
+    configure_presets(args, presets)
 
     if args.command == 'train':
         train.main(args, presets)
