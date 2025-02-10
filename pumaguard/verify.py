@@ -37,6 +37,11 @@ def configure_subparser(parser: argparse.ArgumentParser):
             default=os.path.join(os.path.dirname(__file__), '../data')),
     )
     parser.add_argument(
+        '--verification-path',
+        help='Path to verification data set (default = %(default)s)',
+        default='verification'
+    )
+    parser.add_argument(
         'image',
         metavar='FILE',
         help='An image to classify.',
@@ -51,10 +56,10 @@ def verify_model(presets: Preset, model: keras.Model):
     """
     logger.info('verifying model')
     lion_directory = os.path.join(
-        presets.base_data_directory, 'verification', 'lion')
+        presets.base_data_directory, presets.verification_path, 'Lion')
     lions = os.listdir(lion_directory)
     no_lion_directory = os.path.join(
-        presets.base_data_directory, 'verification', 'no lion')
+        presets.base_data_directory, presets.verification_path, 'No Lion')
     no_lions = os.listdir(no_lion_directory)
     confusion = {
         'TP': 0.0, 'TN': 0.0, 'FP': 0.0, 'FN': 0.0,
@@ -85,9 +90,6 @@ def verify_model(presets: Preset, model: keras.Model):
     logger.debug(confusion)
     logger.debug(total)
     logger.debug('%d lions and %d no lions', len(lions), len(no_lions))
-    # if abs(total - len(lions) + len(no_lions)) > 0.1:
-    #     logger.error('some images could not be classified')
-    #     sys.exit(1)
     accuracy = (confusion['TP'] + confusion['TN']) / total
     print(f'accuracy = {100 * accuracy:.2f}%')
 

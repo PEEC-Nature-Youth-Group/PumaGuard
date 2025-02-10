@@ -119,6 +119,8 @@ def main():
     if args.debug:
         logger.setLevel(logging.DEBUG)
 
+    logger.debug('command line arguments: %s', args)
+
     if args.completion:
         print_bash_completion(command=args.command, shell=args.completion)
         sys.exit(0)
@@ -146,6 +148,10 @@ def main():
     if data_path is not None:
         logger.debug('setting data path to %s', data_path)
         presets.base_data_directory = data_path
+
+    presets.verification_path = args.verification_path \
+        if hasattr(args, 'verification_path') \
+        else 'stable/stable_test'
 
     if args.command == 'train':
         train.main(args, presets)
