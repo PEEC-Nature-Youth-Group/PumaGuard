@@ -34,7 +34,7 @@ class Preset():
             os.path.dirname(__file__), '../data')
         self.base_output_directory = os.path.join(
             os.path.dirname(__file__), '../models')
-        self.verification_path = 'verification'
+        self.verification_path = 'stable/stable_test'
         self.batch_size = 16
         self.color_mode = 'rgb'
         self.epochs = 300
