@@ -37,7 +37,8 @@ jobs:
             powershell \
             \*dotnet\* \
             firefox \
-            \*jdk\*
+            \*jdk\* \
+            \*g++\*
       - name: Get largest installed packages
         run: |
           dpkg-query --show --showformat='${Package;-50}\t${Installed-Size}\n' | \
