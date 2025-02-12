@@ -39,7 +39,8 @@ jobs:
             azure-cli \
             microsoft-edge-stable \
             google-cloud-cli \
-            google-chrome-stable
+            google-chrome-stable \
+            temurin\*
 
   lint-notebooks:
     runs-on: ubuntu-24.04
