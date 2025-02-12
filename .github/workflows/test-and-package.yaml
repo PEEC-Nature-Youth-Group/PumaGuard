@@ -38,7 +38,8 @@ jobs:
             \*dotnet\* \
             firefox \
             \*jdk\* \
-            \*g++\*
+            \*g++\* \
+            \*mysql\*
       - name: Get largest installed packages
         run: |
           dpkg-query --show --showformat='${Package;-50}\t${Installed-Size}\n' | \
