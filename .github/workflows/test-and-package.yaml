@@ -35,9 +35,11 @@ jobs:
         run: snap list
       - name: Remove uncesseary packages
         run: |
-          apt remove --auto-remove --purge \
+          sudo apt remove --auto-remove --purge \
             azure-cli \
-            microsoft-edge-stable
+            microsoft-edge-stable \
+            google-cloud-cli \
+            google-chrome-stable
 
   lint-notebooks:
     runs-on: ubuntu-24.04
