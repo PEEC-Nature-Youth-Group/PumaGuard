@@ -39,6 +39,10 @@ jobs:
             | head --lines 30
       - name: Get installed snaps
         run: snap list
+      - name: Remove uncesseary packages
+        run: |
+          apt remote --auto-remove --purge \
+            azure-cli
 
   lint-notebooks:
     runs-on: ubuntu-24.04
