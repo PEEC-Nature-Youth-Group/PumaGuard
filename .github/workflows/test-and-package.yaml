@@ -180,6 +180,8 @@ jobs:
         run: du --human-readable --max-depth 1 / 2> /dev/null | sort --human-numeric-sort --reverse | head --lines 30
       - name: Check disk allocation (/usr)
         run: du --human-readable --max-depth 1 /usr 2> /dev/null | sort --human-numeric-sort --reverse | head --lines 30
+      - name: Check disk allocation (/usr/local)
+        run: du --human-readable --max-depth 1 /usr/local 2> /dev/null | sort --human-numeric-sort --reverse | head --lines 30
       - name: Check disk allocation (/opt)
         run: du --human-readable --max-depth 1 /opt 2> /dev/null | sort --human-numeric-sort --reverse | head --lines 30
       - name: Check container free disk space
@@ -188,6 +190,8 @@ jobs:
         with:
           fetch-depth: 0
           fetch-tags: true
+      - name: Check container free disk space
+        run: df --human-readable /
       - name: Get snap version
         id: get_snap_version
         run: |
