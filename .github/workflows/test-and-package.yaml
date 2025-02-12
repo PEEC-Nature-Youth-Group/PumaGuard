@@ -21,9 +21,11 @@ jobs:
       - name: Check container free disk space
         run: df --human-readable /
       - name: Check disk allocation
-        run: du --human-readable --max-depth 1 / 2> /dev/null | sort --human-numeric-sort | head --lines 30
-      - name: Check disk allocation
-        run: du --human-readable --max-depth 1 /usr/local 2> /dev/null | sort --human-numeric-sort
+        run: du --human-readable --max-depth 1 / 2> /dev/null | sort --human-numeric-sort --reverse | head --lines 30
+      - name: Check disk allocation (/usr)
+        run: du --human-readable --max-depth 1 /usr 2> /dev/null | sort --human-numeric-sort --reverse | head --lines 30
+      - name: Check disk allocation (/opt)
+        run: du --human-readable --max-depth 1 /opt 2> /dev/null | sort --human-numeric-sort --reverse | head --lines 30
       - name: Remove unecessary packages
         run: |
           sudo apt remove --auto-remove --purge \
