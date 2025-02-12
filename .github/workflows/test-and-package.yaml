@@ -26,18 +26,6 @@ jobs:
         run: du --human-readable --max-depth 1 /usr 2> /dev/null | sort --human-numeric-sort --reverse | head --lines 30
       - name: Check disk allocation (/opt)
         run: du --human-readable --max-depth 1 /opt 2> /dev/null | sort --human-numeric-sort --reverse | head --lines 30
-      - name: Remove unecessary packages
-        run: |
-          sudo apt remove --auto-remove --purge \
-            \*dotnet\* \
-      - name: Remove unecessary snaps
-        run: |
-          snap list \
-            | awk '{print $1}' \
-            | grep -E '(gnome|firefox|gtk)' \
-            | xargs --verbose sudo snap remove --purge
-      - name: Check container free disk space again
-        run: df --human-readable /
       - name: Get largest installed packages
         run: |
           #!/bin/bash
