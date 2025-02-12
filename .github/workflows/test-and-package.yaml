@@ -34,7 +34,13 @@ jobs:
             google-chrome-stable \
             \*temurin\* \
             \*llvm\* \
-            powershell
+            powershell \
+            \*dotnet\*
+      - name: Get largest installed packages
+        run: |
+          dpkg-query --show --showformat='${Package;-50}\t${Installed-Size}\n' | \
+            sort --human-numeric-sort --key 2 --reverse | \
+            head --lines 20
       - name: Get installed snaps
         run: snap list
       - name: Check disk allocation
