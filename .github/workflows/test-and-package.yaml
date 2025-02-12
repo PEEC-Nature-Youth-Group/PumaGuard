@@ -25,14 +25,6 @@ jobs:
           dpkg-query --show --showformat='${Package;-50}\t${Installed-Size}\n' | \
             sort --human-numeric-sort --key 2 --reverse | \
             head --lines 20
-      - name: Check disk allocation
-        run: du --human-readable --max-depth 1 / 2> /dev/null | sort --human-numeric-sort --reverse | head --lines 30
-      - name: Check disk allocation (/usr)
-        run: du --human-readable --max-depth 1 /usr 2> /dev/null | sort --human-numeric-sort --reverse | head --lines 30
-      - name: Check disk allocation (/opt)
-        run: du --human-readable --max-depth 1 /opt 2> /dev/null | sort --human-numeric-sort --reverse | head --lines 30
-      - name: Get installed snaps
-        run: snap list
       - name: Remove uncesseary packages
         run: |
           sudo apt remove --auto-remove --purge \
@@ -40,7 +32,17 @@ jobs:
             microsoft-edge-stable \
             google-cloud-cli \
             google-chrome-stable \
-            temurin\*
+            \*temurin\* \
+            \*llvm\* \
+            powershell
+      - name: Get installed snaps
+        run: snap list
+      - name: Check disk allocation
+        run: du --human-readable --max-depth 1 / 2> /dev/null | sort --human-numeric-sort --reverse | head --lines 30
+      - name: Check disk allocation (/usr)
+        run: du --human-readable --max-depth 1 /usr 2> /dev/null | sort --human-numeric-sort --reverse | head --lines 30
+      - name: Check disk allocation (/opt)
+        run: du --human-readable --max-depth 1 /opt 2> /dev/null | sort --human-numeric-sort --reverse | head --lines 30
 
   lint-notebooks:
     runs-on: ubuntu-24.04
