@@ -28,21 +28,16 @@ jobs:
         run: du --human-readable --max-depth 1 /opt 2> /dev/null | sort --human-numeric-sort --reverse | head --lines 30
       - name: Get largest installed packages
         run: |
-          #!/bin/bash
-          set -e -u -x
-          apt list --installed \
-            | grep -v Listing \
-            | awk -F / '{print $1}' \
-            | xargs apt-cache --no-all-versions show \
-            | awk 'BEGIN{ size = 0; package = "" } /^Installed-Size:/{size = $2 } /^Package:/{package = $2} //{ if (size > 0 && package != "") { print size, package; size = 0; package = "" }}' \
-            | sort --reverse --numeric-sort \
-            | head --lines 30
+          dpkg-query --show --showformat='${Package;-50}\t${Installed-Size}\n' | \
+            sort --human-numeric-sort --key 2 --reverse | \
+            head --lines 20
       - name: Get installed snaps
         run: snap list
       - name: Remove uncesseary packages
         run: |
-          apt remote --auto-remove --purge \
-            azure-cli
+          apt remove --auto-remove --purge \
+            azure-cli \
+            microsoft-edge-stable
 
   lint-notebooks:
     runs-on: ubuntu-24.04
