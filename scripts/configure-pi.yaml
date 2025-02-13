@@ -134,8 +134,8 @@
 
     - name: Clone PumaGuard repository
       ansible.builtin.git:
-        repo: 'https://github.com/PEEC-Nature-Youth-Group/PumaGuard.git'
-        dest: /home/peec/PumaGuard
+        repo: 'https://github.com/PEEC-Nature-Youth-Group/pumaguard.git'
+        dest: /home/peec/pumaguard
         clone: true
         update: true
         version: main
@@ -145,7 +145,7 @@
     - name: Set up poetry
       ansible.builtin.command:
         cmd: poetry install
-        chdir: PumaGuard
+        chdir: pumaguard
       become: true
       become_user: peec
       register: poetry_install
@@ -154,7 +154,7 @@
     - name: Make sure tensorflow is installed
       ansible.builtin.command:
         cmd: poetry run pip install tensorflow==2.15.0
-        chdir: PumaGuard
+        chdir: pumaguard
       become: true
       become_user: peec
       register: tensorflow_install
