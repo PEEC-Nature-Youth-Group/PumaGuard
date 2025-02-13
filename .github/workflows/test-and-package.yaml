@@ -93,6 +93,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: true
       - name: Set up Python ${{ env.PYTHON_VERSION }}
         uses: actions/setup-python@v5
         with:
@@ -187,6 +189,7 @@ jobs:
         with:
           fetch-depth: 0
           fetch-tags: true
+          submodules: true
       - name: Get snap version
         id: get_snap_version
         run: |
@@ -243,6 +246,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: true
       - name: Set up Python ${{ env.PYTHON_VERSION }}
         uses: actions/setup-python@v5
         with:
