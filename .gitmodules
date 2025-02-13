@@ -1,0 +1,3 @@
+[submodule "models"]
+	path = models
+	url = git@github.com:PEEC-Nature-Youth-Group/pumaguard-models.git
