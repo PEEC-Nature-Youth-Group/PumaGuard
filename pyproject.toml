@@ -5,7 +5,7 @@ description = ""
 authors = ["Nicolas Bock <nicolasbock@gmail.com>"]
 readme = "README.md"
 homepage = "http://pumaguard.rtfd.io/"
-repository = "https://github.com/PEEC-Nature-Youth-Group/PumaGuard"
+repository = "https://github.com/PEEC-Nature-Youth-Group/pumaguard"
 
 [tool.poetry.dependencies]
 matplotlib = "~=3.10"

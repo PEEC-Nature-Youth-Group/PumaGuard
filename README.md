@@ -1,10 +1,10 @@
 # PumaGuard
 
-[![Build and Test Webpage](https://github.com/PEEC-Nature-Youth-Group/PumaGuard/actions/workflows/build-webpage.yaml/badge.svg)](https://github.com/PEEC-Nature-Youth-Group/PumaGuard/actions/workflows/build-webpage.yaml)
+[![Build and Test Webpage](https://github.com/PEEC-Nature-Youth-Group/pumaguard/actions/workflows/build-webpage.yaml/badge.svg)](https://github.com/PEEC-Nature-Youth-Group/pumaguard/actions/workflows/build-webpage.yaml)
 
-[![Test and package code](https://github.com/PEEC-Nature-Youth-Group/PumaGuard/actions/workflows/test-and-package.yaml/badge.svg)](https://github.com/PEEC-Nature-Youth-Group/PumaGuard/actions/workflows/test-and-package.yaml)
+[![Test and package code](https://github.com/PEEC-Nature-Youth-Group/pumaguard/actions/workflows/test-and-package.yaml/badge.svg)](https://github.com/PEEC-Nature-Youth-Group/pumaguard/actions/workflows/test-and-package.yaml)
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/PEEC-Nature-Youth-Group/PumaGuard)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/PEEC-Nature-Youth-Group/pumaguard)
 
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com)
 
@@ -17,7 +17,7 @@ Please visit <http://pumaguard.rtfd.io/> for more information.
 If you do not want to install any new software on your computer you can use
 GitHub Codespaces, which provide a development environment in your browser.
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/PEEC-Nature-Youth-Group/PumaGuard/)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/PEEC-Nature-Youth-Group/pumaguard/)
 
 ## Local Development Environment
 
@@ -44,8 +44,8 @@ and TPUs, which make training a model much faster. In order to run the
 Colab](https://colab.research.google.com/), do the following from the terminal:
 
 ```console
-git clone https://github.com/PEEC-Nature-Youth-Group/PumaGuard.git
-cd PumaGuard
+git clone https://github.com/PEEC-Nature-Youth-Group/pumaguard.git
+cd pumaguard
 scripts/train.py --help
 ```
 
@@ -77,8 +77,8 @@ should be committed to the repository.
 1. Get a TPU instance on Colab
 2. Open a terminal and run
     ```console
-    $ git clone https://github.com/PEEC-Nature-Youth-Group/PumaGuard.git
-    $ cd PumaGuard
+    $ git clone https://github.com/PEEC-Nature-Youth-Group/pumaguard.git
+    $ cd pumaguard
     ```
 3. Get help on how to use the script
     ```console

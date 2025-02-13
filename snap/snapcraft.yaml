@@ -3,7 +3,7 @@ icon: pumaguard-logo-4-512-512.png
 base: core22
 adopt-info: pumaguard
 license: Apache-2.0
-source-code: https://github.com/PEEC-Nature-Youth-Group/PumaGuard
+source-code: https://github.com/PEEC-Nature-Youth-Group/pumaguard
 website: https://pumaguard.rtfd.io/
 grade: stable
 confinement: strict
