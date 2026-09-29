@@ -10,7 +10,7 @@ from pathlib import (
     Path,
 )
 from typing import (
-    Tuple,
+    Iterator,
 )
 
 import yaml
@@ -158,7 +158,7 @@ class Settings:
     _base_output_directory: str = ""
     _model_file: str = ""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.settings_file = get_default_settings_file()
         self.yolo_min_size = 0.02
         self.yolo_conf_thresh = 0.15
@@ -252,7 +252,7 @@ class Settings:
             except OSError as exc:  # pragma: no cover (rare failure)
                 logger.error("Could not create directory %s: %s", d, exc)
 
-    def load(self, filename: str):
+    def load(self, filename: str) -> None:
         """
         Load settings from YAML file.
         """
@@ -326,7 +326,7 @@ class Settings:
             raise ValueError(
                 "expected image-dimensions to be a list of two integers"
             )
-        self.image_dimensions = tuple(dimensions)
+        self.image_dimensions = (dimensions[0], dimensions[1])
         self.model_version = settings.get("model-version", "undefined")
         self.model_function_name = settings.get("model-function", "undefined")
         self.base_output_directory = settings.get(
@@ -421,7 +421,7 @@ class Settings:
         )
         self.plug_heartbeat_timeout = settings.get("plug-heartbeat-timeout", 5)
 
-    def save(self):
+    def save(self) -> None:
         """
         Write presets to settings file.
         """
@@ -436,7 +436,7 @@ class Settings:
         """
         return [os.path.relpath(path, start=base) for path in paths]
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[tuple[str, object]]:
         """
         Serialize this class.
         """
@@ -481,7 +481,7 @@ class Settings:
             "plug-heartbeat-timeout": self.plug_heartbeat_timeout,
         }.items()
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         Serialize this class.
         """
@@ -495,7 +495,7 @@ class Settings:
         return self._yolo_min_size
 
     @yolo_min_size.setter
-    def yolo_min_size(self, yolo_min_size: float):
+    def yolo_min_size(self, yolo_min_size: float) -> None:
         """
         Set the YOLO min-size.
         """
@@ -515,7 +515,7 @@ class Settings:
         return self._yolo_conf_thresh
 
     @yolo_conf_thresh.setter
-    def yolo_conf_thresh(self, yolo_conf_thresh: float):
+    def yolo_conf_thresh(self, yolo_conf_thresh: float) -> None:
         """
         Set the YOLO conf-thresh.
         """
@@ -535,7 +535,7 @@ class Settings:
         return self._yolo_max_dets
 
     @yolo_max_dets.setter
-    def yolo_max_dets(self, yolo_max_dets: int):
+    def yolo_max_dets(self, yolo_max_dets: int) -> None:
         """
         Set the YOLO max-dets.
         """
@@ -553,7 +553,7 @@ class Settings:
         return self._yolo_model_filename
 
     @yolo_model_filename.setter
-    def yolo_model_filename(self, yolo_model_filename: str):
+    def yolo_model_filename(self, yolo_model_filename: str) -> None:
         """
         Set the YOLO model filename.
         """
@@ -569,7 +569,9 @@ class Settings:
         return self._classifier_model_filename
 
     @classifier_model_filename.setter
-    def classifier_model_filename(self, classifier_model_filename: str):
+    def classifier_model_filename(
+        self, classifier_model_filename: str
+    ) -> None:
         """
         Set the classifier model filename.
         """
@@ -585,7 +587,7 @@ class Settings:
         return self._puma_threshold
 
     @puma_threshold.setter
-    def puma_threshold(self, puma_threshold: float):
+    def puma_threshold(self, puma_threshold: float | int) -> None:
         """
         Set the puma classification threshold.
         """
@@ -605,7 +607,7 @@ class Settings:
         return self._base_output_directory
 
     @base_output_directory.setter
-    def base_output_directory(self, path: str):
+    def base_output_directory(self, path: str) -> None:
         """
         Set the base_output_directory.
         """
@@ -619,7 +621,7 @@ class Settings:
         return self._verification_path
 
     @verification_path.setter
-    def verification_path(self, path: str):
+    def verification_path(self, path: str) -> None:
         """
         Set the verification path.
         """
@@ -635,7 +637,7 @@ class Settings:
         )
 
     @notebook_number.setter
-    def notebook_number(self, notebook: int):
+    def notebook_number(self, notebook: int) -> None:
         """
         Set the notebook number.
         """
@@ -657,7 +659,7 @@ class Settings:
         )
 
     @file_stabilization_extra_wait.setter
-    def file_stabilization_extra_wait(self, extra_wait: float):
+    def file_stabilization_extra_wait(self, extra_wait: float) -> None:
         """
         Set the extra wait.
         """
@@ -673,35 +675,35 @@ class Settings:
         return self._model_version
 
     @model_version.setter
-    def model_version(self, model_version: str):
+    def model_version(self, model_version: str) -> None:
         """
         Set the model version name.
         """
         self._model_version = model_version
 
     @property
-    def sound_path(self):
+    def sound_path(self) -> str:
         """
         Get the sound path.
         """
         return self._sound_path
 
     @sound_path.setter
-    def sound_path(self, sound_path: str):
+    def sound_path(self, sound_path: str) -> None:
         """
         Set the sound path.
         """
         self._sound_path = sound_path
 
     @property
-    def deterrent_sound_files(self):
+    def deterrent_sound_files(self) -> list[str]:
         """
         Get the list of deterrent sound files.
         """
         return self._deterrent_sound_files
 
     @deterrent_sound_files.setter
-    def deterrent_sound_files(self, sound_files: list[str]):
+    def deterrent_sound_files(self, sound_files: list[str]) -> None:
         """
         Set the list of deterrent sound files.
         At least one sound file must be provided.
@@ -715,7 +717,7 @@ class Settings:
         self._deterrent_sound_files = sound_files
 
     @property
-    def model_file(self):
+    def model_file(self) -> str:
         """
         Get the location of the model file.
         """
@@ -731,14 +733,14 @@ class Settings:
         )
 
     @model_file.setter
-    def model_file(self, filename: str):
+    def model_file(self, filename: str) -> None:
         """
         Set the location of the model file.
         """
         self._model_file = filename
 
     @property
-    def history_file(self):
+    def history_file(self) -> str:
         """
         Get the history file.
         """
@@ -759,7 +761,7 @@ class Settings:
         return self._settings_file
 
     @settings_file.setter
-    def settings_file(self, filename: str):
+    def settings_file(self, filename: str) -> None:
         """
         Set the settings file.
         """
@@ -773,7 +775,7 @@ class Settings:
         return self._number_color_channels
 
     @number_color_channels.setter
-    def number_color_channels(self, channels: int):
+    def number_color_channels(self, channels: int) -> None:
         """
         Set the number of color channels.
         """
@@ -782,14 +784,14 @@ class Settings:
         self._number_color_channels = channels
 
     @property
-    def image_dimensions(self) -> Tuple[int, int]:
+    def image_dimensions(self) -> tuple[int, int]:
         """
         Get the image dimensions.
         """
         return self._image_dimensions
 
     @image_dimensions.setter
-    def image_dimensions(self, dimensions: Tuple[int, int]):
+    def image_dimensions(self, dimensions: tuple[int, int]) -> None:
         """
         Set the image dimensions.
         """
@@ -811,7 +813,7 @@ class Settings:
         return self._epochs
 
     @epochs.setter
-    def epochs(self, epochs: int):
+    def epochs(self, epochs: int) -> None:
         """
         Set the number of epochs.
         """
@@ -829,7 +831,7 @@ class Settings:
         return self._lion_directories
 
     @lion_directories.setter
-    def lion_directories(self, lions: list[str]):
+    def lion_directories(self, lions: list[str]) -> None:
         """
         Set the lion directories.
         """
@@ -843,7 +845,7 @@ class Settings:
         return self._validation_lion_directories
 
     @validation_lion_directories.setter
-    def validation_lion_directories(self, lions: list[str]):
+    def validation_lion_directories(self, lions: list[str]) -> None:
         """
         Set the lion directories for validation.
         """
@@ -857,7 +859,7 @@ class Settings:
         return self._no_lion_directories
 
     @no_lion_directories.setter
-    def no_lion_directories(self, no_lions: list[str]):
+    def no_lion_directories(self, no_lions: list[str]) -> None:
         """
         Set the no_lion directories.
         """
@@ -871,7 +873,7 @@ class Settings:
         return self._validation_no_lion_directories
 
     @validation_no_lion_directories.setter
-    def validation_no_lion_directories(self, no_lions: list[str]):
+    def validation_no_lion_directories(self, no_lions: list[str]) -> None:
         """
         Set the no_lion directories for validation.
         """
@@ -885,7 +887,7 @@ class Settings:
         return self._model_function_name
 
     @model_function_name.setter
-    def model_function_name(self, name: str):
+    def model_function_name(self, name: str) -> None:
         """
         Set the model function name.
         """
@@ -899,7 +901,7 @@ class Settings:
         return self._with_augmentation
 
     @with_augmentation.setter
-    def with_augmentation(self, with_augmentation: bool):
+    def with_augmentation(self, with_augmentation: bool) -> None:
         """
         Set whether to use augment training data.
         """
@@ -913,7 +915,7 @@ class Settings:
         return self._play_sound
 
     @play_sound.setter
-    def play_sound(self, play_sound: bool):
+    def play_sound(self, play_sound: bool) -> None:
         """
         Set play-sound.
         """
@@ -929,7 +931,7 @@ class Settings:
         return self._volume
 
     @volume.setter
-    def volume(self, volume: int):
+    def volume(self, volume: int) -> None:
         """
         Set volume level (0-100).
         """
