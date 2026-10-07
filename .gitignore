@@ -12,3 +12,4 @@ pumaguard.egg-info
 pumaguard/pumaguard-ui
 .venv/*
 wheelhouse/*
+.workshop.lock
