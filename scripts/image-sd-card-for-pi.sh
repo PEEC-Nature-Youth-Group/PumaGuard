@@ -36,17 +36,32 @@ sudo udevadm settle
 sudo partprobe ${SDCARD}
 sudo udevadm trigger --sysname-match ${SDCARD} --action change
 
-readarray -t MOUNTPOINTS < <(lsblk --json ${SDCARD} | \
-    jq --raw-output '.blockdevices[].children[]?.name')
+declare -a MOUNTPOINTS=()
 
-if (( ${#MOUNTPOINTS[@]} > 0 )); then
-    for mount in ${MOUNTPOINTS[@]}; do
-        for i in $(seq 5); do
-            if udisksctl mount --block-device /dev/${mount}; then break; fi
-            sleep 1
+for i in $(seq 10); do
+    declare -i mounted=0
+    readarray -t MOUNTPOINTS < <(lsblk --json ${SDCARD} | \
+        jq --raw-output '.blockdevices[].children[]?.name')
+
+    if (( ${#MOUNTPOINTS[@]} > 0 )); then
+        for mount in ${MOUNTPOINTS[@]}; do
+            for i in $(seq 5); do
+                if udisksctl mount --block-device /dev/${mount}; then
+                    mounted=1
+                    break
+                fi
+                sleep 1
+            done
+            if ((mounted != 0)); then
+                break
+            fi
         done
-        done
-fi
+    fi
+    if ((mounted != 0)); then
+        break
+    fi
+done
+
 lsblk ${SDCARD}
 
 # Find the system-boot mountpoint dynamically
