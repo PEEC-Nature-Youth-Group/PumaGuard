@@ -512,7 +512,7 @@ def register_settings_routes(app: "Flask", webui: "WebUI") -> None:
                         )
 
             # Sort by name
-            sound_files.sort(key=lambda x: x["name"])
+            sound_files.sort(key=lambda x: str(x["name"]))
 
             return jsonify({"sounds": sound_files})
 
