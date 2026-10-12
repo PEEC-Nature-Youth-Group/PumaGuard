@@ -9,7 +9,6 @@ WORKSHOP_NAME=${WORKSHOP_NAME:-dev}
 # Maps "<sdk>:<mount name>" to the host directory it should be backed by.
 # The tilde is left unexpanded on purpose; expand_home handles it when used.
 declare -A MOUNTS=(
-    [copilot:copilot-config]='~/.copilot'
     [opencode:opencode-config]='~/.config/opencode'
     [opencode:opencode-data]='~/.local/share/opencode'
 )
