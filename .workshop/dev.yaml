@@ -1,6 +1,7 @@
 name: dev
 base: ubuntu@26.04
 sdks:
+  - name: flutter
   - name: opencode
   - name: project-tools
   - name: uv
