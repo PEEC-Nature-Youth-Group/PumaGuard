@@ -122,6 +122,22 @@ access to `pypi.org`/`files.pythonhosted.org` (and
 time dependencies are installed; after that everything is cached in
 `.venv` and no network is needed.
 
+### Python version recovery
+
+The locked TensorFlow dependency currently has wheels for Python 3.12,
+not newer Python versions. If `.venv` points to a missing interpreter,
+`uv run` may delete it and recreate it using the system Python, causing
+dependency resolution to fail. Recreate the environment explicitly with
+Python 3.12 before running tests:
+
+```sh
+uv python install 3.12
+uv venv --clear --python 3.12
+uv sync --system-certs --extra dev --frozen
+```
+
+Use `unsandboxed: true` for these `uv` commands as described above.
+
 ## Linting
 
 Individual linters can be run directly instead of the full `make lint`
