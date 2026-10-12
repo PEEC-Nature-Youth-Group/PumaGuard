@@ -4,7 +4,8 @@ set -e -u -x -o pipefail
 
 SDCARD=/dev/mmcblk0
 SERIES=24.04
-IMAGE_NAME=ubuntu-${SERIES}.4-preinstalled-server-arm64+raspi.img.xz
+PATCH_LEVEL=5
+IMAGE_NAME=ubuntu-${SERIES}.${PATCH_LEVEL}-preinstalled-server-arm64+raspi.img.xz
 IMAGE_URI=https://cdimage.ubuntu.com/releases/${SERIES}/release/${IMAGE_NAME}
 
 declare -a MOUNTPOINTS=()
