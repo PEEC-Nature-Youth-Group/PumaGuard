@@ -31,13 +31,13 @@ clean:
 
 .PHONY: apidoc
 apidoc: .venv
-	uv sync --extra docs --frozen
+	uv sync --extra docs --frozen --python $(PYTHON_VERSION)
 	. .venv/bin/activate && cd docs && sphinx-apidoc -o source --force ../pumaguard
 
 .PHONY: docs
 docs: .venv
 	@echo "building documentation webpage"
-	uv sync --system-certs --extra docs --frozen
+	uv sync --system-certs --extra docs --frozen --python $(PYTHON_VERSION)
 	. .venv/bin/activate && cd docs && sphinx-apidoc --output-dir source --force ../pumaguard
 	git ls-files --exclude-standard --others
 	git ls-files --exclude-standard --others | wc -l | grep "^0" --quiet
@@ -58,7 +58,7 @@ install: .venv
 
 .PHONY: install-dev
 install-dev: .venv
-	uv sync --system-certs --extra dev --frozen
+	uv sync --system-certs --extra dev --frozen --python $(PYTHON_VERSION)
 
 .PHONY: test
 test: test-python test-ui
