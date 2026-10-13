@@ -4,3 +4,4 @@ sdks:
   - name: opencode
   - name: project-tools
   - name: uv
+  - name: flutter
