@@ -48,7 +48,7 @@ dev = [
     "mypy ~= 2.1",
     "passlib ~= 1.7",
     "pip ~= 26.1",
-    "pylint ~= 4.0",
+    "pylint~=4.1",
     "pytest-cov ~= 7.0",
     "pytest ~= 9.0",
     "types-Flask-Cors",
